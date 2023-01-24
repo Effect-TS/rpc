@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "skipLibCheck": true,
+    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "lib": ["ESNext", "DOM"],
+    "sourceMap": true,
+    "declaration": true,
+    "strict": true,
+    "target": "ES6",
+    "incremental": true,
+    "paths": {
+      "@effect/rpc/*": ["./src/*.js"]
+    },
+    "composite": true
+  },
+  "exclude": ["node_modules", "dist", "build", "lib"]
+}
