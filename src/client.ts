@@ -56,12 +56,17 @@ const unsafeDecode =
     throw "unsafeDecode fail"
   }
 
+export interface ClientOptions {
+  memoizeInput?: boolean
+}
+
 export const make = <
   S extends RpcSchemas,
   T extends RpcClientTransport<any, any>,
 >(
   schemas: S,
   transport: T,
+  { memoizeInput = true }: ClientOptions = {},
 ) =>
   Object.entries(schemas).reduce<
     RpcClient<
@@ -72,7 +77,7 @@ export const make = <
   >(
     (acc, [method, codec]) => ({
       ...acc,
-      [method]: makeRpc(transport, codec, method),
+      [method]: makeRpc(transport, codec, method, memoizeInput),
     }),
     { _schemas: schemas, _unsafeDecode: unsafeDecode(schemas) } as any,
   )
@@ -81,6 +86,7 @@ const makeRpc = <S extends RpcSchemaAny, TR, TE>(
   transport: RpcClientTransport<TR, TE>,
   schema: S,
   method: string,
+  memoize: boolean,
 ): Rpc<S, TR, TE> => {
   const send = (input: unknown) =>
     pipe(
@@ -113,7 +119,12 @@ const makeRpc = <S extends RpcSchemaAny, TR, TE>(
     )
 
   if ("input" in schema) {
+    if (!memoize) {
+      return ((input: any) => send(input)) as any
+    }
+
     const cache = new Map<number, Effect.Effect<unknown, unknown, unknown>>()
+
     return ((input: any) => {
       const hash = Hash.hash(input)
       if (cache.has(hash)) {
