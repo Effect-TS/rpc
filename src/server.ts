@@ -123,7 +123,7 @@ export const makeHandler =
           : handler(input)
 
         return pipe(
-          Effect.either(effect),
+          effect,
           Effect.map((_) => Either.right(Parser.encode(schema.output)(_))),
           Effect.catchAll((_) =>
             Effect.succeed(
