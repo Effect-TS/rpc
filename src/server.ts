@@ -16,6 +16,7 @@ import {
   RpcSchemas,
   RpcSchemaWithInput,
 } from "./index.js"
+import { decode } from "./internal/decode.js"
 
 export type RpcDefinition<R, E, I, O> =
   | RpcDefinitionIO<R, E, I, O>
@@ -67,8 +68,8 @@ export interface RpcRouter<
   readonly undecoded: RpcUndecodedClient<H>
 }
 
-const requestDecoder = Parser.decode(RpcRequest)
-const responseEncoder = Parser.encode(RpcResponse)
+const requestDecoder = decode(RpcRequest)
+const responseEncoder = Parser.encodeOrThrow(RpcResponse)
 
 export type RpcServer<H extends RpcHandlers> = (
   u: unknown,
@@ -114,7 +115,7 @@ export const makeHandler =
       ),
       Either.bind("input", ({ handler, schema, request }) =>
         !Effect.isEffect(handler) && "input" in schema
-          ? Parser.decode(schema.input as Schema.Schema<any>)(request.input)
+          ? decode(schema.input as Schema.Schema<any>)(request.input)
           : Either.right(null),
       ),
       Either.map(({ handler, input, schema }) => {
@@ -124,10 +125,14 @@ export const makeHandler =
 
         return pipe(
           effect,
-          Effect.map((_) => Either.right(Parser.encode(schema.output)(_))),
+          Effect.map((_) =>
+            Either.right(Parser.encodeOrThrow(schema.output)(_)),
+          ),
           Effect.catchAll((_) =>
             Effect.succeed(
-              Either.left(Parser.encode(schema.error as Schema.Schema<any>)(_)),
+              Either.left(
+                Parser.encodeOrThrow(schema.error as Schema.Schema<any>)(_),
+              ),
             ),
           ),
         )
@@ -164,14 +169,20 @@ export const makeUndecodedClient = <
       if (Effect.isEffect(definition)) {
         return {
           ...acc,
-          [method]: pipe(definition, Effect.map(Parser.encode(schema.output))),
+          [method]: pipe(
+            definition,
+            Effect.map(Parser.encodeOrThrow(schema.output)),
+          ),
         }
       }
 
       return {
         ...acc,
         [method]: (input) =>
-          pipe(definition(input), Effect.map(Parser.encode(schema.output))),
+          pipe(
+            definition(input),
+            Effect.map(Parser.encodeOrThrow(schema.output)),
+          ),
       }
     },
     {} as any,
