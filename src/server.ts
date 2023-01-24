@@ -6,7 +6,6 @@ import {
   pipe,
   Schema,
 } from "@effect/rpc/internal/common"
-
 import {
   RpcNotFound,
   RpcRequest,
@@ -17,6 +16,8 @@ import {
   RpcSchemaWithInput,
 } from "./index.js"
 import { decode } from "./internal/decode.js"
+
+export { makeSchema as schema } from "./index.js"
 
 export type RpcDefinition<R, E, I, O> =
   | RpcDefinitionIO<R, E, I, O>
@@ -75,7 +76,7 @@ export type RpcServer<H extends RpcHandlers> = (
   u: unknown,
 ) => Effect.Effect<RpcHandlersDeps<H>, never, unknown>
 
-export const makeRouter = <
+export const router = <
   S extends RpcSchemas,
   H extends RpcHandlersFromSchema<S>,
 >(
@@ -87,7 +88,7 @@ export const makeRouter = <
   undecoded: makeUndecodedClient(schema, handlers),
 })
 
-export const makeHandler =
+export const handler =
   <R extends RpcRouterBase>(
     router: R,
   ): ((

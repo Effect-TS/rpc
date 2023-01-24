@@ -46,14 +46,9 @@ export type RpcSchema<E, I, O> =
 export type RpcSchemaAny =
   | RpcSchema<any, any, any>
   | RpcSchema<never, any, any>
-  | RpcSchema<any, any, never>
+  | RpcSchema<any, never, any>
+  | RpcSchema<never, never, any>
 
-export interface RpcSchemas
-  extends Record<
-    string,
-    | RpcSchema<any, any, any>
-    | RpcSchema<never, any, any>
-    | RpcSchema<any, never, any>
-  > {}
+export interface RpcSchemas extends Record<string, RpcSchemaAny> {}
 
 export const makeSchema = <S extends RpcSchemas>(schema: S) => schema
