@@ -3,12 +3,14 @@ lockfileVersion: 5.4
 specifiers:
   '@effect/io': ^0.0.66
   '@fp-ts/data': ^0.0.41
+  '@fp-ts/schema': ^0.0.8
   prettier: ^2.8.3
   typescript: ^4.9.4
 
 dependencies:
   '@effect/io': 0.0.66
   '@fp-ts/data': 0.0.41
+  '@fp-ts/schema': 0.0.8
 
 devDependencies:
   prettier: 2.8.3
@@ -33,11 +35,30 @@ packages:
       '@fp-ts/core': 0.0.11
     dev: false
 
+  /@fp-ts/schema/0.0.8:
+    resolution: {integrity: sha512-+osZGEnfVO4jaoBnjMRmZT/yoYhu+DoN3eCn0HjWMnDF6ZDUuWahtSTp4HpBwd2lL0+FkulAywvM8WRpy4lZiw==}
+    dependencies:
+      '@fp-ts/core': 0.0.11
+      '@fp-ts/data': 0.0.41
+      fast-check: 3.6.2
+    dev: false
+
+  /fast-check/3.6.2:
+    resolution: {integrity: sha512-htRkbkw8B1yVfvrLNiJTnpcvpXrdcgpwZUQdC07dsiUGXaHHWK38t6VCnTmAUf68atyos1+XXXY60VUbSgorAQ==}
+    engines: {node: '>=8.0.0'}
+    dependencies:
+      pure-rand: 6.0.0
+    dev: false
+
   /prettier/2.8.3:
     resolution: {integrity: sha512-tJ/oJ4amDihPoufT5sM0Z1SKEuKay8LfVAMlbbhnnkvt6BUserZylqo2PN+p9KeljLr0OHa2rXHU1T8reeoTrw==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
+
+  /pure-rand/6.0.0:
+    resolution: {integrity: sha512-rLSBxJjP+4DQOgcJAx6RZHT2he2pkhQdSnofG5VWyVl6GRq/K02ISOuOLcsMOrtKDIJb8JN2zm3FFzWNbezdPw==}
+    dev: false
 
   /typescript/4.9.4:
     resolution: {integrity: sha512-Uz+dTXYzxXXbsFpM86Wh3dKCxrQqUcVMxwU54orwlJjOpO3ao8L7j5lH+dWfTwgCwIuM9GQ2kvVotzYJMXTBZg==}

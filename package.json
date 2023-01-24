@@ -11,7 +11,8 @@
   "license": "MIT",
   "dependencies": {
     "@effect/io": "^0.0.66",
-    "@fp-ts/data": "^0.0.41"
+    "@fp-ts/data": "^0.0.41",
+    "@fp-ts/schema": "^0.0.8"
   },
   "devDependencies": {
     "prettier": "^2.8.3",
