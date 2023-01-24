@@ -13,6 +13,8 @@ import { Effect, Either, Parser, pipe, Schema } from "./internal/common.js"
 import { decode } from "./internal/decode.js"
 import type { UndecodedRpcResponse } from "./server.js"
 
+export * as FetchTransport from "./internal/fetchTransport.js"
+
 export type Rpc<C extends RpcSchemaAny, TR, TE> = C extends RpcSchemaWithInput<
   infer E,
   infer I,
