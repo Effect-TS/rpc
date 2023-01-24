@@ -1,4 +1,4 @@
-import { Effect } from "@effect/rpc/internal/common"
+import * as Effect from "@effect/io/Effect"
 import * as Client from "@effect/rpc/client"
 import * as Server from "@effect/rpc/server"
 import * as Schema from "@fp-ts/schema/Schema"
