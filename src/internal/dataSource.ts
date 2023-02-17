@@ -1,5 +1,5 @@
 import { RpcDataSource } from "../client.js"
-import { RpcError, RpcRequest, RpcResponse } from "../index.js"
+import { RpcRequest, RpcResponse, RpcTransportError } from "../index.js"
 import { Chunk, DataSource, Effect, pipe, Request, Schema } from "./common.js"
 import { decodeEffect } from "./decode.js"
 
@@ -8,7 +8,7 @@ const responsesDecoder = decodeEffect(Schema.array(RpcResponse))
 export const make = <R>(
   send: (
     requests: readonly RpcRequest[],
-  ) => Effect.Effect<R, RpcError, readonly unknown[]>,
+  ) => Effect.Effect<R, RpcTransportError, readonly unknown[]>,
 ): RpcDataSource<R> =>
   DataSource.makeBatched("RpcDataSource", (requests) =>
     pipe(
