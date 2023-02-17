@@ -59,21 +59,16 @@ const unsafeDecode =
     throw "unsafeDecode fail"
   }
 
-export interface ClientOptions {
-  memoizeInput?: boolean
-}
-
 export const make = <S extends RpcSchemas, T extends RpcDataSource<any>>(
   schemas: S,
   transport: T,
-  { memoizeInput = true }: ClientOptions = {},
 ) =>
   Object.entries(schemas).reduce<
     RpcClient<S, T extends RpcDataSource<infer R> ? R : never>
   >(
     (acc, [method, codec]) => ({
       ...acc,
-      [method]: makeRpc(transport, codec, method, memoizeInput),
+      [method]: makeRpc(transport, codec, method),
     }),
     { _schemas: schemas, _unsafeDecode: unsafeDecode(schemas) } as any,
   )
@@ -82,7 +77,6 @@ const makeRpc = <S extends RpcSchemaAny, TR>(
   dataSource: RpcDataSource<TR>,
   schema: S,
   method: string,
-  memoize: boolean,
 ): Rpc<S, TR> => {
   const send = (input: unknown) =>
     pipe(
@@ -110,25 +104,11 @@ const makeRpc = <S extends RpcSchemaAny, TR>(
     )
 
   if ("input" in schema) {
-    if (!memoize) {
-      return ((input: any) => send(input)) as any
-    }
-
-    const cache = new Map<number, Effect.Effect<unknown, unknown, unknown>>()
-
-    return ((input: any) => {
-      const hash = Hash.hash(input)
-      if (cache.has(hash)) {
-        return cache.get(hash)
-      }
-
-      const query = pipe(
+    return ((input: any) =>
+      pipe(
         Query.fromEither(encode(schema.input as Schema.Schema<any>)(input)),
         Query.flatMap(send),
-      )
-      cache.set(hash, query)
-      return query
-    }) as any
+      )) as any
   }
 
   return send(null) as any
