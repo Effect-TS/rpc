@@ -1,11 +1,18 @@
-import { Either, ParseError, ROA, Schema } from "@effect/rpc/internal/common"
+import {
+  Either,
+  ParseResult,
+  Request,
+  ROA,
+  Schema,
+} from "@effect/rpc/internal/common"
 import { either } from "./internal/either.js"
 
-export const RpcRequest = Schema.struct({
-  method: Schema.string,
-  input: Schema.unknown,
-})
-export type RpcRequest = Schema.Infer<typeof RpcRequest>
+export interface RpcRequest extends Request.Request<RpcError, unknown> {
+  readonly _tag: "RpcRequest"
+  readonly method: string
+  readonly input: unknown
+}
+export const RpcRequest = Request.tagged<RpcRequest>("RpcRequest")
 
 export const RpcNotFound = Schema.struct({
   _tag: Schema.literal("RpcNotFound"),
@@ -19,14 +26,42 @@ export const RpcDecodeFailure = Schema.struct({
 })
 export interface RpcDecodeFailure {
   readonly _tag: "RpcDecodeFailure"
-  readonly errors: ROA.NonEmptyReadonlyArray<ParseError.ParseError>
+  readonly errors: ROA.NonEmptyReadonlyArray<ParseResult.ParseError>
 }
 
-export type RpcServerError = RpcDecodeFailure | RpcNotFound
-export const RpcServerError = Schema.union(RpcDecodeFailure, RpcNotFound)
+export const RpcTransportError = Schema.struct({
+  _tag: Schema.literal("RpcTransportError"),
+  error: Schema.unknown,
+})
+export interface RpcTransportError
+  extends Schema.Infer<typeof RpcTransportError> {}
 
-export const RpcResponse = either(Schema.unknown, Schema.unknown)
-export type RpcResponse = Schema.Infer<typeof RpcResponse>
+export interface RpcEncodeFailure {
+  readonly _tag: "RpcEncodeFailure"
+  readonly errors: ROA.NonEmptyReadonlyArray<ParseResult.ParseError>
+}
+export const RpcEncodeFailure = Schema.struct({
+  _tag: Schema.literal("RpcEncodeFailure"),
+  errors: Schema.nonEmptyArray(Schema.any),
+})
+
+export type RpcError =
+  | RpcDecodeFailure
+  | RpcEncodeFailure
+  | RpcNotFound
+  | RpcTransportError
+export const RpcError = Schema.union(
+  RpcDecodeFailure,
+  RpcEncodeFailure,
+  RpcNotFound,
+  RpcTransportError,
+)
+
+export type RpcResponse = Either.Either<RpcError, unknown>
+export const RpcResponse = either(
+  RpcError,
+  Schema.unknown,
+) as Schema.Schema<RpcResponse>
 
 // Codecs
 

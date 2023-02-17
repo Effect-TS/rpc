@@ -17,7 +17,7 @@ export const router = Server.router(schema, {
 
 export const client = Client.make(
   schema,
-  Client.FetchTransport.make({
+  Client.FetchDataSource.make({
     url: "http://localhost:3000",
   }),
 )

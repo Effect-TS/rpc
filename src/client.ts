@@ -1,34 +1,39 @@
-import * as Hash from "@fp-ts/data/Hash"
+import * as Hash from "@effect/data/Hash"
 import {
-  RpcDecodeFailure,
+  RpcError,
   RpcRequest,
   RpcResponse,
   RpcSchemaAny,
   RpcSchemaNoInput,
   RpcSchemas,
   RpcSchemaWithInput,
-  RpcServerError,
 } from "./index.js"
-import { Effect, Either, Parser, pipe, Schema } from "./internal/common.js"
-import { decode } from "./internal/decode.js"
+import {
+  DataSource,
+  Effect,
+  Either,
+  pipe,
+  Query,
+  Schema,
+} from "./internal/common.js"
+import { decode, encode } from "./internal/decode.js"
 import type { UndecodedRpcResponse } from "./server.js"
 
-export * as FetchTransport from "./internal/fetchTransport.js"
+export * as DataSource from "./internal/dataSource.js"
+export * as FetchDataSource from "./internal/fetchDataSource.js"
 
-export type Rpc<C extends RpcSchemaAny, TR, TE> = C extends RpcSchemaWithInput<
+export type Rpc<C extends RpcSchemaAny, TR> = C extends RpcSchemaWithInput<
   infer E,
   infer I,
   infer O
 >
-  ? (
-      input: I,
-    ) => Effect.Effect<TR, RpcServerError | RpcDecodeFailure | TE | E, O>
+  ? (input: I) => Query.Query<TR, RpcError | E, O>
   : C extends RpcSchemaNoInput<infer E, infer O>
-  ? Effect.Effect<TR, RpcServerError | RpcDecodeFailure | TE | E, O>
+  ? Query.Query<TR, RpcError | E, O>
   : never
 
-export type RpcClient<S extends RpcSchemas, TR, TE> = {
-  [K in keyof S]: Rpc<S[K], TR, TE>
+export type RpcClient<S extends RpcSchemas, TR> = {
+  [K in keyof S]: Rpc<S[K], TR>
 } & {
   _schemas: S
   _unsafeDecode: <M extends keyof S, O extends UndecodedRpcResponse<M>>(
@@ -37,13 +42,11 @@ export type RpcClient<S extends RpcSchemas, TR, TE> = {
   ) => S[M] extends { output: Schema.Schema<infer O> } ? O : never
 }
 
-export interface RpcClientTransport<R, E> {
-  send: (u: unknown) => Effect.Effect<R, E, unknown>
-}
+export interface RpcDataSource<R>
+  extends DataSource.DataSource<R, RpcRequest> {}
 
-const requestEncoder = Parser.encodeOrThrow(RpcRequest)
 const responseDecoder = decode(RpcResponse)
-const errorDecoder = decode(RpcServerError)
+const errorDecoder = decode(RpcError)
 
 const unsafeDecode =
   <S extends RpcSchemas>(schemas: S) =>
@@ -60,20 +63,13 @@ export interface ClientOptions {
   memoizeInput?: boolean
 }
 
-export const make = <
-  S extends RpcSchemas,
-  T extends RpcClientTransport<any, any>,
->(
+export const make = <S extends RpcSchemas, T extends RpcDataSource<any>>(
   schemas: S,
   transport: T,
   { memoizeInput = true }: ClientOptions = {},
 ) =>
   Object.entries(schemas).reduce<
-    RpcClient<
-      S,
-      T extends RpcClientTransport<infer R, any> ? R : never,
-      T extends RpcClientTransport<any, infer E> ? E : never
-    >
+    RpcClient<S, T extends RpcDataSource<infer R> ? R : never>
   >(
     (acc, [method, codec]) => ({
       ...acc,
@@ -82,21 +78,16 @@ export const make = <
     { _schemas: schemas, _unsafeDecode: unsafeDecode(schemas) } as any,
   )
 
-const makeRpc = <S extends RpcSchemaAny, TR, TE>(
-  transport: RpcClientTransport<TR, TE>,
+const makeRpc = <S extends RpcSchemaAny, TR>(
+  dataSource: RpcDataSource<TR>,
   schema: S,
   method: string,
   memoize: boolean,
-): Rpc<S, TR, TE> => {
+): Rpc<S, TR> => {
   const send = (input: unknown) =>
     pipe(
-      transport.send(
-        requestEncoder({
-          method: method as string,
-          input,
-        }),
-      ),
-      Effect.flatMap((u) =>
+      Query.fromRequest(RpcRequest({ method, input }), dataSource),
+      Query.mapEffect((u) =>
         pipe(
           responseDecoder(u),
           Either.flatMap(
@@ -104,7 +95,7 @@ const makeRpc = <S extends RpcSchemaAny, TR, TE>(
               (e) =>
                 pipe(
                   decode(schema.error as Schema.Schema<any>)(e),
-                  Either.catchAll(() => errorDecoder(e)),
+                  Either.orElse(() => errorDecoder(e)),
                   Either.flatMap((e) => Either.left(e)),
                 ),
               (_) => decode(schema.output as Schema.Schema<any>)(_),
@@ -131,9 +122,12 @@ const makeRpc = <S extends RpcSchemaAny, TR, TE>(
         return cache.get(hash)
       }
 
-      const effect = send(input)
-      cache.set(hash, effect)
-      return effect
+      const query = pipe(
+        Query.fromEither(encode(schema.input as Schema.Schema<any>)(input)),
+        Query.flatMap(send),
+      )
+      cache.set(hash, query)
+      return query
     }) as any
   }
 
