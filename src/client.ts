@@ -1,4 +1,3 @@
-import * as Hash from "@effect/data/Hash"
 import {
   RpcError,
   RpcRequest,
@@ -23,12 +22,15 @@ export * as DataSource from "./internal/dataSource.js"
 export * as FetchDataSource from "./internal/fetchDataSource.js"
 
 export type Rpc<C extends RpcSchemaAny, TR> = C extends RpcSchemaWithInput<
+  infer _IE,
   infer E,
+  infer _II,
   infer I,
+  infer _IO,
   infer O
 >
   ? (input: I) => Query.Query<TR, RpcError | E, O>
-  : C extends RpcSchemaNoInput<infer E, infer O>
+  : C extends RpcSchemaNoInput<infer _IE, infer E, infer _IO, infer O>
   ? Query.Query<TR, RpcError | E, O>
   : never
 

@@ -1,18 +1,24 @@
 import * as Effect from "@effect/io/Effect"
+import * as Query from "@effect/query/Query"
 import * as Client from "@effect/rpc/client"
 import * as Server from "@effect/rpc/server"
 import * as Schema from "@effect/schema/Schema"
 
 export const schema = Server.schema({
-  greet: {
+  getIds: {
     error: Schema.never,
+    output: Schema.array(Schema.string),
+  },
+  getUser: {
     input: Schema.string,
-    output: Schema.string,
+    output: Schema.any,
+    error: Schema.never,
   },
 })
 
 export const router = Server.router(schema, {
-  greet: (name) => Effect.succeed(`Hello ${name}!`),
+  getIds: Effect.succeed(["1", "2", "3"]),
+  getUser: (id) => Effect.succeed({ id, name: "Tim" }),
 })
 
 export const client = Client.make(
@@ -22,4 +28,6 @@ export const client = Client.make(
   }),
 )
 
-client.greet("Tim")
+Query.flatMap(client.getIds, (ids) =>
+  Query.collectAllPar(ids.map(client.getUser)),
+)

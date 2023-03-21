@@ -5,7 +5,6 @@ import {
   ROA,
   Schema,
 } from "@effect/rpc/internal/common"
-import { either } from "./internal/either.js"
 
 export interface RpcRequest extends Request.Request<RpcError, unknown> {
   readonly _tag: "RpcRequest"
@@ -18,7 +17,7 @@ export const RpcNotFound = Schema.struct({
   _tag: Schema.literal("RpcNotFound"),
   method: Schema.string,
 })
-export interface RpcNotFound extends Schema.Infer<typeof RpcNotFound> {}
+export interface RpcNotFound extends Schema.To<typeof RpcNotFound> {}
 
 export const RpcDecodeFailure = Schema.struct({
   _tag: Schema.literal("RpcDecodeFailure"),
@@ -34,7 +33,7 @@ export const RpcTransportError = Schema.struct({
   error: Schema.unknown,
 })
 export interface RpcTransportError
-  extends Schema.Infer<typeof RpcTransportError> {}
+  extends Schema.To<typeof RpcTransportError> {}
 
 export interface RpcEncodeFailure {
   readonly _tag: "RpcEncodeFailure"
@@ -58,32 +57,61 @@ export const RpcError = Schema.union(
 )
 
 export type RpcResponse = Either.Either<RpcError, unknown>
-export const RpcResponse = either(
+export const RpcResponse = Schema.either(
   RpcError,
   Schema.unknown,
-) as Schema.Schema<RpcResponse>
+) as any as Schema.Schema<RpcResponse>
 
 // Codecs
-
-export interface RpcSchemaNoInput<E, O> {
-  output: Schema.Schema<O>
-  error: Schema.Schema<E>
+export interface RpcSchemaNoInput<IE, E, IO, O> {
+  output: Schema.Schema<IO, O>
+  error: Schema.Schema<IE, E>
 }
 
-export interface RpcSchemaWithInput<E, I, O> extends RpcSchemaNoInput<E, O> {
-  input: Schema.Schema<I>
+export interface RpcSchemaWithInput<IE, E, II, I, IO, O>
+  extends RpcSchemaNoInput<IE, E, IO, O> {
+  input: Schema.Schema<II, I>
 }
 
-export type RpcSchema<E, I, O> =
-  | RpcSchemaNoInput<E, O>
-  | RpcSchemaWithInput<E, I, O>
+export type RpcSchema<IE, E, II, I, IO, O> =
+  | RpcSchemaNoInput<IE, E, IO, O>
+  | RpcSchemaWithInput<IE, E, II, I, IO, O>
 
 export type RpcSchemaAny =
-  | RpcSchema<any, any, any>
-  | RpcSchema<never, any, any>
-  | RpcSchema<any, never, any>
-  | RpcSchema<never, never, any>
+  | RpcSchema<any, any, any, any, any, any>
+  | RpcSchema<never, never, any, any, any, any>
+  | RpcSchema<any, any, never, never, any, any>
+  | RpcSchema<never, never, never, never, any, any>
 
 export interface RpcSchemas extends Record<string, RpcSchemaAny> {}
 
-export const makeSchema = <S extends RpcSchemas>(schema: S) => schema
+export type ValidateSchemaInput<VL extends string, V, S extends RpcSchemas> = {
+  [K in keyof S]: S[K] extends RpcSchemaNoInput<
+    infer IE,
+    infer _E,
+    infer IO,
+    infer _O
+  >
+    ? [IE | IO] extends [V]
+      ? S[K]
+      : `schema input does not extend ${VL}`
+    : S[K] extends RpcSchemaWithInput<
+        infer IE,
+        infer _E,
+        infer II,
+        infer _I,
+        infer IO,
+        infer _O
+      >
+    ? [IE | IO | II] extends [V]
+      ? S[K]
+      : `schema input does not extend ${VL}`
+    : never
+} & {}
+
+export const makeSchemaWith =
+  <VL extends string, V>() =>
+  <S extends RpcSchemas>(schema: S): ValidateSchemaInput<VL, V, S> =>
+    schema as any
+
+export const makeSchema = makeSchemaWith<"Schema.Json", Schema.Json>()

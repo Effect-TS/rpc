@@ -12,8 +12,8 @@ export const make = <R>(
 ): RpcDataSource<R> =>
   DataSource.makeBatched("RpcDataSource", (requests) =>
     pipe(
-      send(requests.toReadonlyArray()),
-      Effect.flatMap((_) => responsesDecoder(_)),
+      send(Chunk.toReadonlyArray(requests)),
+      Effect.flatMap(responsesDecoder),
       Effect.flatMap((responses) =>
         Effect.collectAllParDiscard(
           Chunk.zipWith(
@@ -25,7 +25,7 @@ export const make = <R>(
       ),
       Effect.catchAll((_) =>
         Effect.collectAllDiscard(
-          requests.map((request) => Request.fail(request, _)),
+          Chunk.map(requests, (request) => Request.fail(request, _)),
         ),
       ),
     ),

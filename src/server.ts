@@ -1,4 +1,5 @@
 import {
+  Chunk,
   Effect,
   Either,
   identity,
@@ -15,7 +16,12 @@ import {
   RpcSchemas,
   RpcSchemaWithInput,
 } from "./index.js"
-import { decode, decodeEffect, encodeEffect } from "./internal/decode.js"
+import {
+  decode,
+  decodeEffect,
+  encode,
+  encodeEffect,
+} from "./internal/decode.js"
 
 export { makeSchema as schema } from "./index.js"
 
@@ -36,9 +42,16 @@ export interface RpcHandlerSchemaNoInput<E, O> {
 }
 
 export type RpcDefinitionFromSchema<C extends RpcSchemaAny> =
-  C extends RpcSchemaWithInput<infer E, infer I, infer O>
+  C extends RpcSchemaWithInput<
+    infer _IE,
+    infer E,
+    infer _II,
+    infer I,
+    infer _IO,
+    infer O
+  >
     ? RpcDefinitionIO<any, E, I, O>
-    : C extends RpcSchemaNoInput<infer E, infer O>
+    : C extends RpcSchemaNoInput<infer _IE, infer E, infer _IO, infer O>
     ? Effect.Effect<any, E, O>
     : never
 
@@ -69,8 +82,6 @@ export interface RpcRouter<
   readonly undecoded: RpcUndecodedClient<H>
 }
 
-const responseEncoder = Parser.encodeOrThrow(RpcResponse)
-
 export type RpcServer<H extends RpcHandlers> = (
   u: unknown,
 ) => Effect.Effect<RpcHandlersDeps<H>, never, unknown>
@@ -86,6 +97,8 @@ export const router = <
   handlers,
   undecoded: makeUndecodedClient(schema, handlers),
 })
+
+const responseEncoder = Parser.encode(RpcResponse)
 
 const handleSingleRequest =
   <R extends RpcRouterBase>(
@@ -123,19 +136,13 @@ const handleSingleRequest =
       Either.map(({ handler, input, schema }) => {
         const effect: Effect.Effect<any, any, any> = Effect.isEffect(handler)
           ? handler
-          : handler(input)
+          : (handler as any)(input)
 
         return pipe(
           effect,
-          Effect.map((_) =>
-            Either.right(Parser.encodeOrThrow(schema.output)(_)),
-          ),
+          Effect.map(encode(schema.output)),
           Effect.catchAll((_) =>
-            Effect.succeed(
-              Either.left(
-                Parser.encodeOrThrow(schema.error as Schema.Schema<any>)(_),
-              ),
-            ),
+            Effect.succeed(encode(schema.error as Schema.Schema<any>)(_)),
           ),
         )
       }),
@@ -165,7 +172,7 @@ export const handler = <R extends RpcRouterBase>(
       requestDecoder(u),
       Effect.orDie,
       Effect.flatMap((requests) => Effect.collectAllPar(requests.map(handler))),
-      Effect.map((_) => _.toReadonlyArray()),
+      Effect.map(Chunk.toReadonlyArray),
     )
 }
 
@@ -207,7 +214,7 @@ export const makeUndecodedClient = <
         ...acc,
         [method]: (input) =>
           pipe(
-            definition(input),
+            (definition as RpcDefinitionIO<any, any, any, any>)(input),
             Effect.flatMap(encodeEffect(schema.output)),
             Query.fromEffect,
           ),
