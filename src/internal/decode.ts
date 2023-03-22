@@ -2,27 +2,22 @@ import { RpcDecodeFailure, RpcEncodeFailure } from "../index.js"
 import {
   Effect,
   Either,
-  flow,
   ParseOptions,
   Parser,
-  ParseResult,
-  pipe,
   Schema,
+  flow,
+  pipe,
 } from "./common.js"
-import * as ROA from "@effect/data/ReadonlyArray"
 
 export const decode = <I, A>(schema: Schema.Schema<I, A>) => {
-  const decode = Parser.decodeEither(schema)
+  const decode = Parser.parseEither(schema)
   return (input: unknown): Either.Either<RpcDecodeFailure, A> => {
     return pipe(
-      decode(input) as unknown as Either.Either<
-        ROA.NonEmptyReadonlyArray<ParseResult.ParseError>,
-        A
-      >,
+      decode(input),
       Either.mapLeft(
-        (errors): RpcDecodeFailure => ({
+        (error): RpcDecodeFailure => ({
           _tag: "RpcDecodeFailure",
-          errors,
+          errors: error.errors,
         }),
       ),
     )
@@ -44,14 +39,11 @@ export const encode: <I, A>(
 
   return (input: A, options?: ParseOptions | undefined) => {
     return pipe(
-      encode(input, options) as unknown as Either.Either<
-        ROA.NonEmptyReadonlyArray<ParseResult.ParseError>,
-        I
-      >,
+      encode(input, options),
       Either.mapLeft(
-        (errors): RpcEncodeFailure => ({
+        (error): RpcEncodeFailure => ({
           _tag: "RpcEncodeFailure",
-          errors,
+          errors: error.errors,
         }),
       ),
     )

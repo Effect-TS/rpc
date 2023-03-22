@@ -53,9 +53,9 @@ const errorDecoder = decode(RpcError)
 const unsafeDecode =
   <S extends RpcSchemas>(schemas: S) =>
   (method: keyof S, output: unknown) => {
-    const a = decode(schemas[method].output)(output)
-    if (a._tag !== "Left") {
-      return a.right
+    const result = decode(schemas[method].output)(output)
+    if (result._tag !== "Left") {
+      return result.right as unknown
     }
 
     throw "unsafeDecode fail"
@@ -83,7 +83,7 @@ const makeRpc = <S extends RpcSchemaAny, TR>(
   const send = (input: unknown) =>
     pipe(
       Query.fromRequest(RpcRequest({ method, input }), dataSource),
-      Query.mapEffect((u) =>
+      Query.flatMap((u) =>
         pipe(
           responseDecoder(u),
           Either.flatMap(
@@ -92,15 +92,12 @@ const makeRpc = <S extends RpcSchemaAny, TR>(
                 pipe(
                   decode(schema.error as Schema.Schema<any>)(e),
                   Either.orElse(() => errorDecoder(e)),
-                  Either.flatMap((e) => Either.left(e)),
+                  Either.flatMap(Either.left),
                 ),
               (_) => decode(schema.output as Schema.Schema<any>)(_),
             ),
           ),
-          Either.match(
-            (e) => Effect.fail(e),
-            (a) => Effect.succeed(a),
-          ),
+          Query.fromEither,
         ),
       ),
     )

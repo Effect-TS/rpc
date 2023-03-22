@@ -134,7 +134,9 @@ const handleSingleRequest =
           : Either.right(null),
       ),
       Either.map(({ handler, input, schema }) => {
-        const effect: Effect.Effect<any, any, any> = Effect.isEffect(handler)
+        const effect: Effect.Effect<any, unknown, unknown> = Effect.isEffect(
+          handler,
+        )
           ? handler
           : (handler as any)(input)
 
@@ -142,7 +144,12 @@ const handleSingleRequest =
           effect,
           Effect.map(encode(schema.output)),
           Effect.catchAll((_) =>
-            Effect.succeed(encode(schema.error as Schema.Schema<any>)(_)),
+            Effect.succeed(
+              Either.flatMap(
+                encode(schema.error as Schema.Schema<any>)(_),
+                Either.left,
+              ),
+            ),
           ),
         )
       }),

@@ -25,7 +25,7 @@ export const RpcDecodeFailure = Schema.struct({
 })
 export interface RpcDecodeFailure {
   readonly _tag: "RpcDecodeFailure"
-  readonly errors: ROA.NonEmptyReadonlyArray<ParseResult.ParseError>
+  readonly errors: ROA.NonEmptyReadonlyArray<ParseResult.ParseErrors>
 }
 
 export const RpcTransportError = Schema.struct({
@@ -37,7 +37,7 @@ export interface RpcTransportError
 
 export interface RpcEncodeFailure {
   readonly _tag: "RpcEncodeFailure"
-  readonly errors: ROA.NonEmptyReadonlyArray<ParseResult.ParseError>
+  readonly errors: ROA.NonEmptyReadonlyArray<ParseResult.ParseErrors>
 }
 export const RpcEncodeFailure = Schema.struct({
   _tag: Schema.literal("RpcEncodeFailure"),
