@@ -1,11 +1,10 @@
 import {
   RpcError,
   RpcRequest,
-  RpcResponse,
   RpcSchemaAny,
   RpcSchemaNoInput,
   RpcSchemas,
-  RpcSchemaWithInput,
+  RpcSchema,
 } from "./index.js"
 import {
   DataSource,
@@ -15,13 +14,13 @@ import {
   Query,
   Schema,
 } from "./internal/common.js"
-import { decode, encode } from "./internal/decode.js"
+import { decode, decodeEffect, encode } from "./internal/decode.js"
 import type { UndecodedRpcResponse } from "./server.js"
 
 export * as DataSource from "./internal/dataSource.js"
 export * as FetchDataSource from "./internal/fetchDataSource.js"
 
-export type Rpc<C extends RpcSchemaAny, TR> = C extends RpcSchemaWithInput<
+export type Rpc<C extends RpcSchemaAny, TR> = C extends RpcSchema<
   infer _IE,
   infer E,
   infer _II,
@@ -41,14 +40,11 @@ export type RpcClient<S extends RpcSchemas, TR> = {
   _unsafeDecode: <M extends keyof S, O extends UndecodedRpcResponse<M>>(
     method: M,
     output: O,
-  ) => S[M] extends { output: Schema.Schema<infer O> } ? O : never
+  ) => S[M] extends { output: Schema.Schema<infer _IO, infer O> } ? O : never
 }
 
 export interface RpcDataSource<R>
   extends DataSource.DataSource<R, RpcRequest> {}
-
-const responseDecoder = decode(RpcResponse)
-const errorDecoder = decode(RpcError)
 
 const unsafeDecode =
   <S extends RpcSchemas>(schemas: S) =>
@@ -80,35 +76,25 @@ const makeRpc = <S extends RpcSchemaAny, TR>(
   schema: S,
   method: string,
 ): Rpc<S, TR> => {
+  const responseSchema = Schema.either(
+    "error" in schema ? Schema.union(RpcError, schema.error) : RpcError,
+    schema.output,
+  )
+  const parseResponse = decodeEffect(responseSchema)
+
   const send = (input: unknown) =>
     pipe(
       Query.fromRequest(RpcRequest({ method, input }), dataSource),
-      Query.flatMap((u) =>
-        pipe(
-          responseDecoder(u),
-          Either.flatMap(
-            Either.match(
-              (e) =>
-                pipe(
-                  decode(schema.error as Schema.Schema<any>)(e),
-                  Either.orElse(() => errorDecoder(e)),
-                  Either.flatMap(Either.left),
-                ),
-              (_) => decode(schema.output as Schema.Schema<any>)(_),
-            ),
-          ),
-          Query.fromEither,
-        ),
+      Query.mapEffect((u) =>
+        Effect.flatMap(parseResponse(u), Effect.fromEither),
       ),
     )
 
   if ("input" in schema) {
+    const encodeInput = encode(schema.input as Schema.Schema<any>)
     return ((input: any) =>
-      pipe(
-        Query.fromEither(encode(schema.input as Schema.Schema<any>)(input)),
-        Query.flatMap(send),
-      )) as any
+      pipe(Query.fromEither(encodeInput(input)), Query.flatMap(send))) as any
   }
 
-  return send(null) as any
+  return send(undefined) as any
 }

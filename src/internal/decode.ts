@@ -24,7 +24,7 @@ export const decode = <I, A>(schema: Schema.Schema<I, A>) => {
   }
 }
 
-export const decodeEffect = <A>(schema: Schema.Schema<A>) =>
+export const decodeEffect = <I, A>(schema: Schema.Schema<I, A>) =>
   flow(decode(schema), Effect.fromEither)
 
 export const encode: <I, A>(

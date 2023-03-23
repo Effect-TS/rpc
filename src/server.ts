@@ -14,7 +14,9 @@ import {
   RpcSchemaAny,
   RpcSchemaNoInput,
   RpcSchemas,
-  RpcSchemaWithInput,
+  RpcSchema,
+  RpcSchemaNoError,
+  RpcSchemaNoInputNoError,
 } from "./index.js"
 import {
   decode,
@@ -29,10 +31,7 @@ export type RpcDefinition<R, E, I, O> =
   | RpcDefinitionIO<R, E, I, O>
   | Effect.Effect<R, E, O>
 
-export type RpcDefinitionAny =
-  | RpcDefinition<any, any, any, any>
-  | RpcDefinition<any, never, any, any>
-  | RpcDefinition<any, any, any, never>
+export type RpcDefinitionAny = RpcDefinition<any, any, any, any>
 
 export type RpcDefinitionIO<R, E, I, O> = (input: I) => Effect.Effect<R, E, O>
 
@@ -42,7 +41,7 @@ export interface RpcHandlerSchemaNoInput<E, O> {
 }
 
 export type RpcDefinitionFromSchema<C extends RpcSchemaAny> =
-  C extends RpcSchemaWithInput<
+  C extends RpcSchema<
     infer _IE,
     infer E,
     infer _II,
@@ -51,8 +50,12 @@ export type RpcDefinitionFromSchema<C extends RpcSchemaAny> =
     infer O
   >
     ? RpcDefinitionIO<any, E, I, O>
+    : C extends RpcSchemaNoError<infer _II, infer I, infer _IO, infer O>
+    ? RpcDefinitionIO<any, never, I, O>
     : C extends RpcSchemaNoInput<infer _IE, infer E, infer _IO, infer O>
     ? Effect.Effect<any, E, O>
+    : C extends RpcSchemaNoInputNoError<infer _IO, infer O>
+    ? Effect.Effect<any, never, O>
     : never
 
 export interface RpcHandlers extends Record<string, RpcDefinitionAny> {}
@@ -146,7 +149,9 @@ const handleSingleRequest =
           Effect.catchAll((_) =>
             Effect.succeed(
               Either.flatMap(
-                encode(schema.error as Schema.Schema<any>)(_),
+                encode(
+                  "error" in schema ? schema.error : (Schema.never as any),
+                )(_),
                 Either.left,
               ),
             ),
@@ -171,9 +176,10 @@ const requestDecoder = decodeEffect(
 export const handler = <R extends RpcRouterBase>(
   router: R,
 ): ((
-  u: unknown,
+  input: unknown,
 ) => Effect.Effect<RpcHandlersDeps<R["handlers"]>, never, unknown>) => {
   const handler = handleSingleRequest(router)
+
   return (u) =>
     pipe(
       requestDecoder(u),
