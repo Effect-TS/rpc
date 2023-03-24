@@ -13,20 +13,20 @@ import {
   RpcResponse,
   RpcSchemaAny,
   RpcSchemaNoInput,
-  RpcSchemas,
   RpcSchemaIO,
   RpcSchemaNoError,
   RpcSchemaNoInputNoError,
   schemaMethodsMap,
-} from "./index.js"
+  RpcSchemas,
+} from "@effect/rpc"
 import {
   decode,
   decodeEffect,
   encode,
   encodeEffect,
-} from "./internal/decode.js"
+} from "@effect/rpc/internal/decode"
 
-export { makeSchema as schema } from "./index.js"
+export { makeSchema as schema } from "@effect/rpc"
 
 export type RpcDefinition<R, E, I, O> =
   | RpcDefinitionIO<R, E, I, O>

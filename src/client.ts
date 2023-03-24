@@ -3,20 +3,26 @@ import {
   RpcRequest,
   RpcSchemaAny,
   RpcSchemaNoInput,
-  RpcSchemas,
   RpcSchemaIO,
   RpcSchemaNoError,
   RpcSchemaNoInputNoError,
   RpcSchemasMethods,
   schemaMethodsMap,
-  RpcSchemasId,
-} from "./index.js"
-import { DataSource, Effect, pipe, Query, Schema } from "./internal/common.js"
-import { decode, decodeEffect, encode } from "./internal/decode.js"
-import type { UndecodedRpcResponse } from "./server.js"
+  RpcSchemaId,
+  RpcSchemas,
+} from "@effect/rpc"
+import {
+  DataSource,
+  Effect,
+  pipe,
+  Query,
+  Schema,
+} from "@effect/rpc/internal/common"
+import { decode, decodeEffect, encode } from "@effect/rpc/internal/decode"
+import type { UndecodedRpcResponse } from "@effect/rpc/server"
 
-export * as DataSource from "./internal/dataSource.js"
-export * as FetchDataSource from "./internal/fetchDataSource.js"
+export * as DataSource from "@effect/rpc/internal/dataSource"
+export * as FetchDataSource from "@effect/rpc/internal/fetchDataSource"
 
 export type Rpc<C extends RpcSchemaAny, TR> = C extends RpcSchemaIO<
   infer _IE,
@@ -78,7 +84,7 @@ const makeRecursive = <S extends RpcSchemas, T extends RpcDataSource<any>>(
     (acc, [method, codec]) => ({
       ...acc,
       [method]:
-        RpcSchemasId in codec
+        RpcSchemaId in codec
           ? makeRecursive(codec, transport, `${prefix}${method}.`)
           : makeRpc(transport, codec, `${prefix}${method}`),
     }),

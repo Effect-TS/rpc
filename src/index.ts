@@ -5,7 +5,7 @@ import {
   Request,
   Schema,
 } from "@effect/rpc/internal/common"
-import { Simplify } from "./internal/simplify.js"
+import { Simplify } from "@effect/rpc/internal/simplify"
 
 export interface RpcRequest extends Request.Request<RpcError, unknown> {
   readonly method: string
@@ -89,14 +89,18 @@ export type RpcSchemaAny =
   | RpcSchemaNoInput<any, any, any, any>
   | RpcSchemaNoInputNoError<any, any>
 
-export const RpcSchemasId = Symbol.for("@effect/rpc/RpcSchemasId")
-export type RpcSchemasId = typeof RpcSchemasId
+export const RpcSchemaId = Symbol.for("@effect/rpc/RpcSchemaId")
+export type RpcSchemaId = typeof RpcSchemaId
 
-export interface RpcSchemasInput
-  extends Record<string, RpcSchemaAny | RpcSchemas> {}
+export interface RpcSchemaInput
+  extends Record<string, RpcSchemaAny | RpcSchema<any>> {}
 
-export interface RpcSchemas extends RpcSchemasInput {
-  readonly [RpcSchemasId]: RpcSchemasId
+export interface RpcSchemas extends RpcSchemaInput {
+  readonly [RpcSchemaId]: RpcSchemaId
+}
+
+export type RpcSchema<S extends RpcSchemaInput> = S & {
+  readonly [RpcSchemaId]: RpcSchemaId
 }
 
 export type RpcSchemasMethods<S extends RpcSchemas, P extends string = ``> = {
@@ -110,50 +114,46 @@ export type RpcSchemasMethods<S extends RpcSchemas, P extends string = ``> = {
 export type ValidateSchemaInput<
   VL extends string,
   V,
-  S extends RpcSchemasInput,
-> = Simplify<
-  {
-    [K in keyof S]: S[K] extends RpcSchemas
-      ? ValidateSchemaInput<VL, V, S[K]>
-      : S[K] extends RpcSchemaIO<
-          infer IE,
-          infer _E,
-          infer II,
-          infer _I,
-          infer IO,
-          infer _O
-        >
-      ? [IE | II | IO] extends [V]
-        ? S[K]
-        : `schema input does not extend ${VL}`
-      : S[K] extends RpcSchemaNoError<infer II, infer _I, infer IO, infer _O>
-      ? [II | IO] extends [V]
-        ? S[K]
-        : `schema input does not extend ${VL}`
-      : S[K] extends RpcSchemaNoInput<infer IE, infer _E, infer IO, infer _O>
-      ? [IE | IO] extends [V]
-        ? S[K]
-        : `schema input does not extend ${VL}`
-      : S[K] extends RpcSchemaNoInputNoError<infer IO, infer _O>
-      ? [IO] extends [V]
-        ? S[K]
-        : `schema input does not extend ${VL}`
-      : never
-  } & {
-    readonly [RpcSchemasId]: RpcSchemasId
-  }
->
+  S extends RpcSchemaInput,
+> = Simplify<{
+  [K in keyof S]: S[K] extends RpcSchemas
+    ? ValidateSchemaInput<VL, V, S[K]>
+    : S[K] extends RpcSchemaIO<
+        infer IE,
+        infer _E,
+        infer II,
+        infer _I,
+        infer IO,
+        infer _O
+      >
+    ? [IE | II | IO] extends [V]
+      ? S[K]
+      : `schema input does not extend ${VL}`
+    : S[K] extends RpcSchemaNoError<infer II, infer _I, infer IO, infer _O>
+    ? [II | IO] extends [V]
+      ? S[K]
+      : `schema input does not extend ${VL}`
+    : S[K] extends RpcSchemaNoInput<infer IE, infer _E, infer IO, infer _O>
+    ? [IE | IO] extends [V]
+      ? S[K]
+      : `schema input does not extend ${VL}`
+    : S[K] extends RpcSchemaNoInputNoError<infer IO, infer _O>
+    ? [IO] extends [V]
+      ? S[K]
+      : `schema input does not extend ${VL}`
+    : never
+}>
 
 export const makeSchemaWith =
   <VL extends string, V>() =>
-  <S extends RpcSchemasInput>(schema: S): ValidateSchemaInput<VL, V, S> => ({
+  <S extends RpcSchemaInput>(schema: S): ValidateSchemaInput<VL, V, S> => ({
     ...(schema as any),
-    [RpcSchemasId]: RpcSchemasId,
+    [RpcSchemaId]: RpcSchemaId,
   })
 
 export const makeSchema = makeSchemaWith<"Schema.Json", Schema.Json>()
 
-export type RpcRequestInput<S extends RpcSchemasInput> = {
+export type RpcRequestInput<S extends RpcSchemaInput> = {
   [K in keyof S]: S[K] extends RpcSchemaIO<
     infer _IE,
     infer _E,
@@ -172,7 +172,7 @@ export type RpcRequestInput<S extends RpcSchemasInput> = {
     : never
 }[keyof S]
 
-export type RpcRequestA<S extends RpcSchemasInput> = {
+export type RpcRequestA<S extends RpcSchemaInput> = {
   [K in keyof S]: S[K] extends RpcSchemaIO<
     infer _IE,
     infer _E,
@@ -191,12 +191,12 @@ export type RpcRequestA<S extends RpcSchemasInput> = {
     : never
 }[keyof S]
 
-export type RpcRequestSchema<S extends RpcSchemasInput> = Schema.Schema<
+export type RpcRequestSchema<S extends RpcSchemaInput> = Schema.Schema<
   RpcRequestInput<S>,
   RpcRequestA<S>
 > & {}
 
-export const makeRequestSchema = <S extends RpcSchemasInput>(
+export const makeRequestSchema = <S extends RpcSchemaInput>(
   schema: S,
 ): RpcRequestSchema<S> =>
   Schema.union(
@@ -216,7 +216,7 @@ export const schemaMethodsMap = <S extends RpcSchemas>(
   prefix = "",
 ): Record<string, RpcSchemaAny> =>
   Object.entries(schemas).reduce((acc, [method, schema]) => {
-    if (RpcSchemasId in schema) {
+    if (RpcSchemaId in schema) {
       return {
         ...acc,
         ...schemaMethodsMap(schema, `${prefix}${method}.`),

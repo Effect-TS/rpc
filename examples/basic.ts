@@ -2,6 +2,7 @@ import * as Effect from "@effect/io/Effect"
 import * as Client from "@effect/rpc/client"
 import * as Server from "@effect/rpc/server"
 import * as Schema from "@effect/schema/Schema"
+import { RpcSchemaId } from "@effect/rpc"
 
 const posts = Server.schema({
   create: {
@@ -13,7 +14,7 @@ const postsRouter = Server.router(posts, {
   create: Effect.succeed({}),
 })
 
-export const schema = Server.schema({
+const schema = Server.schema({
   greet: {
     input: Schema.string,
     output: Schema.string,
@@ -26,13 +27,13 @@ export const schema = Server.schema({
   posts,
 })
 
-export const router = Server.router(schema, {
+const router = Server.router(schema, {
   greet: (name) => Effect.succeed(`Hello ${name}!`),
   currentTime: Effect.sync(() => new Date()),
   posts: postsRouter,
 })
 
-export const client = Client.make(
+const client = Client.make(
   schema,
   Client.FetchDataSource.make({
     url: "http://localhost:3000",
