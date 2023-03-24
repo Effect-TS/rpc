@@ -3,16 +3,33 @@ import * as Client from "@effect/rpc/client"
 import * as Server from "@effect/rpc/server"
 import * as Schema from "@effect/schema/Schema"
 
+const posts = Server.schema({
+  create: {
+    output: Schema.any,
+  },
+})
+
+const postsRouter = Server.router(posts, {
+  create: Effect.succeed({}),
+})
+
 export const schema = Server.schema({
   greet: {
-    error: Schema.never,
     input: Schema.string,
     output: Schema.string,
   },
+
+  currentTime: {
+    output: Schema.dateFromString,
+  },
+
+  posts,
 })
 
 export const router = Server.router(schema, {
   greet: (name) => Effect.succeed(`Hello ${name}!`),
+  currentTime: Effect.sync(() => new Date()),
+  posts: postsRouter,
 })
 
 export const client = Client.make(
@@ -22,4 +39,6 @@ export const client = Client.make(
   }),
 )
 
-client.greet("Tim")
+const r = Effect.runSync(router.undecoded.posts.create)
+
+client._unsafeDecode("posts.create", r)

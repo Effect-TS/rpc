@@ -14,9 +14,10 @@ import {
   RpcSchemaAny,
   RpcSchemaNoInput,
   RpcSchemas,
-  RpcSchema,
+  RpcSchemaIO,
   RpcSchemaNoError,
   RpcSchemaNoInputNoError,
+  schemaMethodsMap,
 } from "./index.js"
 import {
   decode,
@@ -41,7 +42,7 @@ export interface RpcHandlerSchemaNoInput<E, O> {
 }
 
 export type RpcDefinitionFromSchema<C extends RpcSchemaAny> =
-  C extends RpcSchema<
+  C extends RpcSchemaIO<
     infer _IE,
     infer E,
     infer _II,
@@ -58,10 +59,15 @@ export type RpcDefinitionFromSchema<C extends RpcSchemaAny> =
     ? Effect.Effect<any, never, O>
     : never
 
-export interface RpcHandlers extends Record<string, RpcDefinitionAny> {}
+export interface RpcHandlers
+  extends Record<string, RpcDefinitionAny | { handlers: RpcHandlers }> {}
 
 export type RpcHandlersFromSchema<S extends RpcSchemas> = {
-  [K in keyof S]: RpcDefinitionFromSchema<S[K]>
+  [K in Extract<keyof S, string>]: S[K] extends RpcSchemas
+    ? { handlers: RpcHandlersFromSchema<S[K]> }
+    : S[K] extends RpcSchemaAny
+    ? RpcDefinitionFromSchema<S[K]>
+    : never
 }
 
 export type RpcHandlersDeps<H extends RpcHandlers> =
@@ -101,21 +107,37 @@ export const router = <
   undecoded: makeUndecodedClient(schema, handlers),
 })
 
+const schemaHandlersMap = <H extends RpcHandlers>(
+  handlers: H,
+  prefix = "",
+): Record<string, RpcDefinitionAny> =>
+  Object.entries(handlers).reduce((acc, [method, definition]) => {
+    if ("handlers" in definition) {
+      return {
+        ...acc,
+        ...schemaHandlersMap(definition.handlers, `${prefix}${method}.`),
+      }
+    }
+    return { ...acc, [`${prefix}${method}`]: definition }
+  }, {})
+
 const responseEncoder = Parser.encode(RpcResponse)
 
-const handleSingleRequest =
-  <R extends RpcRouterBase>(
-    router: R,
-  ): ((request: {
-    readonly method: string
-    readonly input: unknown
-  }) => Effect.Effect<RpcHandlersDeps<R["handlers"]>, never, unknown>) =>
-  (request) =>
+export const handleSingleRequest = <R extends RpcRouterBase>(
+  router: R,
+): ((request: {
+  readonly method: string
+  readonly input?: unknown
+}) => Effect.Effect<RpcHandlersDeps<R["handlers"]>, never, unknown>) => {
+  const schemaMap = schemaMethodsMap(router.schema)
+  const handlerMap = schemaHandlersMap(router.handlers)
+
+  return (request) =>
     pipe(
       Either.Do,
       Either.bind("schema", () =>
         Either.fromNullable(
-          router.schema[request.method],
+          schemaMap[request.method],
           (): RpcNotFound => ({
             _tag: "RpcNotFound",
             method: request.method,
@@ -124,7 +146,7 @@ const handleSingleRequest =
       ),
       Either.bind("handler", () =>
         Either.fromNullable(
-          router.handlers[request.method],
+          handlerMap[request.method],
           (): RpcNotFound => ({
             _tag: "RpcNotFound",
             method: request.method,
@@ -163,6 +185,7 @@ const handleSingleRequest =
         identity,
       ),
     )
+}
 
 const requestDecoder = decodeEffect(
   Schema.array(
@@ -189,15 +212,18 @@ export const handler = <R extends RpcRouterBase>(
     )
 }
 
-export interface UndecodedRpcResponse<M> {
+export interface UndecodedRpcResponse<M, O> {
   readonly __rpc: M
+  readonly __output: O
 }
 
-export type RpcUndecodedClient<H extends RpcHandlers> = {
-  [K in keyof H]: H[K] extends RpcDefinitionIO<infer R, infer E, infer I, any>
-    ? (input: I) => Query.Query<R, E, UndecodedRpcResponse<K>>
-    : H[K] extends Query.Query<infer R, infer E, any>
-    ? Query.Query<R, E, UndecodedRpcResponse<K>>
+export type RpcUndecodedClient<H extends RpcHandlers, P extends string = ""> = {
+  [K in Extract<keyof H, string>]: H[K] extends { handlers: RpcHandlers }
+    ? RpcUndecodedClient<H[K]["handlers"], `${P}${K}.`>
+    : H[K] extends RpcDefinitionIO<infer R, infer E, infer I, infer O>
+    ? (input: I) => Effect.Effect<R, E, UndecodedRpcResponse<`${P}${K}`, O>>
+    : H[K] extends Effect.Effect<infer R, infer E, infer O>
+    ? Effect.Effect<R, E, UndecodedRpcResponse<`${P}${K}`, O>>
     : never
 }
 
@@ -207,10 +233,20 @@ export const makeUndecodedClient = <
 >(
   schemas: S,
   handlers: H,
-) =>
-  Object.entries(handlers as RpcHandlers).reduce<RpcUndecodedClient<H>>(
+): RpcUndecodedClient<H> =>
+  Object.entries(handlers as RpcHandlers).reduce(
     (acc, [method, definition]) => {
-      const schema = schemas[method]
+      if ("handlers" in definition) {
+        return {
+          ...acc,
+          [method]: makeUndecodedClient(
+            schemas[method] as any,
+            definition.handlers as any,
+          ),
+        }
+      }
+
+      const schema = schemas[method] as RpcSchemaAny
 
       if (Effect.isEffect(definition)) {
         return {
@@ -225,7 +261,7 @@ export const makeUndecodedClient = <
 
       return {
         ...acc,
-        [method]: (input) =>
+        [method]: (input: unknown) =>
           pipe(
             (definition as RpcDefinitionIO<any, any, any, any>)(input),
             Effect.flatMap(encodeEffect(schema.output)),

@@ -6,13 +6,11 @@ import * as Schema from "@effect/schema/Schema"
 
 export const schema = Server.schema({
   getIds: {
-    error: Schema.never,
     output: Schema.array(Schema.string),
   },
   getUser: {
     input: Schema.string,
     output: Schema.any,
-    error: Schema.never,
   },
 })
 
