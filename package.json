@@ -4,8 +4,8 @@
   "description": "",
   "type": "module",
   "exports": {
-    ".": "./dist/index.js",
-    "./*": "./dist/*.js"
+    ".": "./dist/src/index.js",
+    "./*": "./dist/src/*.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

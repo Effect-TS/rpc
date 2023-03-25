@@ -1,16 +1,14 @@
-import { RpcDecodeFailure, RpcEncodeFailure } from "../index.js"
-import {
-  Effect,
-  Either,
-  ParseOptions,
-  Parser,
-  Schema,
-  flow,
-  pipe,
-} from "./common.js"
+import * as Either from "@effect/data/Either"
+import { flow, pipe } from "@effect/data/Function"
+import * as Effect from "@effect/io/Effect"
+import { RpcDecodeFailure, RpcEncodeFailure } from "@effect/rpc/Error"
+import type { ParseOptions } from "@effect/schema/AST"
+import * as Schema from "@effect/schema/Schema"
+import { RpcResponse } from "@effect/rpc/DataSource"
 
+/** @internal */
 export const decode = <I, A>(schema: Schema.Schema<I, A>) => {
-  const decode = Parser.parseEither(schema)
+  const decode = Schema.parseEither(schema)
   return (input: unknown): Either.Either<RpcDecodeFailure, A> => {
     return pipe(
       decode(input),
@@ -24,9 +22,11 @@ export const decode = <I, A>(schema: Schema.Schema<I, A>) => {
   }
 }
 
+/** @internal */
 export const decodeEffect = <I, A>(schema: Schema.Schema<I, A>) =>
   flow(decode(schema), Effect.fromEither)
 
+/** @internal */
 export const encode: <I, A>(
   schema: Schema.Schema<I, A>,
 ) => (
@@ -35,7 +35,7 @@ export const encode: <I, A>(
 ) => Either.Either<RpcEncodeFailure, I> = <I, A>(
   schema: Schema.Schema<I, A>,
 ) => {
-  const encode = Parser.encodeEither(schema)
+  const encode = Schema.encodeEither(schema)
 
   return (input: A, options?: ParseOptions | undefined) => {
     return pipe(
@@ -50,5 +50,16 @@ export const encode: <I, A>(
   }
 }
 
+/** @internal */
 export const encodeEffect = <A>(schema: Schema.Schema<A>) =>
   flow(encode(schema), Effect.fromEither)
+
+/** @internal */
+export const requestDecoder = decodeEffect(
+  Schema.array(
+    Schema.struct({
+      method: Schema.string,
+      input: Schema.unknown,
+    }),
+  ),
+)

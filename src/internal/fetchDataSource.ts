@@ -1,6 +1,6 @@
-import { RpcRequest, RpcTransportError } from "../index.js"
-import { Effect } from "./common.js"
-import * as DataSource from "./dataSource.js"
+import * as Effect from "@effect/io/Effect"
+import * as DataSource from "@effect/rpc/DataSource"
+import { RpcTransportError } from "@effect/rpc/Error"
 
 export interface FetchTransportOptions {
   readonly url: string
@@ -11,7 +11,7 @@ export const make = (options: FetchTransportOptions) =>
   DataSource.make((requests) => send(requests, options))
 
 const send = (
-  requests: readonly RpcRequest[],
+  requests: readonly DataSource.RpcRequest[],
   { url, headers = {} }: FetchTransportOptions,
 ) =>
   Effect.attemptCatchPromiseInterrupt(

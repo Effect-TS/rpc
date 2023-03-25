@@ -1,28 +1,22 @@
+import { pipe } from "@effect/data/Function"
+import * as Effect from "@effect/io/Effect"
+import * as Query from "@effect/query/Query"
+import { RpcDataSource, RpcRequest } from "@effect/rpc/DataSource"
+import { RpcError } from "@effect/rpc/Error"
 import {
-  RpcError,
-  RpcRequest,
   RpcSchemaAny,
-  RpcSchemaNoInput,
   RpcSchemaIO,
-  RpcSchemaNoError,
-  RpcSchemaNoInputNoError,
-  RpcSchemasMethods,
-  schemaMethodsMap,
   RpcSchemaId,
+  RpcSchemaNoError,
+  RpcSchemaNoInput,
+  RpcSchemaNoInputNoError,
   RpcSchemas,
-} from "@effect/rpc"
-import {
-  DataSource,
-  Effect,
-  pipe,
-  Query,
-  Schema,
-} from "@effect/rpc/internal/common"
+  RpcSchemasMethods,
+} from "@effect/rpc/Schema"
+import type { UndecodedRpcResponse } from "@effect/rpc/Server"
 import { decode, decodeEffect, encode } from "@effect/rpc/internal/decode"
-import type { UndecodedRpcResponse } from "@effect/rpc/server"
-
-export * as DataSource from "@effect/rpc/internal/dataSource"
-export * as FetchDataSource from "@effect/rpc/internal/fetchDataSource"
+import { schemaMethodsMap } from "@effect/rpc/internal/schema"
+import * as Schema from "@effect/schema/Schema"
 
 export type Rpc<C extends RpcSchemaAny, TR> = C extends RpcSchemaIO<
   infer _IE,
@@ -59,9 +53,6 @@ export type RpcClient<S extends RpcSchemas, TR> = RpcClientRpcs<S, TR> & {
     output: O,
   ) => O extends UndecodedRpcResponse<M, infer O> ? O : never
 }
-
-export interface RpcDataSource<R>
-  extends DataSource.DataSource<R, RpcRequest> {}
 
 const unsafeDecode = <S extends RpcSchemas>(schemas: S) => {
   const map = schemaMethodsMap(schemas)

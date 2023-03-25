@@ -1,10 +1,11 @@
 import * as Effect from "@effect/io/Effect"
-import * as Client from "@effect/rpc/client"
-import * as Server from "@effect/rpc/server"
+import * as Client from "@effect/rpc/Client"
+import * as Server from "@effect/rpc/Server"
+import * as RpcSchema from "@effect/rpc/Schema"
 import * as Schema from "@effect/schema/Schema"
-import { RpcSchemaId } from "@effect/rpc"
+import { FetchDataSource } from "@effect/rpc/DataSource"
 
-const posts = Server.schema({
+const posts = RpcSchema.make({
   create: {
     output: Schema.any,
   },
@@ -14,10 +15,11 @@ const postsRouter = Server.router(posts, {
   create: Effect.succeed({}),
 })
 
-const schema = Server.schema({
+const schema = RpcSchema.make({
   greet: {
     input: Schema.string,
     output: Schema.string,
+    error: Schema.number,
   },
 
   currentTime: {
@@ -33,9 +35,19 @@ const router = Server.router(schema, {
   posts: postsRouter,
 })
 
+const test = Server.handlerDirect(router)
+
+const result = Effect.runSync(
+  test({
+    method: "greet",
+    input: "John",
+  }),
+)
+console.log(result)
+
 const client = Client.make(
   schema,
-  Client.FetchDataSource.make({
+  FetchDataSource.make({
     url: "http://localhost:3000",
   }),
 )
