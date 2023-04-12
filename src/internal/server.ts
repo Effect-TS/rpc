@@ -1,25 +1,20 @@
-import {
-  RpcDefinitionAny,
-  RpcHandlerFromMethod,
-  RpcHandlers,
-  RpcHandlersDeps,
-  RpcRouterBase,
-} from "@effect/rpc/Server"
-import * as Schema from "@effect/schema/Schema"
-import { RpcRequest, RpcResponse } from "@effect/rpc/DataSource"
 import * as Either from "@effect/data/Either"
 import { identity, pipe } from "@effect/data/Function"
 import * as Effect from "@effect/io/Effect"
-import { schemaMethodsMap } from "@effect/rpc/internal/schema"
-import { RpcNotFound } from "@effect/rpc/Error"
-import { decode, encode } from "@effect/rpc/internal/decode"
-import { RpcRequestA } from "../Schema.js"
+import type { RpcRequest } from "@effect/rpc/DataSource"
+import type { RpcNotFound } from "@effect/rpc/Error"
+import type { RpcHandler, RpcHandlers, RpcRouter } from "@effect/rpc/Server"
+import * as dataSource from "@effect/rpc/internal/dataSource"
+import { decode, encode } from "@effect/rpc/internal/codec"
+import { methodsMap } from "@effect/rpc/internal/schema"
+import * as Schema from "@effect/schema/Schema"
+import type { RpcRequestSchema } from "@effect/rpc/Schema"
 
 /** @internal */
 export const schemaHandlersMap = <H extends RpcHandlers>(
   handlers: H,
   prefix = "",
-): Record<string, RpcDefinitionAny> =>
+): Record<string, RpcHandler.Any> =>
   Object.entries(handlers).reduce((acc, [method, definition]) => {
     if ("handlers" in definition) {
       return {
@@ -31,16 +26,16 @@ export const schemaHandlersMap = <H extends RpcHandlers>(
   }, {})
 
 /** @internal */
-const responseEncoder = Schema.encode(RpcResponse)
+const responseEncoder = Schema.encode(dataSource.RpcResponse)
 
 /** @internal */
-export const handleSingleRequest = <R extends RpcRouterBase>(
+export const handleSingleRequest = <R extends RpcRouter.Base>(
   router: R,
 ): ((request: {
-  readonly method: string
+  readonly _tag: string
   readonly input?: unknown
-}) => Effect.Effect<RpcHandlersDeps<R["handlers"]>, never, unknown>) => {
-  const schemaMap = schemaMethodsMap(router.schema)
+}) => Effect.Effect<RpcHandlers.Services<R["handlers"]>, never, unknown>) => {
+  const schemaMap = methodsMap(router.schema)
   const handlerMap = schemaHandlersMap(router.handlers)
 
   return (request) =>
@@ -48,19 +43,19 @@ export const handleSingleRequest = <R extends RpcRouterBase>(
       Either.Do(),
       Either.bind("schema", () =>
         Either.fromNullable(
-          schemaMap[request.method],
+          schemaMap[request._tag],
           (): RpcNotFound => ({
             _tag: "RpcNotFound",
-            method: request.method,
+            method: request._tag,
           }),
         ),
       ),
       Either.bind("handler", () =>
         Either.fromNullable(
-          handlerMap[request.method],
+          handlerMap[request._tag],
           (): RpcNotFound => ({
             _tag: "RpcNotFound",
-            method: request.method,
+            method: request._tag,
           }),
         ),
       ),
@@ -99,16 +94,16 @@ export const handleSingleRequest = <R extends RpcRouterBase>(
 }
 
 /** @internal */
-export const handleRequestUnion = <R extends RpcRouterBase>(router: R) => {
+export const handleRequestUnion = <R extends RpcRouter.Base>(router: R) => {
   const handlerMap = schemaHandlersMap(router.handlers)
 
-  return <Req extends RpcRequestA<R["schema"]>>(
+  return <Req extends RpcRequestSchema.To<R["schema"]>>(
     request: Req,
-  ): Req extends { method: infer M }
-    ? RpcHandlerFromMethod<M, R["handlers"]>
+  ): Req extends { _tag: infer M }
+    ? RpcHandler.FromMethod<M, R["handlers"]>
     : never => {
     const req = request as RpcRequest
-    const handler = handlerMap[req.method]
+    const handler = handlerMap[req._tag]
     if (Effect.isEffect(handler)) {
       return handler as any
     }

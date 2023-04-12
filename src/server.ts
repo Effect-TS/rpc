@@ -2,36 +2,43 @@ import * as Chunk from "@effect/data/Chunk"
 import { pipe } from "@effect/data/Function"
 import * as Effect from "@effect/io/Effect"
 import * as Query from "@effect/query/Query"
-import {
-  RpcSchemaAny,
-  RpcSchemaIO,
-  RpcSchemaNoError,
-  RpcSchemaNoInput,
-  RpcSchemaNoInputNoError,
-  RpcSchemas,
-} from "@effect/rpc/Schema"
-import { encodeEffect, requestDecoder } from "@effect/rpc/internal/decode"
+import type { RpcSchema, RpcService } from "@effect/rpc/Schema"
+import { encodeEffect, requestDecoder } from "@effect/rpc/internal/codec"
 import {
   handleRequestUnion,
   handleSingleRequest,
 } from "@effect/rpc/internal/server"
 import * as Schema from "@effect/schema/Schema"
 
-export type RpcDefinition<R, E, I, O> =
-  | RpcDefinitionIO<R, E, I, O>
+/**
+ * @category models
+ * @since 1.0.0
+ */
+export type RpcHandler<R, E, I, O> =
+  | RpcHandler.IO<R, E, I, O>
   | Effect.Effect<R, E, O>
 
-export type RpcDefinitionAny = RpcDefinition<any, any, any, any>
+/**
+ * @since 1.0.0
+ */
+export namespace RpcHandler {
+  /**
+   * @category models
+   * @since 1.0.0
+   */
+  export type IO<R, E, I, O> = (input: I) => Effect.Effect<R, E, O>
 
-export type RpcDefinitionIO<R, E, I, O> = (input: I) => Effect.Effect<R, E, O>
+  /**
+   * @category models
+   * @since 1.0.0
+   */
+  export type Any = RpcHandler<any, any, any, any>
 
-export interface RpcHandlerSchemaNoInput<E, O> {
-  output: Schema.Schema<O>
-  error: Schema.Schema<E>
-}
-
-export type RpcDefinitionFromSchema<C extends RpcSchemaAny> =
-  C extends RpcSchemaIO<
+  /**
+   * @category models
+   * @since 1.0.0
+   */
+  export type FromSchema<C extends RpcSchema.Any> = C extends RpcSchema.IO<
     infer _IE,
     infer E,
     infer _II,
@@ -39,71 +46,134 @@ export type RpcDefinitionFromSchema<C extends RpcSchemaAny> =
     infer _IO,
     infer O
   >
-    ? RpcDefinitionIO<any, E, I, O>
-    : C extends RpcSchemaNoError<infer _II, infer I, infer _IO, infer O>
-    ? RpcDefinitionIO<any, never, I, O>
-    : C extends RpcSchemaNoInput<infer _IE, infer E, infer _IO, infer O>
+    ? IO<any, E, I, O>
+    : C extends RpcSchema.NoError<infer _II, infer I, infer _IO, infer O>
+    ? IO<any, never, I, O>
+    : C extends RpcSchema.NoInput<infer _IE, infer E, infer _IO, infer O>
     ? Effect.Effect<any, E, O>
-    : C extends RpcSchemaNoInputNoError<infer _IO, infer O>
+    : C extends RpcSchema.NoInputNoError<infer _IO, infer O>
     ? Effect.Effect<any, never, O>
     : never
 
+  /**
+   * @category models
+   * @since 1.0.0
+   */
+  export type FromMethod<M, H extends RpcHandlers> = Extract<
+    RpcHandlers.Map<H>,
+    [M, any]
+  > extends [infer _M, infer T]
+    ? T
+    : never
+}
+
+/**
+ * @category models
+ * @since 1.0.0
+ */
 export interface RpcHandlers
-  extends Record<string, RpcDefinitionAny | { handlers: RpcHandlers }> {}
+  extends Record<string, RpcHandler.Any | { handlers: RpcHandlers }> {}
 
-export type RpcHandlersFromSchema<S extends RpcSchemas> = {
-  [K in Extract<keyof S, string>]: S[K] extends RpcSchemas
-    ? { handlers: RpcHandlersFromSchema<S[K]> }
-    : S[K] extends RpcSchemaAny
-    ? RpcDefinitionFromSchema<S[K]>
+/**
+ * @since 1.0.0
+ */
+export namespace RpcHandlers {
+  /**
+   * @category models
+   * @since 1.0.0
+   */
+  export type FromService<S extends RpcService.DefinitionWithId> = {
+    [K in Extract<keyof S, string>]: S[K] extends RpcService.DefinitionWithId
+      ? { handlers: FromService<S[K]> }
+      : S[K] extends RpcSchema.Any
+      ? RpcHandler.FromSchema<S[K]>
+      : never
+  }
+
+  /**
+   * @category models
+   * @since 1.0.0
+   */
+  export type Services<H extends RpcHandlers> = H[keyof H] extends RpcHandler<
+    infer R,
+    any,
+    any,
+    any
+  >
+    ? R
     : never
+
+  /**
+   * @category models
+   * @since 1.0.0
+   */
+  export type Error<H extends RpcHandlers> = H[keyof H] extends RpcHandler<
+    any,
+    infer E,
+    any,
+    any
+  >
+    ? E
+    : never
+
+  /**
+   * @category models
+   * @since 1.0.0
+   */
+  export type Map<H extends RpcHandlers, P extends string = ""> = {
+    [K in keyof H]: K extends string
+      ? H[K] extends { handlers: RpcHandlers }
+        ? Map<H[K]["handlers"], `${P}${K}.`>
+        : H[K] extends RpcHandler.IO<infer R, infer E, infer _I, infer O>
+        ? [`${P}${K}`, Effect.Effect<R, E, O>]
+        : [`${P}${K}`, H[K]]
+      : never
+  }[keyof H]
 }
 
-export type RpcHandlersDeps<H extends RpcHandlers> =
-  H[keyof H] extends RpcDefinition<infer Deps, any, any, any> ? Deps : never
-
-export type RpcHandlersE<H extends RpcHandlers> =
-  H[keyof H] extends RpcDefinition<any, infer E, any, any> ? E : never
-
-export type RpcHandlerMap<H extends RpcHandlers, P extends string = ""> = {
-  [K in keyof H]: K extends string
-    ? H[K] extends { handlers: RpcHandlers }
-      ? RpcHandlerMap<H[K]["handlers"], `${P}${K}.`>
-      : H[K] extends RpcDefinitionIO<infer R, infer E, infer _I, infer O>
-      ? [`${P}${K}`, Effect.Effect<R, E, O>]
-      : [`${P}${K}`, H[K]]
-    : never
-}[keyof H]
-
-export type RpcHandlerFromMethod<M, H extends RpcHandlers> = Extract<
-  RpcHandlerMap<H>,
-  [M, any]
-> extends [infer _M, infer T]
-  ? T
-  : never
-
-export interface RpcRouterBase {
-  readonly handlers: RpcHandlers
-  readonly schema: RpcSchemas
-  readonly undecoded: RpcUndecodedClient<RpcHandlers>
-}
-
+/**
+ * @category models
+ * @since 1.0.0
+ */
 export interface RpcRouter<
-  S extends RpcSchemas,
-  H extends RpcHandlersFromSchema<S>,
-> extends RpcRouterBase {
+  S extends RpcService.DefinitionWithId,
+  H extends RpcHandlers.FromService<S>,
+> extends RpcRouter.Base {
   readonly handlers: H
   readonly schema: S
   readonly undecoded: RpcUndecodedClient<H>
 }
 
+/**
+ * @since 1.0.0
+ */
+export namespace RpcRouter {
+  /**
+   * @category models
+   * @since 1.0.0
+   */
+  export interface Base {
+    readonly handlers: RpcHandlers
+    readonly schema: RpcService.DefinitionWithId
+    readonly undecoded: RpcUndecodedClient<RpcHandlers>
+  }
+}
+
+/**
+ * @category models
+ * @since 1.0.0
+ */
 export type RpcServer<H extends RpcHandlers> = (
   u: unknown,
-) => Effect.Effect<RpcHandlersDeps<H>, never, unknown>
+) => Effect.Effect<RpcHandlers.Services<H>, never, unknown>
 
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
 export const router = <
-  S extends RpcSchemas,
-  H extends RpcHandlersFromSchema<S>,
+  S extends RpcService.DefinitionWithId,
+  H extends RpcHandlers.FromService<S>,
 >(
   schema: S,
   handlers: H,
@@ -113,11 +183,15 @@ export const router = <
   undecoded: makeUndecodedClient(schema, handlers),
 })
 
-export const handler = <R extends RpcRouterBase>(
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+export const handler = <R extends RpcRouter.Base>(
   router: R,
 ): ((
   input: unknown,
-) => Effect.Effect<RpcHandlersDeps<R["handlers"]>, never, unknown>) => {
+) => Effect.Effect<RpcHandlers.Services<R["handlers"]>, never, unknown>) => {
   const handler = handleSingleRequest(router)
 
   return (u) =>
@@ -129,26 +203,42 @@ export const handler = <R extends RpcRouterBase>(
     )
 }
 
-export const handlerDirect = handleRequestUnion
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+export const handlerRaw = handleRequestUnion
 
+/**
+ * @category models
+ * @since 1.0.0
+ */
 export interface UndecodedRpcResponse<M, O> {
   readonly __rpc: M
   readonly __output: O
 }
 
+/**
+ * @category models
+ * @since 1.0.0
+ */
 export type RpcUndecodedClient<H extends RpcHandlers, P extends string = ""> = {
   [K in Extract<keyof H, string>]: H[K] extends { handlers: RpcHandlers }
     ? RpcUndecodedClient<H[K]["handlers"], `${P}${K}.`>
-    : H[K] extends RpcDefinitionIO<infer R, infer E, infer I, infer O>
+    : H[K] extends RpcHandler.IO<infer R, infer E, infer I, infer O>
     ? (input: I) => Effect.Effect<R, E, UndecodedRpcResponse<`${P}${K}`, O>>
     : H[K] extends Effect.Effect<infer R, infer E, infer O>
     ? Effect.Effect<R, E, UndecodedRpcResponse<`${P}${K}`, O>>
     : never
 }
 
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
 export const makeUndecodedClient = <
-  S extends RpcSchemas,
-  H extends RpcHandlersFromSchema<S>,
+  S extends RpcService.DefinitionWithId,
+  H extends RpcHandlers.FromService<S>,
 >(
   schemas: S,
   handlers: H,
@@ -165,7 +255,7 @@ export const makeUndecodedClient = <
         }
       }
 
-      const schema = schemas[method] as RpcSchemaAny
+      const schema = schemas[method] as RpcSchema.Any
 
       if (Effect.isEffect(definition)) {
         return {
@@ -182,7 +272,7 @@ export const makeUndecodedClient = <
         ...acc,
         [method]: (input: unknown) =>
           pipe(
-            (definition as RpcDefinitionIO<any, any, any, any>)(input),
+            (definition as RpcHandler.IO<any, any, any, any>)(input),
             Effect.flatMap(encodeEffect(schema.output)),
             Query.fromEffect,
           ),

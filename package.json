@@ -20,6 +20,7 @@
     "@effect/schema": "^0.12.1"
   },
   "devDependencies": {
+    "@effect/language-service": "^0.0.19",
     "prettier": "^2.8.7",
     "typescript": "^5.0.4"
   }

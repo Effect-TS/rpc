@@ -14,7 +14,10 @@
       "@effect/rpc": ["./src/index.js"],
       "@effect/rpc/*": ["./src/*.js"]
     },
-    "composite": true
+    "composite": true,
+    "moduleDetection": "force",
+    "forceConsistentCasingInFileNames": true,
+    "plugins": [{ "name": "@effect/language-service"}]
   },
   "exclude": ["node_modules", "dist", "build", "lib"]
 }
