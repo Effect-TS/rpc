@@ -58,7 +58,7 @@ export const encodeEffect = <A>(schema: Schema.Schema<A>) =>
 export const requestDecoder = decodeEffect(
   Schema.array(
     Schema.struct({
-      method: Schema.string,
+      _tag: Schema.string,
       input: Schema.unknown,
     }),
   ),

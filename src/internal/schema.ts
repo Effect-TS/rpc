@@ -1,26 +1,21 @@
-import {
-  RpcSchema,
-  RpcSchemaAny,
-  RpcSchemaId,
-  RpcSchemaInput,
-  RpcSchemas,
-} from "@effect/rpc/Schema"
+import { RpcServiceId } from "@effect/rpc/Schema"
+import type { RpcSchema, RpcService } from "@effect/rpc/Schema"
 
 /** @internal */
-export type SimplifySchema<T extends RpcSchemaInput> = T extends infer O
-  ? RpcSchema<{ [K in keyof O]: O[K] }>
+export type SimplifySchema<T extends RpcService.Definition> = T extends infer S
+  ? RpcService.WithId<{ [K in Exclude<keyof S, RpcServiceId>]: S[K] }>
   : never
 
 /** @internal */
-export const schemaMethodsMap = <S extends RpcSchemas>(
+export const methodsMap = <S extends RpcService.DefinitionWithId>(
   schemas: S,
   prefix = "",
-): Record<string, RpcSchemaAny> =>
+): Record<string, RpcSchema.Any> =>
   Object.entries(schemas).reduce((acc, [method, schema]) => {
-    if (RpcSchemaId in schema) {
+    if (RpcServiceId in schema) {
       return {
         ...acc,
-        ...schemaMethodsMap(schema, `${prefix}${method}.`),
+        ...methodsMap(schema, `${prefix}${method}.`),
       }
     }
     return { ...acc, [`${prefix}${method}`]: schema }

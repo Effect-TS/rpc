@@ -14,13 +14,14 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@effect/data": "^0.5.0",
-    "@effect/io": "^0.10.0",
-    "@effect/query": "^0.3.0",
-    "@effect/schema": "^0.3.1"
+    "@effect/data": "^0.12.2",
+    "@effect/io": "^0.20.0",
+    "@effect/query": "^0.7.0",
+    "@effect/schema": "^0.12.1"
   },
   "devDependencies": {
-    "prettier": "^2.8.6",
-    "typescript": "^5.0.2"
+    "@effect/language-service": "^0.0.19",
+    "prettier": "^2.8.7",
+    "typescript": "^5.0.4"
   }
 }

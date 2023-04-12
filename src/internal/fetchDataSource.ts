@@ -1,20 +1,16 @@
 import * as Effect from "@effect/io/Effect"
 import * as DataSource from "@effect/rpc/DataSource"
-import { RpcTransportError } from "@effect/rpc/Error"
+import type { RpcTransportError } from "@effect/rpc/Error"
 
-export interface FetchTransportOptions {
-  readonly url: string
-  readonly headers?: Record<string, string>
-}
-
-export const make = (options: FetchTransportOptions) =>
+/** @internal */
+export const make = (options: DataSource.FetchDataSourceOptions) =>
   DataSource.make((requests) => send(requests, options))
 
 const send = (
   requests: readonly DataSource.RpcRequest[],
-  { url, headers = {} }: FetchTransportOptions,
+  { url, headers = {} }: DataSource.FetchDataSourceOptions,
 ) =>
-  Effect.attemptCatchPromiseInterrupt(
+  Effect.tryCatchPromiseInterrupt(
     (signal) =>
       fetch(url, {
         method: "POST",

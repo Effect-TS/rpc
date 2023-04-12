@@ -5,7 +5,7 @@ import * as Client from "@effect/rpc/Client"
 import * as Server from "@effect/rpc/Server"
 import * as RpcSchema from "@effect/rpc/Schema"
 import * as Schema from "@effect/schema/Schema"
-import { FetchDataSource } from "@effect/rpc/DataSource"
+import { makeFetch } from "@effect/rpc/DataSource"
 
 // Post schema
 const PostId = pipe(
@@ -62,7 +62,7 @@ const schema = RpcSchema.make({
   },
 
   currentTime: {
-    output: Schema.dateFromString,
+    output: Schema.dateFromString(Schema.string),
   },
 })
 
@@ -77,11 +77,6 @@ const router = Server.router(schema, {
 export const handler = Server.handler(router)
 
 // Create client
-const client = Client.make(
-  schema,
-  FetchDataSource.make({
-    url: "http://localhost:3000",
-  }),
-)
+const client = Client.make(schema, makeFetch({ url: "http://localhost:3000" }))
 
 Effect.runPromise(client.posts.create({ body: "Hello!" }))
