@@ -14,7 +14,7 @@ const send = (
   requests: readonly DataSource.RpcRequest[],
   { url, headers = {} }: FetchTransportOptions,
 ) =>
-  Effect.attemptCatchPromiseInterrupt(
+  Effect.tryCatchPromiseInterrupt(
     (signal) =>
       fetch(url, {
         method: "POST",

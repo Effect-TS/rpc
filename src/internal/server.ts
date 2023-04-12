@@ -45,7 +45,7 @@ export const handleSingleRequest = <R extends RpcRouterBase>(
 
   return (request) =>
     pipe(
-      Either.Do,
+      Either.Do(),
       Either.bind("schema", () =>
         Either.fromNullable(
           schemaMap[request.method],
