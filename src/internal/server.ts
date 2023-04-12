@@ -102,11 +102,10 @@ export const handleRequestUnion = <R extends RpcRouter.Base>(router: R) => {
   ): Req extends { _tag: infer M }
     ? RpcHandler.FromMethod<M, R["handlers"]>
     : never => {
-    const req = request as RpcRequest
-    const handler = handlerMap[req._tag]
+    const handler = handlerMap[(request as RpcRequest)._tag]
     if (Effect.isEffect(handler)) {
       return handler as any
     }
-    return (handler as any)(req.input) as any
+    return (handler as any)((request as RpcRequest).input) as any
   }
 }

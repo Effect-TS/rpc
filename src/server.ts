@@ -2,7 +2,11 @@ import * as Chunk from "@effect/data/Chunk"
 import { pipe } from "@effect/data/Function"
 import * as Effect from "@effect/io/Effect"
 import * as Query from "@effect/query/Query"
-import type { RpcSchema, RpcService } from "@effect/rpc/Schema"
+import type {
+  RpcRequestSchema,
+  RpcSchema,
+  RpcService,
+} from "@effect/rpc/Schema"
 import { encodeEffect, requestDecoder } from "@effect/rpc/internal/codec"
 import {
   handleRequestUnion,
@@ -160,14 +164,6 @@ export namespace RpcRouter {
 }
 
 /**
- * @category models
- * @since 1.0.0
- */
-export type RpcServer<H extends RpcHandlers> = (
-  u: unknown,
-) => Effect.Effect<RpcHandlers.Services<H>, never, unknown>
-
-/**
  * @category constructors
  * @since 1.0.0
  */
@@ -190,7 +186,7 @@ export const router = <
 export const handler = <R extends RpcRouter.Base>(
   router: R,
 ): ((
-  input: unknown,
+  u: unknown,
 ) => Effect.Effect<RpcHandlers.Services<R["handlers"]>, never, unknown>) => {
   const handler = handleSingleRequest(router)
 
@@ -207,7 +203,13 @@ export const handler = <R extends RpcRouter.Base>(
  * @category constructors
  * @since 1.0.0
  */
-export const handlerRaw = handleRequestUnion
+export const handlerRaw: <R extends RpcRouter.Base>(
+  router: R,
+) => <Req extends RpcRequestSchema.To<R["schema"]>>(
+  request: Req,
+) => Req extends { _tag: infer M }
+  ? RpcHandler.FromMethod<M, R["handlers"]>
+  : never = handleRequestUnion as any
 
 /**
  * @category models
