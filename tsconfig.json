@@ -1,23 +1,8 @@
 {
-  "compilerOptions": {
-    "outDir": "dist",
-    "skipLibCheck": true,
-    "moduleResolution": "NodeNext",
-    "module": "ESNext",
-    "lib": ["ESNext", "DOM"],
-    "sourceMap": true,
-    "declaration": true,
-    "strict": true,
-    "target": "ES6",
-    "incremental": true,
-    "paths": {
-      "@effect/rpc": ["./src/index.js"],
-      "@effect/rpc/*": ["./src/*.js"]
-    },
-    "composite": true,
-    "moduleDetection": "force",
-    "forceConsistentCasingInFileNames": true,
-    "plugins": [{ "name": "@effect/language-service"}]
-  },
-  "exclude": ["node_modules", "dist", "build", "lib"]
+  "extends": "./tsconfig.base.json",
+  "references": [
+    { "path": "./tsconfig.build.json" },
+    { "path": "./tsconfig.test.json" },
+    { "path": "./tsconfig.examples.json" }
+  ]
 }

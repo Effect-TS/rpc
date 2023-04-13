@@ -1,4 +1,3 @@
-import type { SimplifySchema } from "@effect/rpc/internal/schema"
 import * as Schema from "@effect/schema/Schema"
 
 /**
@@ -109,7 +108,7 @@ export namespace RpcService {
     VL extends string,
     V,
     S extends RpcService.Definition,
-  > = SimplifySchema<{
+  > = {
     [K in keyof S]: S[K] extends DefinitionWithId
       ? Validate<VL, V, S[K]>
       : S[K] extends RpcSchema.IO<
@@ -136,7 +135,14 @@ export namespace RpcService {
         ? S[K]
         : `schema input does not extend ${VL}`
       : never
-  }>
+  }
+
+  /**
+   * @since 1.0.0
+   */
+  export type Simplify<T extends RpcService.Definition> = T extends infer S
+    ? RpcService.WithId<{ [K in Exclude<keyof S, RpcServiceId>]: S[K] }>
+    : never
 }
 
 /**
@@ -147,7 +153,7 @@ export const makeWith =
   <VL extends string, V>() =>
   <S extends RpcService.Definition>(
     schema: S,
-  ): RpcService.Validate<VL, V, S> => ({
+  ): RpcService.Simplify<RpcService.Validate<VL, V, S>> => ({
     ...(schema as any),
     [RpcServiceId]: RpcServiceId,
   })

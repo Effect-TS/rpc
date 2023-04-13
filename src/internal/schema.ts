@@ -1,10 +1,5 @@
-import { RpcServiceId } from "@effect/rpc/Schema"
 import type { RpcSchema, RpcService } from "@effect/rpc/Schema"
-
-/** @internal */
-export type SimplifySchema<T extends RpcService.Definition> = T extends infer S
-  ? RpcService.WithId<{ [K in Exclude<keyof S, RpcServiceId>]: S[K] }>
-  : never
+import { RpcServiceId } from "@effect/rpc/Schema"
 
 /** @internal */
 export const methodsMap = <S extends RpcService.DefinitionWithId>(

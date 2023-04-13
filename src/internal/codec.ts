@@ -4,7 +4,6 @@ import * as Effect from "@effect/io/Effect"
 import { RpcDecodeFailure, RpcEncodeFailure } from "@effect/rpc/Error"
 import type { ParseOptions } from "@effect/schema/AST"
 import * as Schema from "@effect/schema/Schema"
-import { RpcResponse } from "@effect/rpc/DataSource"
 
 /** @internal */
 export const decode = <I, A>(schema: Schema.Schema<I, A>) => {
