@@ -1,3 +1,6 @@
+/**
+ * @since 1.0.0
+ */
 import type { Query } from "@effect/query/Query"
 import type { RpcDataSource } from "@effect/rpc/DataSource"
 import type { RpcError } from "@effect/rpc/Error"

@@ -37,8 +37,8 @@ const posts = RpcSchema.make({
 const postsRouter = Server.router(posts, {
   create: (post) =>
     Effect.succeed({
-      id: PostId(1),
       ...post,
+      id: PostId(1),
     }),
 
   list: Effect.succeed(
