@@ -1,3 +1,6 @@
+/**
+ * @since 1.0.0
+ */
 import * as Either from "@effect/data/Either"
 import * as Effect from "@effect/io/Effect"
 import * as DataSource from "@effect/query/DataSource"

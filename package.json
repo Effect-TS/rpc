@@ -6,6 +6,11 @@
     "access": "public",
     "directory": "dist"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/effect-ts/rpc.git"
+  },
+  "homepage": "https://github.com/effect-ts/rpc",
   "exports": {
     "./*": {
       "require": "./build/cjs/*.js"
