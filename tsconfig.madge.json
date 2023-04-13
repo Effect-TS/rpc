@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "allowJs": true,
+    "baseUrl": ".",
+    "paths": {
+      "@effect/rpc": ["./build/esm/index.js"],
+      "@effect/rpc/*": ["./build/esm/*"]
+    }
+  },
+  "include": ["./build/esm/**/*.js"]
+}

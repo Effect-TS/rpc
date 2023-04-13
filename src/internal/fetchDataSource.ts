@@ -1,14 +1,15 @@
 import * as Effect from "@effect/io/Effect"
-import * as DataSource from "@effect/rpc/DataSource"
+import type { FetchDataSourceOptions, RpcRequest } from "@effect/rpc/DataSource"
 import type { RpcTransportError } from "@effect/rpc/Error"
+import * as dataSource from "@effect/rpc/internal/dataSource"
 
 /** @internal */
-export const make = (options: DataSource.FetchDataSourceOptions) =>
-  DataSource.make((requests) => send(requests, options))
+export const make = (options: FetchDataSourceOptions) =>
+  dataSource.make((requests) => send(requests, options))
 
 const send = (
-  requests: readonly DataSource.RpcRequest[],
-  { url, headers = {} }: DataSource.FetchDataSourceOptions,
+  requests: ReadonlyArray<RpcRequest>,
+  { headers = {}, url }: FetchDataSourceOptions,
 ) =>
   Effect.tryCatchPromiseInterrupt(
     (signal) =>
