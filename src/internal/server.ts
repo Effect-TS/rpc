@@ -4,7 +4,7 @@ import { identity, pipe } from "@effect/data/Function"
 import * as Effect from "@effect/io/Effect"
 import * as Query from "@effect/query/Query"
 import type { RpcRequest, RpcResponse } from "@effect/rpc/DataSource"
-import type { RpcNotFound } from "@effect/rpc/Error"
+import type { RpcEncodeFailure, RpcNotFound } from "@effect/rpc/Error"
 import type {
   RpcRequestSchema,
   RpcSchema,
@@ -17,12 +17,10 @@ import type {
   RpcUndecodedClient,
 } from "@effect/rpc/Server"
 import * as codec from "@effect/rpc/internal/codec"
-import { decode, encode } from "@effect/rpc/internal/codec"
-import { methodsMap } from "@effect/rpc/internal/schema"
+import { inputEncodeMap, methodCodecs } from "@effect/rpc/internal/schema"
 import * as Schema from "@effect/schema/Schema"
 
-/** @internal */
-export const schemaHandlersMap = <H extends RpcHandlers>(
+const schemaHandlersMap = <H extends RpcHandlers>(
   handlers: H,
   prefix = "",
 ): Record<string, RpcHandler.Any> =>
@@ -47,15 +45,15 @@ export const handleSingleRequest = <R extends RpcRouter.Base>(
   never,
   RpcResponse
 >) => {
-  const schemaMap = methodsMap(router.schema)
+  const codecsMap = methodCodecs(router.schema)
   const handlerMap = schemaHandlersMap(router.handlers)
 
   return (request) =>
     pipe(
       Either.Do(),
-      Either.bind("schema", () =>
+      Either.bind("codecs", () =>
         Either.fromNullable(
-          schemaMap[request._tag],
+          codecsMap[request._tag],
           (): RpcNotFound => ({
             _tag: "RpcNotFound",
             method: request._tag,
@@ -71,12 +69,10 @@ export const handleSingleRequest = <R extends RpcRouter.Base>(
           }),
         ),
       ),
-      Either.bind("input", ({ handler, schema }) =>
-        !Effect.isEffect(handler) && "input" in schema
-          ? decode(schema.input as Schema.Schema<any>)(request.input)
-          : Either.right(null),
+      Either.bind("input", ({ codecs }) =>
+        codecs.input ? codecs.input(request.input) : Either.right(null),
       ),
-      Either.map(({ handler, input, schema }) => {
+      Either.map(({ codecs, handler, input }) => {
         const effect: Effect.Effect<any, unknown, unknown> = Effect.isEffect(
           handler,
         )
@@ -85,16 +81,9 @@ export const handleSingleRequest = <R extends RpcRouter.Base>(
 
         return pipe(
           effect,
-          Effect.map(encode(schema.output)),
+          Effect.map(codecs.output),
           Effect.catchAll((_) =>
-            Effect.succeed(
-              Either.flatMap(
-                encode(
-                  "error" in schema ? schema.error : (Schema.never as any),
-                )(_),
-                Either.left,
-              ),
-            ),
+            Effect.succeed(Either.flatMap(codecs.error(_), Either.left)),
           ),
         )
       }),
@@ -103,19 +92,26 @@ export const handleSingleRequest = <R extends RpcRouter.Base>(
 }
 
 /** @internal */
-export const handleRequestUnion = <R extends RpcRouter.Base>(router: R) => {
+export const handlerRaw = <R extends RpcRouter.Base>(router: R) => {
   const handlerMap = schemaHandlersMap(router.handlers)
+  const inputEncoders = inputEncodeMap(router.schema)
 
   return <Req extends RpcRequestSchema.To<R["schema"]>>(
     request: Req,
   ): Req extends { _tag: infer M }
-    ? RpcHandler.FromMethod<M, R["handlers"]>
+    ? RpcHandler.FromMethod<M, R["handlers"], RpcEncodeFailure>
     : never => {
     const handler = handlerMap[(request as RpcRequest)._tag]
     if (Effect.isEffect(handler)) {
       return handler as any
     }
-    return (handler as any)((request as RpcRequest).input) as any
+
+    return Effect.flatMap(
+      inputEncoders[(request as RpcRequest)._tag](
+        (request as RpcRequest).input,
+      ),
+      handler as any,
+    ) as any
   }
 }
 
@@ -154,15 +150,6 @@ export const handler = <R extends RpcRouter.Base>(
 }
 
 /** @internal */
-export const handlerRaw: <R extends RpcRouter.Base>(
-  router: R,
-) => <Req extends RpcRequestSchema.To<R["schema"]>>(
-  request: Req,
-) => Req extends { _tag: infer M }
-  ? RpcHandler.FromMethod<M, R["handlers"]>
-  : never = handleRequestUnion as any
-
-/** @internal */
 export const makeUndecodedClient = <
   S extends RpcService.DefinitionWithId,
   H extends RpcHandlers.FromService<S>,
@@ -195,12 +182,16 @@ export const makeUndecodedClient = <
         }
       }
 
+      const decodeInput = codec.decodeEffect(Schema.to((schema as any).input))
+      const encodeOutput = codec.encode(schema.output)
+
       return {
         ...acc,
         [method]: (input: unknown) =>
           pipe(
-            (definition as RpcHandler.IO<any, any, any, any>)(input),
-            Effect.flatMap(codec.encode(schema.output)),
+            decodeInput(input),
+            Effect.flatMap(definition as RpcHandler.IO<any, any, any, any>),
+            Effect.flatMap(encodeOutput),
             Query.fromEffect,
           ),
       }

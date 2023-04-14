@@ -12,9 +12,10 @@ import * as schema from "@effect/rpc/internal/schema"
 import * as Schema from "@effect/schema/Schema"
 
 const unsafeDecode = <S extends RpcService.DefinitionWithId>(schemas: S) => {
-  const map = schema.methodsMap(schemas)
+  const map = schema.methodClientCodecs(schemas)
+
   return (method: RpcService.Methods<S>, output: unknown) => {
-    const result = codec.decode(map[method as string].output)(output)
+    const result = map[method as string].output(output)
     if (result._tag !== "Left") {
       return result.right as unknown
     }
@@ -73,13 +74,14 @@ const makeRpc = <S extends RpcSchema.Any, TR>(
     ),
   )
 
-  const send = (input: unknown) =>
-    parseResponse(
-      Query.fromRequest(RpcRequest({ _tag: method, input }), dataSource),
-    )
-
   if ("input" in schema) {
     const encodeInput = codec.encode(schema.input as Schema.Schema<any>)
+
+    const send = (input: unknown) =>
+      parseResponse(
+        Query.fromRequest(RpcRequest({ _tag: method, input }), dataSource),
+      )
+
     return ((input: any) =>
       pipe(Query.fromEither(encodeInput(input)), Query.flatMap(send))) as any
   }

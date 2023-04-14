@@ -4,6 +4,7 @@ import * as S from "@effect/schema/Schema"
 import * as RS from "@effect/rpc/Schema"
 import * as _ from "@effect/rpc/Server"
 import { describe, it, expect } from "vitest"
+import { pipe } from "@effect/data/Function"
 
 const SomeError = S.struct({
   _tag: S.literal("SomeError"),
@@ -38,6 +39,11 @@ const schema = RS.make({
     output: S.dateFromString(S.string),
     error: SomeError,
   },
+
+  refined: {
+    input: pipe(S.number, S.int(), S.greaterThan(10)),
+    output: S.number,
+  },
 })
 
 const router = _.router(schema, {
@@ -64,6 +70,8 @@ const router = _.router(schema, {
         message: "fail",
       }),
     ),
+
+  refined: (n) => Effect.succeed(n),
 })
 
 const handler = _.handler(router)
@@ -80,11 +88,13 @@ describe("Server", () => {
         { _tag: "failNoInput" },
         { _tag: "encodeInput", input: date.toISOString() },
         { _tag: "encodeDate", input: date.toISOString() },
+        { _tag: "refined", input: 5 },
+        { _tag: "refined", input: 11 },
         // TODO: Enable once bug is fixed in schema
         // { _tag: "encodeDate", input: "test" },
       ]),
     )
-    expect(result.length).toEqual(6)
+    expect(result.length).toEqual(8)
 
     expect(result[0]).toEqual(Either.right("Hello, John!"))
     expect(result[1]._tag === "Left" && result[1].left._tag).toEqual(
@@ -102,9 +112,10 @@ describe("Server", () => {
     expect(result[5]._tag === "Right" && result[5].right).toEqual(
       date.toISOString(),
     )
-    // expect(result[6]._tag === "Left" && result[6].left._tag).toEqual(
-    //   "RpcEncodeFailure",
-    // )
+    expect(result[6]._tag === "Left" && result[6].left._tag).toEqual(
+      "RpcDecodeFailure",
+    )
+    expect(result[7]._tag === "Right" && result[7].right).toEqual(11)
   })
 
   it("handlerRaw/", async () => {
@@ -118,11 +129,13 @@ describe("Server", () => {
         Effect.either(
           handlerRaw({ _tag: "encodeDate", input: date.toISOString() }),
         ),
+        Effect.either(handlerRaw({ _tag: "refined", input: 5 })),
+        Effect.either(handlerRaw({ _tag: "refined", input: 11 })),
         // TODO: Enable once bug is fixed in schema
         // { _tag: "encodeDate", input: "test" },
       ]),
     )
-    expect(result.length).toEqual(5)
+    expect(result.length).toEqual(7)
 
     expect(result[0]).toEqual(Either.right("Hello, John!"))
     expect(result[1]._tag === "Left" && result[1].left._tag).toEqual(
@@ -133,5 +146,29 @@ describe("Server", () => {
     )
     expect(result[3]._tag === "Right" && result[3].right).toEqual(date)
     expect(result[4]._tag === "Right" && result[4].right).toEqual(date)
+    expect(result[5]._tag === "Left" && result[5].left._tag).toEqual(
+      "RpcEncodeFailure",
+    )
+    expect(result[6]._tag === "Right" && result[6].right).toEqual(11)
+  })
+
+  it("undecodedClient/ refined success", async () => {
+    const result = Effect.runSync(router.undecoded.refined(11))
+    expect(result).toEqual(11)
+  })
+
+  it("undecodedClient/ refined failure", async () => {
+    const result = Effect.runSync(Effect.either(router.undecoded.refined(5)))
+    expect(result._tag === "Left" && result.left._tag).toEqual(
+      "RpcDecodeFailure",
+    )
+  })
+
+  it("undecodedClient/ encodeDate", async () => {
+    const date = new Date()
+    const result = Effect.runSync(
+      router.undecoded.encodeDate(date.toISOString()),
+    )
+    expect(result).toEqual(date.toISOString())
   })
 })

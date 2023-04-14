@@ -1,8 +1,8 @@
 /**
  * @since 1.0.0
  */
-import * as ROA from "@effect/data/ReadonlyArray"
-import * as ParseResult from "@effect/schema/ParseResult"
+import type * as ROA from "@effect/data/ReadonlyArray"
+import type * as ParseResult from "@effect/schema/ParseResult"
 import * as Schema from "@effect/schema/Schema"
 
 /**
