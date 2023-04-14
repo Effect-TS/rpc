@@ -151,4 +151,24 @@ describe("Server", () => {
     )
     expect(result[6]._tag === "Right" && result[6].right).toEqual(11)
   })
+
+  it("undecodedClient/ refined success", async () => {
+    const result = Effect.runSync(router.undecoded.refined(11))
+    expect(result).toEqual(11)
+  })
+
+  it("undecodedClient/ refined failure", async () => {
+    const result = Effect.runSync(Effect.either(router.undecoded.refined(5)))
+    expect(result._tag === "Left" && result.left._tag).toEqual(
+      "RpcDecodeFailure",
+    )
+  })
+
+  it("undecodedClient/ encodeDate", async () => {
+    const date = new Date()
+    const result = Effect.runSync(
+      router.undecoded.encodeDate(date.toISOString()),
+    )
+    expect(result).toEqual(date.toISOString())
+  })
 })

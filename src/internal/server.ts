@@ -18,6 +18,7 @@ import type {
 } from "@effect/rpc/Server"
 import * as codec from "@effect/rpc/internal/codec"
 import { inputEncodeMap, methodCodecs } from "@effect/rpc/internal/schema"
+import * as Schema from "@effect/schema/Schema"
 
 const schemaHandlersMap = <H extends RpcHandlers>(
   handlers: H,
@@ -68,10 +69,8 @@ export const handleSingleRequest = <R extends RpcRouter.Base>(
           }),
         ),
       ),
-      Either.bind("input", ({ codecs, handler }) =>
-        !Effect.isEffect(handler) && "input" in codecs
-          ? codecs.input!(request.input)
-          : Either.right(null),
+      Either.bind("input", ({ codecs }) =>
+        codecs.input ? codecs.input(request.input) : Either.right(null),
       ),
       Either.map(({ codecs, handler, input }) => {
         const effect: Effect.Effect<any, unknown, unknown> = Effect.isEffect(
@@ -183,12 +182,16 @@ export const makeUndecodedClient = <
         }
       }
 
+      const decodeInput = codec.decodeEffect(Schema.to((schema as any).input))
+      const encodeOutput = codec.encode(schema.output)
+
       return {
         ...acc,
         [method]: (input: unknown) =>
           pipe(
-            (definition as RpcHandler.IO<any, any, any, any>)(input),
-            Effect.flatMap(codec.encode(schema.output)),
+            decodeInput(input),
+            Effect.flatMap(definition as RpcHandler.IO<any, any, any, any>),
+            Effect.flatMap(encodeOutput),
             Query.fromEffect,
           ),
       }

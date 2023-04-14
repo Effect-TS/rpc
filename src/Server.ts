@@ -3,7 +3,7 @@
  */
 import type { Effect } from "@effect/io/Effect"
 import type { RpcResponse } from "@effect/rpc/DataSource"
-import type { RpcEncodeFailure } from "@effect/rpc/Error"
+import type { RpcDecodeFailure, RpcEncodeFailure } from "@effect/rpc/Error"
 import type {
   RpcRequestSchema,
   RpcSchema,
@@ -215,9 +215,19 @@ export type RpcUndecodedClient<H extends RpcHandlers, P extends string = ""> = {
   [K in Extract<keyof H, string>]: H[K] extends { handlers: RpcHandlers }
     ? RpcUndecodedClient<H[K]["handlers"], `${P}${K}.`>
     : H[K] extends RpcHandler.IO<infer R, infer E, infer I, infer O>
-    ? (input: I) => Effect<R, E, UndecodedRpcResponse<`${P}${K}`, O>>
+    ? (
+        input: I,
+      ) => Effect<
+        R,
+        E | RpcEncodeFailure | RpcDecodeFailure,
+        UndecodedRpcResponse<`${P}${K}`, O>
+      >
     : H[K] extends Effect<infer R, infer E, infer O>
-    ? Effect<R, E, UndecodedRpcResponse<`${P}${K}`, O>>
+    ? Effect<
+        R,
+        E | RpcEncodeFailure | RpcDecodeFailure,
+        UndecodedRpcResponse<`${P}${K}`, O>
+      >
     : never
 }
 
