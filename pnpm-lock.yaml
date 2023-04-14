@@ -15,8 +15,10 @@ specifiers:
   '@effect/query': ^0.7.0
   '@effect/schema': ^0.12.1
   '@rollup/pluginutils': ^5.0.2
+  '@types/node': ^18.15.11
   '@typescript-eslint/eslint-plugin': ^5.57.1
   '@typescript-eslint/parser': ^5.57.1
+  '@vitejs/plugin-react': ^3.1.0
   '@vitest/coverage-c8': ^0.30.1
   babel-plugin-annotate-pure-calls: ^0.4.0
   concurrently: ^8.0.1
@@ -34,6 +36,7 @@ specifiers:
   rimraf: ^5.0.0
   ts-node: ^10.9.1
   typescript: ^5.0.3
+  vite: ^4.2.1
   vitest: 0.30.1
 
 dependencies:
@@ -53,8 +56,10 @@ devDependencies:
   '@effect/babel-plugin': 0.2.0_@babel+core@7.21.4
   '@effect/language-service': 0.0.19
   '@rollup/pluginutils': 5.0.2
+  '@types/node': 18.15.11
   '@typescript-eslint/eslint-plugin': 5.58.0_gjoxkwycl3ml7yxlw3iuo7gyna
   '@typescript-eslint/parser': 5.58.0_voubu7prgxjfsfbgx5d4sqnwiy
+  '@vitejs/plugin-react': 3.1.0_vite@4.2.1
   '@vitest/coverage-c8': 0.30.1_vitest@0.30.1
   babel-plugin-annotate-pure-calls: 0.4.0_@babel+core@7.21.4
   concurrently: 8.0.1
@@ -70,8 +75,9 @@ devDependencies:
   madge: 6.0.0
   prettier: 2.8.7
   rimraf: 5.0.0
-  ts-node: 10.9.1_typescript@5.0.4
+  ts-node: 10.9.1_bhanhq442dy43ncydsavgi4jfi
   typescript: 5.0.4
+  vite: 4.2.1_@types+node@18.15.11
   vitest: 0.30.1
 
 packages:
@@ -288,6 +294,26 @@ packages:
       '@babel/helper-simple-access': 7.20.2
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /@babel/plugin-transform-react-jsx-self/7.21.0_@babel+core@7.21.4:
+    resolution: {integrity: sha512-f/Eq+79JEu+KUANFks9UZCcvydOOGMgF7jBrcwjHa5jTZD8JivnhCJYvmlhR/WTXBWonDExPoW0eO/CR4QJirA==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/core': 7.21.4
+      '@babel/helper-plugin-utils': 7.20.2
+    dev: true
+
+  /@babel/plugin-transform-react-jsx-source/7.19.6_@babel+core@7.21.4:
+    resolution: {integrity: sha512-RpAi004QyMNisst/pvSanoRdJ4q+jMCWyk9zdw/CyLB9j8RXEahodR6l2GyttDRyEVWZtbN+TpLiHJ3t34LbsQ==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/core': 7.21.4
+      '@babel/helper-plugin-utils': 7.20.2
     dev: true
 
   /@babel/runtime/7.21.0:
@@ -1321,6 +1347,22 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.58.0
       eslint-visitor-keys: 3.4.0
+    dev: true
+
+  /@vitejs/plugin-react/3.1.0_vite@4.2.1:
+    resolution: {integrity: sha512-AfgcRL8ZBhAlc3BFdigClmTUMISmmzHn7sB2h9U1odvc5U/MjWXsAaz18b/WoppUTDBzxOJwo2VdClfUcItu9g==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    peerDependencies:
+      vite: ^4.1.0-beta.0
+    dependencies:
+      '@babel/core': 7.21.4
+      '@babel/plugin-transform-react-jsx-self': 7.21.0_@babel+core@7.21.4
+      '@babel/plugin-transform-react-jsx-source': 7.19.6_@babel+core@7.21.4
+      magic-string: 0.27.0
+      react-refresh: 0.14.0
+      vite: 4.2.1_@types+node@18.15.11
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /@vitest/coverage-c8/0.30.1_vitest@0.30.1:
@@ -4423,6 +4465,13 @@ packages:
       - supports-color
     dev: true
 
+  /magic-string/0.27.0:
+    resolution: {integrity: sha512-8UnnX2PeRAPZuN12svgR9j7M1uWMovg/CEnIwIG0LFkXSJJe4PdfUGiTGl8V9bsBHFUtfVINcSyYxd7q+kx9fA==}
+    engines: {node: '>=12'}
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.4.15
+    dev: true
+
   /magic-string/0.30.0:
     resolution: {integrity: sha512-LA+31JYDJLs82r2ScLrlz1GjSgu66ZV518eyWT+S8VhyQn/JL0u9MeBOvQMGYiPk1DBiSN9DDMOcXvigJZaViQ==}
     engines: {node: '>=12'}
@@ -5273,6 +5322,11 @@ packages:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
     dev: true
 
+  /react-refresh/0.14.0:
+    resolution: {integrity: sha512-wViHqhAd8OHeLS/IRMJjTSDHF3U9eWi62F/MledQGPdJGDhodXJ9PBLNGr6WWL7qlH12Mt3TyTpbS+hGXMjCzQ==}
+    engines: {node: '>=0.10.0'}
+    dev: true
+
   /read-pkg-up/7.0.1:
     resolution: {integrity: sha512-zK0TB7Xd6JpCLmlLmufqykGE+/TlOePD6qKClNW7hHDKFh/J7/7gCWGR7joEQEW1bKq3a3yUZSObOoWLFQ4ohg==}
     engines: {node: '>=8'}
@@ -6095,7 +6149,7 @@ packages:
       code-block-writer: 10.1.1
     dev: true
 
-  /ts-node/10.9.1_typescript@5.0.4:
+  /ts-node/10.9.1_bhanhq442dy43ncydsavgi4jfi:
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
     peerDependencies:
@@ -6114,6 +6168,7 @@ packages:
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
+      '@types/node': 18.15.11
       acorn: 8.8.2
       acorn-walk: 8.2.0
       arg: 4.1.3

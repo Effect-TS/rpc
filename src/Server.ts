@@ -2,6 +2,7 @@
  * @since 1.0.0
  */
 import type { Effect } from "@effect/io/Effect"
+import type { RpcResponse } from "@effect/rpc/DataSource"
 import type {
   RpcRequestSchema,
   RpcSchema,
@@ -175,9 +176,12 @@ export const router: <
 export const handler: <R extends RpcRouter.Base>(
   router: R,
 ) => (
-  u: unknown,
-) => Effect<RpcHandlers.Services<R["handlers"]>, never, unknown> =
-  internal.handler
+  requests: unknown,
+) => Effect<
+  RpcHandlers.Services<R["handlers"]>,
+  never,
+  ReadonlyArray<RpcResponse>
+> = internal.handler
 
 /**
  * @category constructors

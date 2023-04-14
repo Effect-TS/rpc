@@ -3,7 +3,7 @@ import * as Either from "@effect/data/Either"
 import { identity, pipe } from "@effect/data/Function"
 import * as Effect from "@effect/io/Effect"
 import * as Query from "@effect/query/Query"
-import type { RpcRequest } from "@effect/rpc/DataSource"
+import type { RpcRequest, RpcResponse } from "@effect/rpc/DataSource"
 import type { RpcNotFound } from "@effect/rpc/Error"
 import type {
   RpcRequestSchema,
@@ -18,7 +18,6 @@ import type {
 } from "@effect/rpc/Server"
 import * as codec from "@effect/rpc/internal/codec"
 import { decode, encode } from "@effect/rpc/internal/codec"
-import * as dataSource from "@effect/rpc/internal/dataSource"
 import { methodsMap } from "@effect/rpc/internal/schema"
 import * as Schema from "@effect/schema/Schema"
 
@@ -38,15 +37,16 @@ export const schemaHandlersMap = <H extends RpcHandlers>(
   }, {})
 
 /** @internal */
-const responseEncoder = Schema.encode(dataSource.RpcResponse)
-
-/** @internal */
 export const handleSingleRequest = <R extends RpcRouter.Base>(
   router: R,
 ): ((request: {
   readonly _tag: string
   readonly input?: unknown
-}) => Effect.Effect<RpcHandlers.Services<R["handlers"]>, never, unknown>) => {
+}) => Effect.Effect<
+  RpcHandlers.Services<R["handlers"]>,
+  never,
+  RpcResponse
+>) => {
   const schemaMap = methodsMap(router.schema)
   const handlerMap = schemaHandlersMap(router.handlers)
 
@@ -98,10 +98,7 @@ export const handleSingleRequest = <R extends RpcRouter.Base>(
           ),
         )
       }),
-      Either.match(
-        (_) => Effect.succeed(responseEncoder(Either.left(_))),
-        identity,
-      ),
+      Either.match((_) => Effect.succeed(Either.left(_)), identity as any),
     )
 }
 
@@ -139,15 +136,19 @@ export const router = <
 export const handler = <R extends RpcRouter.Base>(
   router: R,
 ): ((
-  u: unknown,
-) => Effect.Effect<RpcHandlers.Services<R["handlers"]>, never, unknown>) => {
+  requests: unknown,
+) => Effect.Effect<
+  RpcHandlers.Services<R["handlers"]>,
+  never,
+  ReadonlyArray<RpcResponse>
+>) => {
   const handler = handleSingleRequest(router)
 
   return (u) =>
     pipe(
-      codec.requestDecoder(u),
-      Effect.orDie,
-      Effect.flatMap((requests) => Effect.collectAllPar(requests.map(handler))),
+      Array.isArray(u)
+        ? Effect.collectAllPar(u.map(handler))
+        : Effect.die(new Error("expected an array of requests")),
       Effect.map(Chunk.toReadonlyArray),
     )
 }
@@ -188,7 +189,7 @@ export const makeUndecodedClient = <
           ...acc,
           [method]: pipe(
             definition,
-            Effect.flatMap(codec.encodeEffect(schema.output)),
+            Effect.flatMap(codec.encode(schema.output)),
             Query.fromEffect,
           ),
         }
@@ -199,7 +200,7 @@ export const makeUndecodedClient = <
         [method]: (input: unknown) =>
           pipe(
             (definition as RpcHandler.IO<any, any, any, any>)(input),
-            Effect.flatMap(codec.encodeEffect(schema.output)),
+            Effect.flatMap(codec.encode(schema.output)),
             Query.fromEffect,
           ),
       }
