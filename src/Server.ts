@@ -3,6 +3,7 @@
  */
 import type { Effect } from "@effect/io/Effect"
 import type { RpcResponse } from "@effect/rpc/DataSource"
+import type { RpcEncodeFailure } from "@effect/rpc/Error"
 import type {
   RpcRequestSchema,
   RpcSchema,
@@ -57,8 +58,8 @@ export namespace RpcHandler {
    * @category models
    * @since 1.0.0
    */
-  export type FromMethod<M, H extends RpcHandlers> = Extract<
-    RpcHandlers.Map<H>,
+  export type FromMethod<M, H extends RpcHandlers, XE> = Extract<
+    RpcHandlers.Map<H, XE>,
     [M, any]
   > extends [infer _M, infer T]
     ? T
@@ -118,13 +119,15 @@ export namespace RpcHandlers {
    * @category models
    * @since 1.0.0
    */
-  export type Map<H extends RpcHandlers, P extends string = ""> = {
+  export type Map<H extends RpcHandlers, XE, P extends string = ""> = {
     [K in keyof H]: K extends string
       ? H[K] extends { handlers: RpcHandlers }
         ? Map<H[K]["handlers"], `${P}${K}.`>
         : H[K] extends RpcHandler.IO<infer R, infer E, infer _I, infer O>
-        ? [`${P}${K}`, Effect<R, E, O>]
-        : [`${P}${K}`, H[K]]
+        ? [`${P}${K}`, Effect<R, E | XE, O>]
+        : H[K] extends Effect<infer R, infer E, infer O>
+        ? [`${P}${K}`, Effect<R, E | XE, O>]
+        : never
       : never
   }[keyof H]
 }
@@ -192,7 +195,7 @@ export const handlerRaw: <R extends RpcRouter.Base>(
 ) => <Req extends RpcRequestSchema.To<R["schema"], "">>(
   request: Req,
 ) => Req extends { _tag: infer M }
-  ? RpcHandler.FromMethod<M, R["handlers"]>
+  ? RpcHandler.FromMethod<M, R["handlers"], RpcEncodeFailure>
   : never = internal.handlerRaw as any
 
 /**

@@ -47,3 +47,24 @@ export const encode: <I, A>(
       ),
     )
 }
+
+/** @internal */
+export const encodeEffect: <I, A>(
+  schema: Schema.Schema<I, A>,
+) => (
+  input: A,
+  options?: ParseOptions | undefined,
+) => Effect.Effect<never, RpcEncodeFailure, I> = <I, A>(
+  schema: Schema.Schema<I, A>,
+) => {
+  const encode = Schema.encodeEffect(schema)
+
+  return (input: A, options?: ParseOptions | undefined) =>
+    Effect.mapError(
+      encode(input, options),
+      (error): RpcEncodeFailure => ({
+        _tag: "RpcEncodeFailure",
+        errors: error.errors,
+      }),
+    )
+}

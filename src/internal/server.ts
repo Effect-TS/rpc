@@ -4,7 +4,7 @@ import { identity, pipe } from "@effect/data/Function"
 import * as Effect from "@effect/io/Effect"
 import * as Query from "@effect/query/Query"
 import type { RpcRequest, RpcResponse } from "@effect/rpc/DataSource"
-import type { RpcNotFound } from "@effect/rpc/Error"
+import type { RpcEncodeFailure, RpcNotFound } from "@effect/rpc/Error"
 import type {
   RpcRequestSchema,
   RpcSchema,
@@ -18,11 +18,10 @@ import type {
 } from "@effect/rpc/Server"
 import * as codec from "@effect/rpc/internal/codec"
 import { decode, encode } from "@effect/rpc/internal/codec"
-import { methodsMap } from "@effect/rpc/internal/schema"
+import { inputEncodeMap, methodsMap } from "@effect/rpc/internal/schema"
 import * as Schema from "@effect/schema/Schema"
 
-/** @internal */
-export const schemaHandlersMap = <H extends RpcHandlers>(
+const schemaHandlersMap = <H extends RpcHandlers>(
   handlers: H,
   prefix = "",
 ): Record<string, RpcHandler.Any> =>
@@ -103,19 +102,26 @@ export const handleSingleRequest = <R extends RpcRouter.Base>(
 }
 
 /** @internal */
-export const handleRequestUnion = <R extends RpcRouter.Base>(router: R) => {
+export const handlerRaw = <R extends RpcRouter.Base>(router: R) => {
   const handlerMap = schemaHandlersMap(router.handlers)
+  const inputEncoders = inputEncodeMap(router.schema)
 
   return <Req extends RpcRequestSchema.To<R["schema"]>>(
     request: Req,
   ): Req extends { _tag: infer M }
-    ? RpcHandler.FromMethod<M, R["handlers"]>
+    ? RpcHandler.FromMethod<M, R["handlers"], RpcEncodeFailure>
     : never => {
     const handler = handlerMap[(request as RpcRequest)._tag]
     if (Effect.isEffect(handler)) {
       return handler as any
     }
-    return (handler as any)((request as RpcRequest).input) as any
+
+    return Effect.flatMap(
+      inputEncoders[(request as RpcRequest)._tag](
+        (request as RpcRequest).input,
+      ),
+      handler as any,
+    ) as any
   }
 }
 
@@ -152,15 +158,6 @@ export const handler = <R extends RpcRouter.Base>(
       Effect.map(Chunk.toReadonlyArray),
     )
 }
-
-/** @internal */
-export const handlerRaw: <R extends RpcRouter.Base>(
-  router: R,
-) => <Req extends RpcRequestSchema.To<R["schema"]>>(
-  request: Req,
-) => Req extends { _tag: infer M }
-  ? RpcHandler.FromMethod<M, R["handlers"]>
-  : never = handleRequestUnion as any
 
 /** @internal */
 export const makeUndecodedClient = <
