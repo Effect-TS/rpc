@@ -1,4 +1,4 @@
-import { pipe } from "@effect/data/Function"
+import { flow, pipe } from "@effect/data/Function"
 import * as Effect from "@effect/io/Effect"
 import * as Query from "@effect/query/Query"
 import type { Rpc, RpcClient } from "@effect/rpc/Client"
@@ -61,18 +61,21 @@ const makeRpc = <S extends RpcSchema.Any, TR>(
   schema: S,
   method: string,
 ): Rpc<S, TR> => {
-  const responseSchema = Schema.either(
+  const parseError = codec.decodeEffect(
     "error" in schema ? Schema.union(RpcError, schema.error) : RpcError,
-    schema.output,
   )
-  const parseResponse = codec.decodeEffect(responseSchema)
+  const parseOutput = codec.decodeEffect(schema.output)
+
+  const parseResponse = flow(
+    Query.mapEffect(parseOutput),
+    Query.catchAll((e) =>
+      Query.fromEffect(Effect.flatMap(parseError(e), Effect.fail)),
+    ),
+  )
 
   const send = (input: unknown) =>
-    pipe(
+    parseResponse(
       Query.fromRequest(RpcRequest({ _tag: method, input }), dataSource),
-      Query.mapEffect((u) =>
-        Effect.flatMap(parseResponse(u), Effect.fromEither),
-      ),
     )
 
   if ("input" in schema) {
@@ -81,5 +84,7 @@ const makeRpc = <S extends RpcSchema.Any, TR>(
       pipe(Query.fromEither(encodeInput(input)), Query.flatMap(send))) as any
   }
 
-  return send(undefined) as any
+  return parseResponse(
+    Query.fromRequest(RpcRequest({ _tag: method }), dataSource),
+  ) as any
 }

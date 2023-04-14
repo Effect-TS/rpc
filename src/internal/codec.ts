@@ -36,8 +36,8 @@ export const encode: <I, A>(
 ) => {
   const encode = Schema.encodeEither(schema)
 
-  return (input: A, options?: ParseOptions | undefined) => {
-    return pipe(
+  return (input: A, options?: ParseOptions | undefined) =>
+    pipe(
       encode(input, options),
       Either.mapLeft(
         (error): RpcEncodeFailure => ({
@@ -46,19 +46,4 @@ export const encode: <I, A>(
         }),
       ),
     )
-  }
 }
-
-/** @internal */
-export const encodeEffect = <A>(schema: Schema.Schema<A>) =>
-  flow(encode(schema), Effect.fromEither)
-
-/** @internal */
-export const requestDecoder = decodeEffect(
-  Schema.array(
-    Schema.struct({
-      _tag: Schema.string,
-      input: Schema.unknown,
-    }),
-  ),
-)
