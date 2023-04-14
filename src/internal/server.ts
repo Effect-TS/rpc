@@ -17,9 +17,7 @@ import type {
   RpcUndecodedClient,
 } from "@effect/rpc/Server"
 import * as codec from "@effect/rpc/internal/codec"
-import { decode, encode } from "@effect/rpc/internal/codec"
-import { inputEncodeMap, methodsMap } from "@effect/rpc/internal/schema"
-import * as Schema from "@effect/schema/Schema"
+import { inputEncodeMap, methodCodecs } from "@effect/rpc/internal/schema"
 
 const schemaHandlersMap = <H extends RpcHandlers>(
   handlers: H,
@@ -46,15 +44,15 @@ export const handleSingleRequest = <R extends RpcRouter.Base>(
   never,
   RpcResponse
 >) => {
-  const schemaMap = methodsMap(router.schema)
+  const codecsMap = methodCodecs(router.schema)
   const handlerMap = schemaHandlersMap(router.handlers)
 
   return (request) =>
     pipe(
       Either.Do(),
-      Either.bind("schema", () =>
+      Either.bind("codecs", () =>
         Either.fromNullable(
-          schemaMap[request._tag],
+          codecsMap[request._tag],
           (): RpcNotFound => ({
             _tag: "RpcNotFound",
             method: request._tag,
@@ -70,12 +68,12 @@ export const handleSingleRequest = <R extends RpcRouter.Base>(
           }),
         ),
       ),
-      Either.bind("input", ({ handler, schema }) =>
-        !Effect.isEffect(handler) && "input" in schema
-          ? decode(schema.input as Schema.Schema<any>)(request.input)
+      Either.bind("input", ({ codecs, handler }) =>
+        !Effect.isEffect(handler) && "input" in codecs
+          ? codecs.input!(request.input)
           : Either.right(null),
       ),
-      Either.map(({ handler, input, schema }) => {
+      Either.map(({ codecs, handler, input }) => {
         const effect: Effect.Effect<any, unknown, unknown> = Effect.isEffect(
           handler,
         )
@@ -84,16 +82,9 @@ export const handleSingleRequest = <R extends RpcRouter.Base>(
 
         return pipe(
           effect,
-          Effect.map(encode(schema.output)),
+          Effect.map(codecs.output),
           Effect.catchAll((_) =>
-            Effect.succeed(
-              Either.flatMap(
-                encode(
-                  "error" in schema ? schema.error : (Schema.never as any),
-                )(_),
-                Either.left,
-              ),
-            ),
+            Effect.succeed(Either.flatMap(codecs.error(_), Either.left)),
           ),
         )
       }),
