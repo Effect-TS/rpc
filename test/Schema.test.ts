@@ -20,6 +20,26 @@ describe("Schema", () => {
       }>()
     })
 
+    it("nested io", () => {
+      const schema = _.make({
+        greet: {
+          input: S.string,
+          output: S.string,
+          error: S.never,
+        },
+      })
+
+      const parent = _.make({
+        nested: schema,
+      })
+
+      expectTypeOf(parent.nested.greet).toEqualTypeOf<{
+        input: S.Schema<string, string>
+        output: S.Schema<string, string>
+        error: S.Schema<never, never>
+      }>()
+    })
+
     it("no input", () => {
       const schema = _.make({
         greet: {
