@@ -77,7 +77,7 @@ export const inputEncodeMap = <S extends RpcService.DefinitionWithId>(
     if (RpcServiceId in schema) {
       return {
         ...acc,
-        ...methodCodecs(schema, `${prefix}${method}.`),
+        ...inputEncodeMap(schema, `${prefix}${method}.`),
       }
     } else if (!("input" in schema)) {
       return acc

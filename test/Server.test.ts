@@ -11,6 +11,13 @@ const SomeError = S.struct({
   message: S.string,
 })
 
+const posts = RS.make({
+  create: {
+    input: S.struct({ body: S.string }),
+    output: S.struct({ id: S.number, body: S.string }),
+  },
+})
+
 const schema = RS.make({
   greet: {
     input: S.string,
@@ -44,6 +51,8 @@ const schema = RS.make({
     input: pipe(S.number, S.int(), S.greaterThan(10)),
     output: S.number,
   },
+
+  posts,
 })
 
 const router = _.router(schema, {
@@ -72,6 +81,14 @@ const router = _.router(schema, {
     ),
 
   refined: (n) => Effect.succeed(n),
+
+  posts: _.router(posts, {
+    create: (post) =>
+      Effect.succeed({
+        id: 1,
+        body: post.body,
+      }),
+  }),
 })
 
 const handler = _.handler(router)
@@ -90,11 +107,12 @@ describe("Server", () => {
         { _tag: "encodeDate", input: date.toISOString() },
         { _tag: "refined", input: 5 },
         { _tag: "refined", input: 11 },
+        { _tag: "posts.create", input: { body: "hello" } },
         // TODO: Enable once bug is fixed in schema
         // { _tag: "encodeDate", input: "test" },
       ]),
     )
-    expect(result.length).toEqual(8)
+    expect(result.length).toEqual(9)
 
     expect(result[0]).toEqual(Either.right("Hello, John!"))
     expect(result[1]._tag === "Left" && result[1].left._tag).toEqual(
@@ -116,6 +134,10 @@ describe("Server", () => {
       "RpcDecodeFailure",
     )
     expect(result[7]._tag === "Right" && result[7].right).toEqual(11)
+    expect(result[8]._tag === "Right" && result[8].right).toEqual({
+      id: 1,
+      body: "hello",
+    })
   })
 
   it("handlerRaw/", async () => {
@@ -131,11 +153,14 @@ describe("Server", () => {
         ),
         Effect.either(handlerRaw({ _tag: "refined", input: 5 })),
         Effect.either(handlerRaw({ _tag: "refined", input: 11 })),
+        Effect.either(
+          handlerRaw({ _tag: "posts.create", input: { body: "hello" } }),
+        ),
         // TODO: Enable once bug is fixed in schema
         // { _tag: "encodeDate", input: "test" },
       ]),
     )
-    expect(result.length).toEqual(7)
+    expect(result.length).toEqual(8)
 
     expect(result[0]).toEqual(Either.right("Hello, John!"))
     expect(result[1]._tag === "Left" && result[1].left._tag).toEqual(
@@ -150,6 +175,10 @@ describe("Server", () => {
       "RpcEncodeFailure",
     )
     expect(result[6]._tag === "Right" && result[6].right).toEqual(11)
+    expect(result[7]._tag === "Right" && result[7].right).toEqual({
+      id: 1,
+      body: "hello",
+    })
   })
 
   it("undecodedClient/ refined success", async () => {

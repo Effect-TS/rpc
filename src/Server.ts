@@ -122,7 +122,7 @@ export namespace RpcHandlers {
   export type Map<H extends RpcHandlers, XE, P extends string = ""> = {
     [K in keyof H]: K extends string
       ? H[K] extends { handlers: RpcHandlers }
-        ? Map<H[K]["handlers"], `${P}${K}.`>
+        ? Map<H[K]["handlers"], XE, `${P}${K}.`>
         : H[K] extends RpcHandler.IO<infer R, infer E, infer _I, infer O>
         ? [`${P}${K}`, Effect<R, E | XE, O>]
         : H[K] extends Effect<infer R, infer E, infer O>
