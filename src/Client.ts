@@ -1,9 +1,9 @@
 /**
  * @since 1.0.0
  */
-import type { Query } from "@effect/query/Query"
-import type { RpcDataSource } from "@effect/rpc/DataSource"
+import type { Effect } from "@effect/io/Effect"
 import type { RpcError } from "@effect/rpc/Error"
+import type { RpcResolver } from "@effect/rpc/Resolver"
 import type { RpcSchema, RpcService } from "@effect/rpc/Schema"
 import type { UndecodedRpcResponse } from "@effect/rpc/Server"
 import * as internal from "@effect/rpc/internal/client"
@@ -22,13 +22,13 @@ export type Rpc<C extends RpcSchema.Any, TR> = C extends RpcSchema.IO<
   infer _IO,
   infer O
 >
-  ? (input: I) => Query<TR, RpcError | E, O>
+  ? (input: I) => Effect<TR, RpcError | E, O>
   : C extends RpcSchema.NoError<infer _II, infer I, infer _IO, infer O>
-  ? (input: I) => Query<TR, RpcError, O>
+  ? (input: I) => Effect<TR, RpcError, O>
   : C extends RpcSchema.NoInput<infer _IE, infer E, infer _IO, infer O>
-  ? Query<TR, RpcError | E, O>
+  ? Effect<TR, RpcError | E, O>
   : C extends RpcSchema.NoInputNoError<infer _IO, infer O>
-  ? Query<TR, RpcError, O>
+  ? Effect<TR, RpcError, O>
   : never
 
 type RpcClientRpcs<S extends RpcService.DefinitionWithId, TR> = {
@@ -67,8 +67,8 @@ export type RpcClient<
  */
 export const make: <
   S extends RpcService.DefinitionWithId,
-  T extends RpcDataSource<any>,
+  T extends RpcResolver<any>,
 >(
   schemas: S,
   transport: T,
-) => RpcClient<S, T extends RpcDataSource<infer R> ? R : never> = internal.make
+) => RpcClient<S, T extends RpcResolver<infer R> ? R : never> = internal.make

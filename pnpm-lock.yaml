@@ -10,10 +10,9 @@ specifiers:
   '@effect-ts/core': ^0.60.5
   '@effect/babel-plugin': ^0.2.0
   '@effect/data': ^0.12.2
-  '@effect/io': ^0.20.0
+  '@effect/io': ^0.21.1
   '@effect/language-service': 0.0.19
-  '@effect/query': ^0.7.0
-  '@effect/schema': ^0.12.1
+  '@effect/schema': ^0.13.1
   '@rollup/pluginutils': ^5.0.2
   '@types/node': ^18.15.11
   '@typescript-eslint/eslint-plugin': ^5.57.1
@@ -41,9 +40,8 @@ specifiers:
 
 dependencies:
   '@effect/data': 0.12.2
-  '@effect/io': 0.20.0
-  '@effect/query': 0.7.0
-  '@effect/schema': 0.12.1
+  '@effect/io': 0.21.1
+  '@effect/schema': 0.13.1
 
 devDependencies:
   '@babel/cli': 7.21.0_@babel+core@7.21.4
@@ -623,8 +621,8 @@ packages:
     resolution: {integrity: sha512-bmWRTcsSRG1FlBswT+D8SxW6r3c4B3pKJrjYfitCD03tXHnup5gLHaWqbFgIjiyYITS+UsJRRjVrNxvyGG4ZNQ==}
     dev: false
 
-  /@effect/io/0.20.0:
-    resolution: {integrity: sha512-6ECG566e0ZjvDQO5/KbZtQpplZiSTT+ERnxd7dEC1WjC5cF6uIICMBGWljgL5hBOEpV8p/UHs00anKxTlYomXg==}
+  /@effect/io/0.21.1:
+    resolution: {integrity: sha512-2y362S35gIP1YhkXPjCU/osnumcPEjk+WMik+vLbQsQf+YFdlgzwDMJZAsmLUZWj+D//dHByvL9n8VuDarvIDA==}
     dependencies:
       '@effect/data': 0.12.2
     dev: false
@@ -636,18 +634,11 @@ packages:
       '@fp-ts/data': 0.0.41
     dev: true
 
-  /@effect/query/0.7.0:
-    resolution: {integrity: sha512-xiOYvX1WEVelZCY9LEpVjLe0FqBEfsEP0UaTtmuaH+j/fw1LDaCXqg0Wd+p/4BO1shBmv7xNOJAMZimzOgjZXw==}
+  /@effect/schema/0.13.1:
+    resolution: {integrity: sha512-bs9uCVkC70GUMgAenOUJGhQcrADgcp4OE8oF+td9cNxIQ5aAFVEI5lrxeb9UKRRtODkUj0vDHqB5Zf/0p5Fv8Q==}
     dependencies:
       '@effect/data': 0.12.2
-      '@effect/io': 0.20.0
-    dev: false
-
-  /@effect/schema/0.12.1:
-    resolution: {integrity: sha512-ZW2+d4wIJChhpWKh3NUZpwC/GRllQSFjmOXMz3SL0XryoVt+xVosYZmowd5ufrPvttxk9BNZy/u41RjeFXp3GA==}
-    dependencies:
-      '@effect/data': 0.12.2
-      '@effect/io': 0.20.0
+      '@effect/io': 0.21.1
       fast-check: 3.8.0
     dev: false
 

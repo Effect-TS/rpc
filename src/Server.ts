@@ -2,7 +2,7 @@
  * @since 1.0.0
  */
 import type { Effect } from "@effect/io/Effect"
-import type { RpcResponse } from "@effect/rpc/DataSource"
+import type { RpcResponse } from "@effect/rpc/Resolver"
 import type { RpcDecodeFailure, RpcEncodeFailure } from "@effect/rpc/Error"
 import type {
   RpcRequestSchema,

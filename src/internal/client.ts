@@ -1,13 +1,11 @@
-import { flow, pipe } from "@effect/data/Function"
 import * as Effect from "@effect/io/Effect"
-import * as Query from "@effect/query/Query"
 import type { Rpc, RpcClient } from "@effect/rpc/Client"
-import type { RpcDataSource } from "@effect/rpc/DataSource"
 import { RpcError } from "@effect/rpc/Error"
+import type { RpcResolver } from "@effect/rpc/Resolver"
 import type { RpcSchema, RpcService } from "@effect/rpc/Schema"
 import { RpcServiceId } from "@effect/rpc/Schema"
 import * as codec from "@effect/rpc/internal/codec"
-import { RpcRequest } from "@effect/rpc/internal/dataSource"
+import { RpcRequest } from "@effect/rpc/internal/resolver"
 import * as schema from "@effect/rpc/internal/schema"
 import * as Schema from "@effect/schema/Schema"
 
@@ -26,12 +24,12 @@ const unsafeDecode = <S extends RpcService.DefinitionWithId>(schemas: S) => {
 
 const makeRecursive = <
   S extends RpcService.DefinitionWithId,
-  T extends RpcDataSource<any>,
+  T extends RpcResolver<any>,
 >(
   schemas: S,
   transport: T,
   prefix = "",
-): RpcClient<S, T extends RpcDataSource<infer R> ? R : never> =>
+): RpcClient<S, T extends RpcResolver<infer R> ? R : never> =>
   Object.entries(schemas).reduce(
     (acc, [method, codec]) => ({
       ...acc,
@@ -46,11 +44,11 @@ const makeRecursive = <
 /** @internal */
 export const make = <
   S extends RpcService.DefinitionWithId,
-  T extends RpcDataSource<any>,
+  T extends RpcResolver<any>,
 >(
   schemas: S,
   transport: T,
-): RpcClient<S, T extends RpcDataSource<infer R> ? R : never> =>
+): RpcClient<S, T extends RpcResolver<infer R> ? R : never> =>
   ({
     ...makeRecursive(schemas, transport),
     _schemas: schemas,
@@ -58,7 +56,7 @@ export const make = <
   } as any)
 
 const makeRpc = <S extends RpcSchema.Any, TR>(
-  dataSource: RpcDataSource<TR>,
+  resolver: RpcResolver<TR>,
   schema: S,
   method: string,
 ): Rpc<S, TR> => {
@@ -67,26 +65,23 @@ const makeRpc = <S extends RpcSchema.Any, TR>(
   )
   const parseOutput = codec.decodeEffect(schema.output)
 
-  const parseResponse = flow(
-    Query.mapEffect(parseOutput),
-    Query.catchAll((e) =>
-      Query.fromEffect(Effect.flatMap(parseError(e), Effect.fail)),
-    ),
-  )
+  const parseResponse = (self: Effect.Effect<any, any, any>) =>
+    Effect.catchAll(Effect.flatMap(self, parseOutput), (e) =>
+      Effect.flatMap(parseError(e), Effect.fail),
+    )
 
   if ("input" in schema) {
-    const encodeInput = codec.encode(schema.input as Schema.Schema<any>)
+    const encodeInput = codec.encodeEffect(schema.input as Schema.Schema<any>)
 
     const send = (input: unknown) =>
       parseResponse(
-        Query.fromRequest(RpcRequest({ _tag: method, input }), dataSource),
+        Effect.request(RpcRequest({ _tag: method, input }), resolver),
       )
 
-    return ((input: any) =>
-      pipe(Query.fromEither(encodeInput(input)), Query.flatMap(send))) as any
+    return ((input: any) => Effect.flatMap(encodeInput(input), send)) as any
   }
 
   return parseResponse(
-    Query.fromRequest(RpcRequest({ _tag: method }), dataSource),
+    Effect.request(RpcRequest({ _tag: method }), resolver),
   ) as any
 }

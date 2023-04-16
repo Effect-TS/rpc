@@ -5,7 +5,7 @@ import * as Client from "@effect/rpc/Client"
 import * as Server from "@effect/rpc/Server"
 import * as RpcSchema from "@effect/rpc/Schema"
 import * as Schema from "@effect/schema/Schema"
-import { makeFetch } from "@effect/rpc/DataSource"
+import * as Resolver from "@effect/rpc/Resolver"
 
 // Post schema
 const PostId = pipe(
@@ -73,10 +73,9 @@ const router = Server.router(schema, {
   posts: postsRouter,
 })
 
-// TODO: Connect router to HTTP server
-export const handler = Server.handler(router)
+const handler = Server.handler(router)
 
 // Create client
-const client = Client.make(schema, makeFetch({ url: "http://localhost:3000" }))
+const client = Client.make(schema, Resolver.make(handler))
 
 Effect.runPromise(client.posts.create({ body: "Hello!" }))
