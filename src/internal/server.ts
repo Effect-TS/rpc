@@ -1,10 +1,8 @@
-import * as Chunk from "@effect/data/Chunk"
 import * as Either from "@effect/data/Either"
 import { identity, pipe } from "@effect/data/Function"
 import * as Effect from "@effect/io/Effect"
-import * as Query from "@effect/query/Query"
-import type { RpcRequest, RpcResponse } from "@effect/rpc/DataSource"
 import type { RpcEncodeFailure, RpcNotFound } from "@effect/rpc/Error"
+import type { RpcRequest, RpcResponse } from "@effect/rpc/Resolver"
 import type {
   RpcRequestSchema,
   RpcSchema,
@@ -141,12 +139,9 @@ export const handler = <R extends RpcRouter.Base>(
   const handler = handleSingleRequest(router)
 
   return (u) =>
-    pipe(
-      Array.isArray(u)
-        ? Effect.collectAllPar(u.map(handler))
-        : Effect.die(new Error("expected an array of requests")),
-      Effect.map(Chunk.toReadonlyArray),
-    )
+    Array.isArray(u)
+      ? Effect.allPar(u.map(handler))
+      : Effect.die(new Error("expected an array of requests"))
 }
 
 /** @internal */
@@ -177,7 +172,6 @@ export const makeUndecodedClient = <
           [method]: pipe(
             definition,
             Effect.flatMap(codec.encode(schema.output)),
-            Query.fromEffect,
           ),
         }
       }
@@ -192,7 +186,6 @@ export const makeUndecodedClient = <
             decodeInput(input),
             Effect.flatMap(definition as RpcHandler.IO<any, any, any, any>),
             Effect.flatMap(encodeOutput),
-            Query.fromEffect,
           ),
       }
     },

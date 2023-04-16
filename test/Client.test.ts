@@ -3,7 +3,7 @@ import * as S from "@effect/schema/Schema"
 import * as RS from "@effect/rpc/Schema"
 import * as Server from "@effect/rpc/Server"
 import * as _ from "@effect/rpc/Client"
-import * as DataSource from "@effect/rpc/DataSource"
+import * as DataSource from "@effect/rpc/Resolver"
 import { describe, it, expect } from "vitest"
 
 const SomeError = S.struct({

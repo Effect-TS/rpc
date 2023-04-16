@@ -1,5 +1,5 @@
 import * as Either from "@effect/data/Either"
-import { flow, pipe } from "@effect/data/Function"
+import { pipe } from "@effect/data/Function"
 import * as Effect from "@effect/io/Effect"
 import type { RpcDecodeFailure, RpcEncodeFailure } from "@effect/rpc/Error"
 import type { ParseOptions } from "@effect/schema/AST"
@@ -22,8 +22,17 @@ export const decode = <I, A>(schema: Schema.Schema<I, A>) => {
 }
 
 /** @internal */
-export const decodeEffect = <I, A>(schema: Schema.Schema<I, A>) =>
-  flow(decode(schema), Effect.fromEither)
+export const decodeEffect = <I, A>(schema: Schema.Schema<I, A>) => {
+  const decode = Schema.parseEffect(schema)
+  return (input: unknown): Effect.Effect<never, RpcDecodeFailure, A> =>
+    Effect.mapError(
+      decode(input),
+      (error): RpcDecodeFailure => ({
+        _tag: "RpcDecodeFailure",
+        errors: error.errors,
+      }),
+    )
+}
 
 /** @internal */
 export const encode: <I, A>(
