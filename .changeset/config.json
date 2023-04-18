@@ -1,6 +1,6 @@
 {
-  "$schema": "https://unpkg.com/@changesets/config@1.6.4/schema.json",
-  "changelog": ["@changesets/changelog-github", { "repo": "Effect-TS/rpc" }],
+  "$schema": "https://unpkg.com/@changesets/config@2.3.0/schema.json",
+  "changelog": ["@changesets/changelog-github", { "repo": "effect-ts/rpc" }],
   "commit": false,
   "linked": [],
   "access": "restricted",

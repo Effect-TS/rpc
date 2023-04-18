@@ -38,17 +38,14 @@
     "incremental": true,
     "removeComments": false,
     "paths": {
-      "@effect/rpc": [
-        "./src/index.ts"
-      ],
       "@effect/rpc/test/*": [
-        "./test/*"
+        "./packages/rpc/test/*"
       ],
       "@effect/rpc/examples/*": [
-        "./examples/*"
+        "./packages/rpc/examples/*"
       ],
       "@effect/rpc/*": [
-        "./src/*"
+        "./packages/rpc/src/*"
       ]
     },
     "plugins": [
