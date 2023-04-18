@@ -2,7 +2,11 @@ import * as Either from "@effect/data/Either"
 import { identity, pipe } from "@effect/data/Function"
 import * as Effect from "@effect/io/Effect"
 import type { RpcEncodeFailure, RpcNotFound } from "@effect/rpc/Error"
-import type { RpcRequest, RpcResponse } from "@effect/rpc/Resolver"
+import type {
+  RpcRequest,
+  RpcRequestFields,
+  RpcResponse,
+} from "@effect/rpc/Resolver"
 import type {
   RpcRequestSchema,
   RpcSchema,
@@ -17,6 +21,7 @@ import type {
 import * as codec from "@effect/rpc/internal/codec"
 import { inputEncodeMap, methodCodecs } from "@effect/rpc/internal/schema"
 import * as Schema from "@effect/schema/Schema"
+import * as Tracer from "@effect/io/Tracer"
 
 const schemaHandlersMap = <H extends RpcHandlers>(
   handlers: H,
@@ -35,10 +40,9 @@ const schemaHandlersMap = <H extends RpcHandlers>(
 /** @internal */
 export const handleSingleRequest = <R extends RpcRouter.Base>(
   router: R,
-): ((request: {
-  readonly _tag: string
-  readonly input?: unknown
-}) => Effect.Effect<
+): ((
+  request: RpcRequestFields,
+) => Effect.Effect<
   RpcHandlers.Services<R["handlers"]>,
   never,
   RpcResponse
@@ -86,6 +90,12 @@ export const handleSingleRequest = <R extends RpcRouter.Base>(
         )
       }),
       Either.match((_) => Effect.succeed(Either.left(_)), identity as any),
+      Effect.provideService(Tracer.Span, {
+        _tag: "ExternalSpan",
+        name: request.spanName,
+        spanId: request.spanId,
+        traceId: request.traceId,
+      } satisfies Tracer.ParentSpan as any as Tracer.Span),
     )
 }
 

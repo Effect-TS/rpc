@@ -58,6 +58,13 @@ export type RpcClient<
     output: O,
   ) => O extends UndecodedRpcResponse<M, infer O> ? O : never
 }
+/**
+ * @category models
+ * @since 1.0.0
+ */
+export interface RpcClientOptions {
+  readonly spanPrefix?: string
+}
 
 /**
  * Creates an RPC client

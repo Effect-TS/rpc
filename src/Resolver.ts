@@ -19,10 +19,21 @@ export interface RpcResolver<R>
  * @category models
  * @since 1.0.0
  */
-export interface RpcRequest extends Request.Request<RpcError, unknown> {
+export interface RpcRequestFields {
   readonly _tag: string
   readonly input?: unknown
+  readonly spanName: string
+  readonly traceId: string
+  readonly spanId: string
 }
+
+/**
+ * @category models
+ * @since 1.0.0
+ */
+export interface RpcRequest
+  extends Request.Request<RpcError, unknown>,
+    RpcRequestFields {}
 
 /**
  * @category models
