@@ -78,4 +78,5 @@ export const make: <
 >(
   schemas: S,
   transport: T,
+  options?: RpcClientOptions,
 ) => RpcClient<S, T extends RpcResolver<infer R> ? R : never> = internal.make

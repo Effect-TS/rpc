@@ -66,6 +66,9 @@ const router = Server.router(schema, {
 
 const handler = Server.handler(router)
 const client = _.make(schema, DataSource.make(handler))
+const clientWithPrefix = _.make(schema, DataSource.make(handler), {
+  spanPrefix: "CustomPrefix",
+})
 
 describe("Client", () => {
   it("encoded/", async () => {
@@ -95,6 +98,9 @@ describe("Client", () => {
   it("tracing", async () => {
     expect(await Effect.runPromise(client.currentSpanName)).toEqual(
       "RpcClient.currentSpanName",
+    )
+    expect(await Effect.runPromise(clientWithPrefix.currentSpanName)).toEqual(
+      "CustomPrefix.currentSpanName",
     )
   })
 })
