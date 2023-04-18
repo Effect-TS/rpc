@@ -1,9 +1,9 @@
 import { pipe } from "@effect/data/Function"
-import * as Tracer from "@effect/io/Tracer"
 import * as Effect from "@effect/io/Effect"
+import * as Tracer from "@effect/io/Tracer"
 import type { Rpc, RpcClient, RpcClientOptions } from "@effect/rpc/Client"
 import { RpcError } from "@effect/rpc/Error"
-import type { RpcRequest, RpcResolver } from "@effect/rpc/Resolver"
+import type { RpcResolver } from "@effect/rpc/Resolver"
 import type { RpcSchema, RpcService } from "@effect/rpc/Schema"
 import { RpcServiceId } from "@effect/rpc/Schema"
 import * as codec from "@effect/rpc/internal/codec"
@@ -70,23 +70,9 @@ const makeRpc = <S extends RpcSchema.Any, TR>(
   )
   const parseOutput = codec.decodeEffect(schema.output)
 
-  const send = (
-    request: Omit<RpcRequest.Fields, "traceId" | "spanId" | "spanName">,
-  ) =>
+  const parseResponse = (self: Effect.Effect<any, any, unknown>) =>
     pipe(
-      Tracer.Span,
-      Effect.flatMap((span) =>
-        Effect.request(
-          resolverInternal.RpcRequest({
-            ...request,
-            spanName: span.name,
-            traceId: span.traceId,
-            spanId: span.spanId,
-          }),
-          resolver,
-        ),
-      ),
-      Effect.flatMap(parseOutput),
+      Effect.flatMap(self, parseOutput),
       Effect.catchAll((e) => Effect.flatMap(parseError(e), Effect.fail)),
       Tracer.withSpan(`${spanPrefix}.${method}`),
     )
@@ -95,10 +81,37 @@ const makeRpc = <S extends RpcSchema.Any, TR>(
     const encodeInput = codec.encodeEffect(schema.input as Schema.Schema<any>)
 
     return ((input: any) =>
-      Effect.flatMap(encodeInput(input), (input) =>
-        send({ _tag: method, input }),
+      pipe(
+        encodeInput(input),
+        Effect.flatMap((input) =>
+          Effect.flatMap(Tracer.Span, (span) =>
+            Effect.request(
+              resolverInternal.RpcRequest({
+                _tag: method,
+                input,
+                spanName: span.name,
+                spanId: span.spanId,
+                traceId: span.traceId,
+              }),
+              resolver,
+            ),
+          ),
+        ),
+        parseResponse,
       )) as any
   }
 
-  return send({ _tag: method }) as any
+  return parseResponse(
+    Effect.flatMap(Tracer.Span, (span) =>
+      Effect.request(
+        resolverInternal.RpcRequest({
+          _tag: method,
+          spanName: span.name,
+          spanId: span.spanId,
+          traceId: span.traceId,
+        }),
+        resolver,
+      ),
+    ),
+  ) as any
 }
