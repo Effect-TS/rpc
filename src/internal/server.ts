@@ -39,7 +39,7 @@ export const handleSingleRequest = <R extends RpcRouter.Base>(
 ): ((
   request: RpcRequest.Fields,
 ) => Effect.Effect<
-  RpcHandlers.Services<R["handlers"]>,
+  Exclude<RpcHandlers.Services<R["handlers"]>, Tracer.Span>,
   never,
   RpcResponse
 >) => {
@@ -123,7 +123,7 @@ export const handler = <R extends RpcRouter.Base>(
 ): ((
   requests: unknown,
 ) => Effect.Effect<
-  RpcHandlers.Services<R["handlers"]>,
+  Exclude<RpcHandlers.Services<R["handlers"]>, Tracer.Span>,
   never,
   ReadonlyArray<RpcResponse>
 >) => {
@@ -143,7 +143,7 @@ export const handlerRaw = <R extends RpcRouter.Base>(router: R) => {
   return <Req extends RpcRequestSchema.To<R["schema"]>>(
     request: Req,
   ): Req extends { _tag: infer M }
-    ? RpcHandler.FromMethod<M, R["handlers"], RpcEncodeFailure>
+    ? RpcHandler.FromMethod<R["handlers"], M, Tracer.Span, RpcEncodeFailure>
     : never => {
     const handler = handlerMap[(request as RpcRequest)._tag]
     if (Effect.isEffect(handler)) {
@@ -189,6 +189,7 @@ export const makeUndecodedClient = <
           [method]: pipe(
             definition,
             Effect.flatMap(codec.encode(schema.output)),
+            Tracer.withSpan(`${options.spanPrefix}.undecoded.${method}`),
           ),
         }
       }
