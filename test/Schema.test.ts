@@ -83,12 +83,12 @@ describe("Schema", () => {
     it("validates/Json", () => {
       const schema = _.make({
         currentTime: {
-          output: S.date,
+          output: S.DateFromSelf,
           error: S.never,
         },
 
         currentTime2: {
-          output: S.dateFromString(S.string),
+          output: S.Date,
           error: S.never,
         },
       })

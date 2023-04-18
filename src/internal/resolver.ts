@@ -2,7 +2,6 @@ import { isEither } from "@effect/data/Either"
 import { pipe } from "@effect/data/Function"
 import * as ReadonlyArray from "@effect/data/ReadonlyArray"
 import * as Effect from "@effect/io/Effect"
-import * as Exit from "@effect/io/Exit"
 import * as Request from "@effect/io/Request"
 import * as Resolver from "@effect/io/RequestResolver"
 import type { RpcDecodeFailure, RpcTransportError } from "@effect/rpc/Error"
@@ -18,7 +17,7 @@ export const make = <R>(
     requests: ReadonlyArray<resolver.RpcRequest>,
   ) => Effect.Effect<R, RpcTransportError, ReadonlyArray<unknown>>,
 ): resolver.RpcResolver<R> =>
-  Resolver.makeBatched((requests) =>
+  Resolver.makeBatched<resolver.RpcRequest>()((requests) =>
     pipe(
       send(requests),
       Effect.filterOrFail(
@@ -32,7 +31,7 @@ export const make = <R>(
       Effect.flatMap((responses) =>
         Effect.allDiscard(
           ReadonlyArray.zipWith(requests, responses, (request, response) =>
-            Request.complete(request, Exit.fromEither(response)),
+            Request.completeEffect(request, response),
           ),
         ),
       ),
