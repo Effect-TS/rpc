@@ -17,6 +17,7 @@ import type {
 import * as codec from "@effect/rpc/internal/codec"
 import { inputEncodeMap, methodCodecs } from "@effect/rpc/internal/schema"
 import * as Schema from "@effect/schema/Schema"
+import * as Tracer from "@effect/io/Tracer"
 
 const schemaHandlersMap = <H extends RpcHandlers>(
   handlers: H,
@@ -35,10 +36,9 @@ const schemaHandlersMap = <H extends RpcHandlers>(
 /** @internal */
 export const handleSingleRequest = <R extends RpcRouter.Base>(
   router: R,
-): ((request: {
-  readonly _tag: string
-  readonly input?: unknown
-}) => Effect.Effect<
+): ((
+  request: RpcRequest.Fields,
+) => Effect.Effect<
   RpcHandlers.Services<R["handlers"]>,
   never,
   RpcResponse
@@ -86,7 +86,53 @@ export const handleSingleRequest = <R extends RpcRouter.Base>(
         )
       }),
       Either.match((_) => Effect.succeed(Either.left(_)), identity as any),
+      Tracer.withSpan(`${router.options.spanPrefix}.${request._tag}`, {
+        parent: {
+          _tag: "ExternalSpan",
+          name: request.spanName,
+          spanId: request.spanId,
+          traceId: request.traceId,
+        },
+      }),
     )
+}
+
+/** @internal */
+export const router = <
+  S extends RpcService.DefinitionWithId,
+  H extends RpcHandlers.FromService<S>,
+>(
+  schema: S,
+  handlers: H,
+  optionsPartial: Partial<RpcRouter.Options> = {},
+): RpcRouter<S, H> => {
+  const options: RpcRouter.Options = {
+    spanPrefix: optionsPartial.spanPrefix ?? "RpcServer",
+  }
+  return {
+    schema,
+    handlers,
+    undecoded: makeUndecodedClient(schema, handlers, options),
+    options,
+  }
+}
+
+/** @internal */
+export const handler = <R extends RpcRouter.Base>(
+  router: R,
+): ((
+  requests: unknown,
+) => Effect.Effect<
+  RpcHandlers.Services<R["handlers"]>,
+  never,
+  ReadonlyArray<RpcResponse>
+>) => {
+  const handler = handleSingleRequest(router)
+
+  return (u) =>
+    Array.isArray(u)
+      ? Effect.allPar(u.map(handler))
+      : Effect.die(new Error("expected an array of requests"))
 }
 
 /** @internal */
@@ -114,43 +160,13 @@ export const handlerRaw = <R extends RpcRouter.Base>(router: R) => {
 }
 
 /** @internal */
-export const router = <
-  S extends RpcService.DefinitionWithId,
-  H extends RpcHandlers.FromService<S>,
->(
-  schema: S,
-  handlers: H,
-): RpcRouter<S, H> => ({
-  schema,
-  handlers,
-  undecoded: makeUndecodedClient(schema, handlers),
-})
-
-/** @internal */
-export const handler = <R extends RpcRouter.Base>(
-  router: R,
-): ((
-  requests: unknown,
-) => Effect.Effect<
-  RpcHandlers.Services<R["handlers"]>,
-  never,
-  ReadonlyArray<RpcResponse>
->) => {
-  const handler = handleSingleRequest(router)
-
-  return (u) =>
-    Array.isArray(u)
-      ? Effect.allPar(u.map(handler))
-      : Effect.die(new Error("expected an array of requests"))
-}
-
-/** @internal */
 export const makeUndecodedClient = <
   S extends RpcService.DefinitionWithId,
   H extends RpcHandlers.FromService<S>,
 >(
   schemas: S,
   handlers: H,
+  options: RpcRouter.Options,
 ): RpcUndecodedClient<H> =>
   Object.entries(handlers as RpcHandlers).reduce(
     (acc, [method, definition]) => {
@@ -160,6 +176,7 @@ export const makeUndecodedClient = <
           [method]: makeUndecodedClient(
             schemas[method] as any,
             definition.handlers as any,
+            options,
           ),
         }
       }
@@ -186,6 +203,7 @@ export const makeUndecodedClient = <
             decodeInput(input),
             Effect.flatMap(definition as RpcHandler.IO<any, any, any, any>),
             Effect.flatMap(encodeOutput),
+            Tracer.withSpan(`${options.spanPrefix}.undecoded.${method}`),
           ),
       }
     },

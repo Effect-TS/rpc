@@ -2,8 +2,9 @@
  * @since 1.0.0
  */
 import type { Effect } from "@effect/io/Effect"
-import type { RpcResponse } from "@effect/rpc/Resolver"
+import type { Span } from "@effect/io/Tracer"
 import type { RpcDecodeFailure, RpcEncodeFailure } from "@effect/rpc/Error"
+import type { RpcResponse } from "@effect/rpc/Resolver"
 import type {
   RpcRequestSchema,
   RpcSchema,
@@ -15,7 +16,9 @@ import * as internal from "@effect/rpc/internal/server"
  * @category models
  * @since 1.0.0
  */
-export type RpcHandler<R, E, I, O> = RpcHandler.IO<R, E, I, O> | Effect<R, E, O>
+export type RpcHandler<R, E, I, O> =
+  | RpcHandler.IO<R, E, I, O>
+  | RpcHandler.NoInput<R, E, O>
 
 /**
  * @since 1.0.0
@@ -25,7 +28,12 @@ export namespace RpcHandler {
    * @category models
    * @since 1.0.0
    */
-  export type IO<R, E, I, O> = (input: I) => Effect<R, E, O>
+  export type IO<R, E, I, O> = (input: I) => Effect<R | Span, E, O>
+  /**
+   * @category models
+   * @since 1.0.0
+   */
+  export type NoInput<R, E, O> = Effect<R | Span, E, O>
 
   /**
    * @category models
@@ -49,9 +57,9 @@ export namespace RpcHandler {
     : C extends RpcSchema.NoError<infer _II, infer I, infer _IO, infer O>
     ? IO<any, never, I, O>
     : C extends RpcSchema.NoInput<infer _IE, infer E, infer _IO, infer O>
-    ? Effect<any, E, O>
+    ? NoInput<any, E, O>
     : C extends RpcSchema.NoInputNoError<infer _IO, infer O>
-    ? Effect<any, never, O>
+    ? NoInput<any, never, O>
     : never
 
   /**
@@ -99,7 +107,7 @@ export namespace RpcHandlers {
     any,
     any
   >
-    ? R
+    ? Exclude<R, Span>
     : never
 
   /**
@@ -124,9 +132,9 @@ export namespace RpcHandlers {
       ? H[K] extends { handlers: RpcHandlers }
         ? Map<H[K]["handlers"], XE, `${P}${K}.`>
         : H[K] extends RpcHandler.IO<infer R, infer E, infer _I, infer O>
-        ? [`${P}${K}`, Effect<R, E | XE, O>]
+        ? [`${P}${K}`, Effect<Exclude<R, Span>, E | XE, O>]
         : H[K] extends Effect<infer R, infer E, infer O>
-        ? [`${P}${K}`, Effect<R, E | XE, O>]
+        ? [`${P}${K}`, Effect<Exclude<R, Span>, E | XE, O>]
         : never
       : never
   }[keyof H]
@@ -157,6 +165,15 @@ export namespace RpcRouter {
     readonly handlers: RpcHandlers
     readonly schema: RpcService.DefinitionWithId
     readonly undecoded: RpcUndecodedClient<RpcHandlers>
+    readonly options: Options
+  }
+
+  /**
+   * @category models
+   * @since 1.0.0
+   */
+  export interface Options {
+    readonly spanPrefix: string
   }
 }
 
@@ -170,6 +187,7 @@ export const router: <
 >(
   schema: S,
   handlers: H,
+  options?: Partial<RpcRouter.Options>,
 ) => RpcRouter<S, H> = internal.router
 
 /**
@@ -241,4 +259,5 @@ export const makeUndecodedClient: <
 >(
   schemas: S,
   handlers: H,
+  options: RpcRouter.Options,
 ) => RpcUndecodedClient<H> = internal.makeUndecodedClient

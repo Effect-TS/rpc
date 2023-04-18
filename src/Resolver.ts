@@ -19,9 +19,46 @@ export interface RpcResolver<R>
  * @category models
  * @since 1.0.0
  */
-export interface RpcRequest extends Request.Request<RpcError, unknown> {
-  readonly _tag: string
-  readonly input?: unknown
+export interface RpcRequest
+  extends Request.Request<RpcError, unknown>,
+    RpcRequest.Fields {}
+
+export namespace RpcRequest {
+  /**
+   * @category models
+   * @since 1.0.0
+   */
+  export interface Tracing {
+    readonly spanName: string
+    readonly traceId: string
+    readonly spanId: string
+  }
+
+  /**
+   * @category models
+   * @since 1.0.0
+   */
+  export interface Fields extends Tracing {
+    readonly _tag: string
+    readonly input?: unknown
+  }
+
+  /**
+   * @category models
+   * @since 1.0.0
+   */
+  export interface WithInput<M extends string, I> extends Tracing {
+    readonly _tag: M
+    readonly input: I
+  }
+
+  /**
+   * @category models
+   * @since 1.0.0
+   */
+  export interface NoInput<M extends string> extends Tracing {
+    readonly _tag: M
+  }
 }
 
 /**

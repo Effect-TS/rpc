@@ -1,6 +1,7 @@
 /**
  * @since 1.0.0
  */
+import type { RpcRequest } from "@effect/rpc/Resolver"
 import * as Schema from "@effect/schema/Schema"
 
 /**
@@ -226,23 +227,23 @@ export namespace RpcRequestSchema {
             infer _IO,
             infer _O
           >
-        ? { readonly _tag: `${P}${K}`; readonly input: I }
+        ? RpcRequest.WithInput<`${P}${K}`, I>
         : S[K] extends RpcSchema.NoError<
             infer _II,
             infer I,
             infer _IO,
             infer _O
           >
-        ? { readonly _tag: `${P}${K}`; readonly input: I }
+        ? RpcRequest.WithInput<`${P}${K}`, I>
         : S[K] extends RpcSchema.NoInput<
             infer _IE,
             infer _E,
             infer _IO,
             infer _O
           >
-        ? { readonly _tag: `${P}${K}` }
+        ? RpcRequest.NoInput<`${P}${K}`>
         : S[K] extends RpcSchema.NoInputNoError<infer _IO, infer _O>
-        ? { readonly _tag: `${P}${K}` }
+        ? RpcRequest.NoInput<`${P}${K}`>
         : never
       : never
   }[keyof S]
