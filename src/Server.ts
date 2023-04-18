@@ -2,15 +2,15 @@
  * @since 1.0.0
  */
 import type { Effect } from "@effect/io/Effect"
-import type { RpcResponse } from "@effect/rpc/Resolver"
+import type { Span } from "@effect/io/Tracer"
 import type { RpcDecodeFailure, RpcEncodeFailure } from "@effect/rpc/Error"
+import type { RpcResponse } from "@effect/rpc/Resolver"
 import type {
   RpcRequestSchema,
   RpcSchema,
   RpcService,
 } from "@effect/rpc/Schema"
 import * as internal from "@effect/rpc/internal/server"
-import type { Span } from "@effect/io/Tracer"
 
 /**
  * @category models
@@ -259,4 +259,5 @@ export const makeUndecodedClient: <
 >(
   schemas: S,
   handlers: H,
+  options: RpcRouter.Options,
 ) => RpcUndecodedClient<H> = internal.makeUndecodedClient

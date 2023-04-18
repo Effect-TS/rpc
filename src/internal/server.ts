@@ -104,15 +104,18 @@ export const router = <
 >(
   schema: S,
   handlers: H,
-  options: Partial<RpcRouter.Options> = {},
-): RpcRouter<S, H> => ({
-  schema,
-  handlers,
-  undecoded: makeUndecodedClient(schema, handlers),
-  options: {
-    spanPrefix: options.spanPrefix ?? "RpcServer",
-  },
-})
+  optionsPartial: Partial<RpcRouter.Options> = {},
+): RpcRouter<S, H> => {
+  const options: RpcRouter.Options = {
+    spanPrefix: optionsPartial.spanPrefix ?? "RpcServer",
+  }
+  return {
+    schema,
+    handlers,
+    undecoded: makeUndecodedClient(schema, handlers, options),
+    options,
+  }
+}
 
 /** @internal */
 export const handler = <R extends RpcRouter.Base>(
@@ -163,6 +166,7 @@ export const makeUndecodedClient = <
 >(
   schemas: S,
   handlers: H,
+  options: RpcRouter.Options,
 ): RpcUndecodedClient<H> =>
   Object.entries(handlers as RpcHandlers).reduce(
     (acc, [method, definition]) => {
@@ -172,6 +176,7 @@ export const makeUndecodedClient = <
           [method]: makeUndecodedClient(
             schemas[method] as any,
             definition.handlers as any,
+            options,
           ),
         }
       }
@@ -198,6 +203,7 @@ export const makeUndecodedClient = <
             decodeInput(input),
             Effect.flatMap(definition as RpcHandler.IO<any, any, any, any>),
             Effect.flatMap(encodeOutput),
+            Tracer.withSpan(`${options.spanPrefix}.undecoded.${method}`),
           ),
       }
     },
