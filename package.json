@@ -18,6 +18,7 @@
     "circular": "madge --ts-config ./tsconfig.madge.json --circular --no-color --no-spinner --warning packages/*/build/esm",
     "test": "vitest",
     "autofix": "ultra -r autofix",
+    "docs": "ultra -r docs",
     "lint": "ultra -r lint",
     "tc": "ultra -r tc",
     "version": "changeset version && pnpm install --no-frozen-lockfile"
