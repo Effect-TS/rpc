@@ -3,7 +3,7 @@ import * as Tracer from "@effect/io/Tracer"
 import * as Effect from "@effect/io/Effect"
 import type { Rpc, RpcClient, RpcClientOptions } from "@effect/rpc/Client"
 import { RpcError } from "@effect/rpc/Error"
-import type { RpcRequestFields, RpcResolver } from "@effect/rpc/Resolver"
+import type { RpcRequest, RpcResolver } from "@effect/rpc/Resolver"
 import type { RpcSchema, RpcService } from "@effect/rpc/Schema"
 import { RpcServiceId } from "@effect/rpc/Schema"
 import * as codec from "@effect/rpc/internal/codec"
@@ -71,7 +71,7 @@ const makeRpc = <S extends RpcSchema.Any, TR>(
   const parseOutput = codec.decodeEffect(schema.output)
 
   const send = (
-    request: Omit<RpcRequestFields, "traceId" | "spanId" | "spanName">,
+    request: Omit<RpcRequest.Fields, "traceId" | "spanId" | "spanName">,
   ) =>
     pipe(
       Tracer.Span,

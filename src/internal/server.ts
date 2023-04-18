@@ -2,11 +2,7 @@ import * as Either from "@effect/data/Either"
 import { identity, pipe } from "@effect/data/Function"
 import * as Effect from "@effect/io/Effect"
 import type { RpcEncodeFailure, RpcNotFound } from "@effect/rpc/Error"
-import type {
-  RpcRequest,
-  RpcRequestFields,
-  RpcResponse,
-} from "@effect/rpc/Resolver"
+import type { RpcRequest, RpcResponse } from "@effect/rpc/Resolver"
 import type {
   RpcRequestSchema,
   RpcSchema,
@@ -41,7 +37,7 @@ const schemaHandlersMap = <H extends RpcHandlers>(
 export const handleSingleRequest = <R extends RpcRouter.Base>(
   router: R,
 ): ((
-  request: RpcRequestFields,
+  request: RpcRequest.Fields,
 ) => Effect.Effect<
   RpcHandlers.Services<R["handlers"]>,
   never,
@@ -90,13 +86,50 @@ export const handleSingleRequest = <R extends RpcRouter.Base>(
         )
       }),
       Either.match((_) => Effect.succeed(Either.left(_)), identity as any),
-      Effect.provideService(Tracer.Span, {
-        _tag: "ExternalSpan",
-        name: request.spanName,
-        spanId: request.spanId,
-        traceId: request.traceId,
-      } satisfies Tracer.ParentSpan as any as Tracer.Span),
+      Tracer.withSpan(`${router.options.spanPrefix}.${request._tag}`, {
+        parent: {
+          _tag: "ExternalSpan",
+          name: request.spanName,
+          spanId: request.spanId,
+          traceId: request.traceId,
+        },
+      }),
     )
+}
+
+/** @internal */
+export const router = <
+  S extends RpcService.DefinitionWithId,
+  H extends RpcHandlers.FromService<S>,
+>(
+  schema: S,
+  handlers: H,
+  options: Partial<RpcRouter.Options> = {},
+): RpcRouter<S, H> => ({
+  schema,
+  handlers,
+  undecoded: makeUndecodedClient(schema, handlers),
+  options: {
+    spanPrefix: options.spanPrefix ?? "RpcServer",
+  },
+})
+
+/** @internal */
+export const handler = <R extends RpcRouter.Base>(
+  router: R,
+): ((
+  requests: unknown,
+) => Effect.Effect<
+  RpcHandlers.Services<R["handlers"]>,
+  never,
+  ReadonlyArray<RpcResponse>
+>) => {
+  const handler = handleSingleRequest(router)
+
+  return (u) =>
+    Array.isArray(u)
+      ? Effect.allPar(u.map(handler))
+      : Effect.die(new Error("expected an array of requests"))
 }
 
 /** @internal */
@@ -121,37 +154,6 @@ export const handlerRaw = <R extends RpcRouter.Base>(router: R) => {
       handler as any,
     ) as any
   }
-}
-
-/** @internal */
-export const router = <
-  S extends RpcService.DefinitionWithId,
-  H extends RpcHandlers.FromService<S>,
->(
-  schema: S,
-  handlers: H,
-): RpcRouter<S, H> => ({
-  schema,
-  handlers,
-  undecoded: makeUndecodedClient(schema, handlers),
-})
-
-/** @internal */
-export const handler = <R extends RpcRouter.Base>(
-  router: R,
-): ((
-  requests: unknown,
-) => Effect.Effect<
-  RpcHandlers.Services<R["handlers"]>,
-  never,
-  ReadonlyArray<RpcResponse>
->) => {
-  const handler = handleSingleRequest(router)
-
-  return (u) =>
-    Array.isArray(u)
-      ? Effect.allPar(u.map(handler))
-      : Effect.die(new Error("expected an array of requests"))
 }
 
 /** @internal */

@@ -165,6 +165,15 @@ export namespace RpcRouter {
     readonly handlers: RpcHandlers
     readonly schema: RpcService.DefinitionWithId
     readonly undecoded: RpcUndecodedClient<RpcHandlers>
+    readonly options: Options
+  }
+
+  /**
+   * @category models
+   * @since 1.0.0
+   */
+  export interface Options {
+    readonly spanPrefix: string
   }
 }
 
@@ -178,6 +187,7 @@ export const router: <
 >(
   schema: S,
   handlers: H,
+  options?: Partial<RpcRouter.Options>,
 ) => RpcRouter<S, H> = internal.router
 
 /**

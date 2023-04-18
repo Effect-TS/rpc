@@ -142,19 +142,40 @@ describe("Server", () => {
 
   it("handlerRaw/", async () => {
     const date = new Date()
+    const traceFields = {
+      spanName: "test",
+      spanId: "123",
+      traceId: "native",
+    } as const
     const result = await Effect.runPromise(
       Effect.all([
-        Effect.either(handlerRaw({ _tag: "greet", input: "John" })),
-        Effect.either(handlerRaw({ _tag: "fail", input: "" })),
-        Effect.either(handlerRaw({ _tag: "failNoInput" })),
-        Effect.either(handlerRaw({ _tag: "encodeInput", input: date })),
         Effect.either(
-          handlerRaw({ _tag: "encodeDate", input: date.toISOString() }),
+          handlerRaw({ ...traceFields, _tag: "greet", input: "John" }),
         ),
-        Effect.either(handlerRaw({ _tag: "refined", input: 5 })),
-        Effect.either(handlerRaw({ _tag: "refined", input: 11 })),
+        Effect.either(handlerRaw({ ...traceFields, _tag: "fail", input: "" })),
+        Effect.either(handlerRaw({ ...traceFields, _tag: "failNoInput" })),
         Effect.either(
-          handlerRaw({ _tag: "posts.create", input: { body: "hello" } }),
+          handlerRaw({ ...traceFields, _tag: "encodeInput", input: date }),
+        ),
+        Effect.either(
+          handlerRaw({
+            ...traceFields,
+            _tag: "encodeDate",
+            input: date.toISOString(),
+          }),
+        ),
+        Effect.either(
+          handlerRaw({ ...traceFields, _tag: "refined", input: 5 }),
+        ),
+        Effect.either(
+          handlerRaw({ ...traceFields, _tag: "refined", input: 11 }),
+        ),
+        Effect.either(
+          handlerRaw({
+            ...traceFields,
+            _tag: "posts.create",
+            input: { body: "hello" },
+          }),
         ),
         // TODO: Enable once bug is fixed in schema
         // { _tag: "encodeDate", input: "test" },
