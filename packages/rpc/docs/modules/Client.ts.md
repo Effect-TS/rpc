@@ -17,6 +17,7 @@ Added in v1.0.0
 - [models](#models)
   - [Rpc (type alias)](#rpc-type-alias)
   - [RpcClient (type alias)](#rpcclient-type-alias)
+  - [RpcClientOptions (interface)](#rpcclientoptions-interface)
 
 ---
 
@@ -31,7 +32,8 @@ Creates an RPC client
 ```ts
 export declare const make: <S extends any, T extends any>(
   schemas: S,
-  transport: T
+  transport: T,
+  options?: RpcClientOptions | undefined
 ) => RpcClient<S, T extends any ? R : never>
 ```
 
@@ -54,13 +56,13 @@ export type Rpc<C extends RpcSchema.Any, TR> = C extends RpcSchema.IO<
   infer _IO,
   infer O
 >
-  ? (input: I) => Query<TR, RpcError | E, O>
+  ? (input: I) => Effect<TR, RpcError | E, O>
   : C extends RpcSchema.NoError<infer _II, infer I, infer _IO, infer O>
-  ? (input: I) => Query<TR, RpcError, O>
+  ? (input: I) => Effect<TR, RpcError, O>
   : C extends RpcSchema.NoInput<infer _IE, infer E, infer _IO, infer O>
-  ? Query<TR, RpcError | E, O>
+  ? Effect<TR, RpcError | E, O>
   : C extends RpcSchema.NoInputNoError<infer _IO, infer O>
-  ? Query<TR, RpcError, O>
+  ? Effect<TR, RpcError, O>
   : never
 ```
 
@@ -79,6 +81,18 @@ export type RpcClient<S extends RpcService.DefinitionWithId, TR> = RpcClientRpcs
     method: M,
     output: O
   ) => O extends UndecodedRpcResponse<M, infer O> ? O : never
+}
+```
+
+Added in v1.0.0
+
+## RpcClientOptions (interface)
+
+**Signature**
+
+```ts
+export interface RpcClientOptions {
+  readonly spanPrefix?: string
 }
 ```
 

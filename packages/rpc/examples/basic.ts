@@ -78,4 +78,4 @@ const handler = Server.handler(router)
 // Create client
 const client = Client.make(schema, Resolver.make(handler))
 
-Effect.runPromise(client.posts.create({ body: "Hello!" }))
+Effect.runPromise(client.posts.create({ body: "Hello!" })).then(console.log)

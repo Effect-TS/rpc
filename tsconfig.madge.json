@@ -4,9 +4,14 @@
     "allowJs": true,
     "baseUrl": ".",
     "paths": {
-      "@effect/rpc": ["./build/esm/index.js"],
-      "@effect/rpc/*": ["./build/esm/*"]
+      "@effect/rpc/test/*": ["./packages/rpc/build/test/*"],
+      "@effect/rpc/examples/*": ["./packages/rpc/build/examples/*"],
+      "@effect/rpc/*": ["./packages/rpc/build/esm/*"],
     }
   },
-  "include": ["./build/esm/**/*.js"]
+  "include": [
+    "./packages/rpc/build/esm/**/*.js",
+    "./packages/rpc/build/test/**/*.js",
+    "./packages/rpc/build/examples/**/*.js",
+  ]
 }
