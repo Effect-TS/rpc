@@ -1,6 +1,6 @@
 import { pipe } from "@effect/data/Function"
-import * as RpcHttp from "@effect/rpc-http"
 import * as Effect from "@effect/io/Effect"
+import * as RpcHttp from "@effect/rpc-http"
 import { schema } from "@effect/rpc-http/examples/schema"
 import * as Client from "@effect/rpc/Client"
 
@@ -21,6 +21,6 @@ pipe(
       console.log(users)
     }),
   ),
-  Effect.withRequestBatching("on"),
+  Effect.provideLayer(Client.RpcCacheLive),
   Effect.runFork,
 )

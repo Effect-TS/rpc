@@ -1,15 +1,28 @@
+import { Tag } from "@effect/data/Context"
+import { seconds } from "@effect/data/Duration"
 import { pipe } from "@effect/data/Function"
 import * as Effect from "@effect/io/Effect"
+import * as Layer from "@effect/io/Layer"
+import * as Request from "@effect/io/Request"
 import * as Tracer from "@effect/io/Tracer"
-import type { Rpc, RpcClient, RpcClientOptions } from "@effect/rpc/Client"
+import type * as client from "@effect/rpc/Client"
 import { RpcError } from "@effect/rpc/Error"
-import type { RpcResolver } from "@effect/rpc/Resolver"
+import type { RpcRequest, RpcResolver } from "@effect/rpc/Resolver"
 import type { RpcSchema, RpcService } from "@effect/rpc/Schema"
 import { RpcServiceId } from "@effect/rpc/Schema"
 import * as codec from "@effect/rpc/internal/codec"
 import * as resolverInternal from "@effect/rpc/internal/resolver"
 import * as schema from "@effect/rpc/internal/schema"
 import * as Schema from "@effect/schema/Schema"
+
+/** @internal */
+export const RpcCache = Tag<client.RpcCache, Request.Cache<RpcRequest>>()
+
+/** @internal */
+export const RpcCacheLive = Layer.effect(
+  RpcCache,
+  Request.makeCache(10000, seconds(60)),
+)
 
 const unsafeDecode = <S extends RpcService.DefinitionWithId>(schemas: S) => {
   const map = schema.methodClientCodecs(schemas)
@@ -30,9 +43,9 @@ const makeRecursive = <
 >(
   schemas: S,
   transport: T,
-  options: RpcClientOptions,
+  options: client.RpcClientOptions,
   prefix = "",
-): RpcClient<S, T extends RpcResolver<infer R> ? R : never> =>
+): client.RpcClient<S, T extends RpcResolver<infer R> ? R : never> =>
   Object.entries(schemas).reduce(
     (acc, [method, codec]) => ({
       ...acc,

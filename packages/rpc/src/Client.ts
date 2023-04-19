@@ -3,10 +3,13 @@
  */
 import type { Effect } from "@effect/io/Effect"
 import type { RpcError } from "@effect/rpc/Error"
-import type { RpcResolver } from "@effect/rpc/Resolver"
+import type { RpcRequest, RpcResolver } from "@effect/rpc/Resolver"
 import type { RpcSchema, RpcService } from "@effect/rpc/Schema"
 import type { UndecodedRpcResponse } from "@effect/rpc/Server"
 import * as internal from "@effect/rpc/internal/client"
+import type * as Layer from "@effect/io/Layer"
+import type { Tag } from "@effect/data/Context"
+import type { Cache } from "@effect/io/Request"
 
 /**
  * Represents an RPC method signature.
@@ -38,6 +41,27 @@ type RpcClientRpcs<S extends RpcService.DefinitionWithId, TR> = {
     ? Rpc<S[K], TR>
     : never
 }
+
+/**
+ * @category models
+ * @since 1.0.0
+ */
+export interface RpcCache {
+  readonly _: unique symbol
+}
+
+/**
+ * @category cache
+ * @since 1.0.0
+ */
+export const RpcCache: Tag<RpcCache, Cache<RpcRequest>> = internal.RpcCache
+
+/**
+ * @category cache
+ * @since 1.0.0
+ */
+export const RpcCacheLive: Layer.Layer<never, never, RpcCache> =
+  internal.RpcCacheLive
 
 /**
  * Represents an RPC client

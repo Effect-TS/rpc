@@ -1,13 +1,13 @@
 import { pipe } from "@effect/data/Function"
 import * as ReadonlyArray from "@effect/data/ReadonlyArray"
 import * as Effect from "@effect/io/Effect"
+import * as Exit from "@effect/io/Exit"
 import * as Request from "@effect/io/Request"
 import * as Resolver from "@effect/io/RequestResolver"
 import type { RpcError, RpcTransportError } from "@effect/rpc/Error"
 import type * as resolver from "@effect/rpc/Resolver"
 import { decodeEffect } from "@effect/rpc/internal/codec"
 import * as Schema from "@effect/schema/Schema"
-import * as Exit from "@effect/io/Exit"
 
 /** @internal */
 export const RpcRequest = Request.of<resolver.RpcRequest>()
