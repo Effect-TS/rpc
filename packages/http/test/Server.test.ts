@@ -1,5 +1,4 @@
 import * as Effect from "@effect/io/Effect"
-import * as Either from "@effect/data/Either"
 import * as S from "@effect/schema/Schema"
 import * as RS from "@effect/rpc/Schema"
 import * as Server from "@effect/rpc/Server"
@@ -45,6 +44,6 @@ describe("Server", () => {
       }),
     )
 
-    expect(result).toEqual([Either.right({ "x-foo": "bar" })])
+    expect(result).toEqual([{ _tag: "Right", right: { "x-foo": "bar" } }])
   })
 })
