@@ -1,7 +1,7 @@
 /**
  * @since 1.0.0
  */
-import { Tag } from "@effect/data/Context"
+import type { Tag } from "@effect/data/Context"
 import type { Effect } from "@effect/io/Effect"
 import type { Span } from "@effect/io/Tracer"
 import * as internal from "@effect/rpc-http/internal/server"
@@ -22,7 +22,7 @@ export interface HttpRequest {
  * @category tags
  * @since 1.0.0
  */
-export const HttpRequest = Tag<HttpRequest>()
+export const HttpRequest: Tag<HttpRequest, HttpRequest> = internal.HttpRequest
 
 /**
  * @category models
