@@ -12,5 +12,15 @@ const client = Client.make(
   }),
 )
 
-// Call the greet method
-pipe(client.greet("World"), Effect.tap(Effect.log), Effect.runPromise)
+// Use the client
+pipe(
+  client.getUserIds,
+  Effect.flatMap((ids) => Effect.forEachPar(ids, client.getUser)),
+  Effect.tap((users) =>
+    Effect.sync(() => {
+      console.log(users)
+    }),
+  ),
+  Effect.withRequestBatching("on"),
+  Effect.runFork,
+)

@@ -48,7 +48,7 @@ export const make = <R>(
         ),
       ),
       Effect.catchAll((_) =>
-        Effect.allDiscard(requests.map((request) => Request.fail(request, _))),
+        Effect.forEachDiscard(requests, (request) => Request.fail(request, _)),
       ),
     ),
   )
