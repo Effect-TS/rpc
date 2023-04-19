@@ -64,8 +64,8 @@ export const make = <
 >(
   schemas: S,
   transport: T,
-  options: RpcClientOptions = {},
-): RpcClient<S, T extends RpcResolver<infer R> ? R : never> =>
+  options: client.RpcClientOptions = {},
+): client.RpcClient<S, T extends RpcResolver<infer R> ? R : never> =>
   ({
     ...makeRecursive(schemas, transport, options),
     _schemas: schemas,
@@ -76,8 +76,8 @@ const makeRpc = <S extends RpcSchema.Any, TR>(
   resolver: RpcResolver<TR>,
   schema: S,
   method: string,
-  { spanPrefix = "RpcClient" }: RpcClientOptions,
-): Rpc<S, TR> => {
+  { spanPrefix = "RpcClient" }: client.RpcClientOptions,
+): client.Rpc<S, TR> => {
   const parseError = codec.decodeEffect(
     "error" in schema ? Schema.union(RpcError, schema.error) : RpcError,
   )
