@@ -62,7 +62,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type RpcResponse = Either.Either<RpcError, unknown>
+export type RpcResponse = { _tag: 'Left'; left: RpcError } | { _tag: 'Right'; right: unknown }
 ```
 
 Added in v1.0.0

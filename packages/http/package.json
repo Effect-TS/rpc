@@ -12,8 +12,14 @@
   },
   "homepage": "https://github.com/effect-ts/rpc",
   "exports": {
+    ".": {
+      "require": "./build/cjs/index.js"
+    },
     "./*": {
       "require": "./build/cjs/*.js"
+    },
+    "./examples/*": {
+      "require": "./build/examples/*.js"
     }
   },
   "scripts": {
@@ -42,7 +48,9 @@
   "dependencies": {
     "@effect/data": "^0.12.2",
     "@effect/io": "^0.22.4",
-    "@effect/rpc": "workspace:*",
+    "@effect/rpc": "workspace:*"
+  },
+  "devDependencies": {
     "@effect/schema": "^0.14.0"
   },
   "config": {

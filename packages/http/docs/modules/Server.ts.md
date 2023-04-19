@@ -1,6 +1,6 @@
 ---
 title: Server.ts
-nav_order: 2
+nav_order: 3
 parent: Modules
 ---
 
@@ -29,7 +29,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const make: <R extends any>(router: R) => RpcHttpHandler<R>
+export declare const make: <R extends RpcRouter.Base>(router: R) => RpcHttpHandler<R>
 ```
 
 Added in v1.0.0

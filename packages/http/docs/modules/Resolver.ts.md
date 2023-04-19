@@ -1,6 +1,6 @@
 ---
 title: Resolver.ts
-nav_order: 1
+nav_order: 2
 parent: Modules
 ---
 
@@ -27,7 +27,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const make: (options: FetchResolverOptions) => any
+export declare const make: (options: FetchResolverOptions) => RpcResolver<never>
 ```
 
 Added in v1.0.0
