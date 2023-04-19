@@ -29,7 +29,7 @@ Added in v1.0.0
 
 ```ts
 export declare const make: <R>(
-  send: (requests: ReadonlyArray<RpcRequest>) => Effect.Effect<R, any, readonly unknown[]>
+  send: (requests: ReadonlyArray<RpcRequest>) => Effect.Effect<R, any, readonly RpcResponse[]>
 ) => RpcResolver<R>
 ```
 
@@ -62,7 +62,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type RpcResponse = { _tag: 'Left'; left: RpcError } | { _tag: 'Right'; right: unknown }
+export type RpcResponse = RpcResponse.Error | RpcResponse.Success
 ```
 
 Added in v1.0.0
