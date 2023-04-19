@@ -18,6 +18,8 @@ export default defineConfig({
     alias: {
       "@effect/rpc/test": path.join(__dirname, "packages/rpc/test"),
       "@effect/rpc": path.join(__dirname, "packages/rpc/src"),
+      "@effect/rpc-http/test": path.join(__dirname, "packages/http/test"),
+      "@effect/rpc-http": path.join(__dirname, "packages/http/src"),
     },
   },
 })

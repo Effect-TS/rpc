@@ -12,9 +12,7 @@
     "preserveSymlinks": true,
     "moduleResolution": "node",
     "noEmit": false,
-    "lib": [
-      "ES2021", "DOM"
-    ],
+    "lib": ["ES2021", "DOM", "DOM.Iterable"],
     "sourceMap": true,
     "declarationMap": true,
     "strict": true,
@@ -38,26 +36,16 @@
     "incremental": true,
     "removeComments": false,
     "paths": {
-      "@effect/rpc/test/*": [
-        "./packages/rpc/test/*"
-      ],
-      "@effect/rpc/examples/*": [
-        "./packages/rpc/examples/*"
-      ],
-      "@effect/rpc/*": [
-        "./packages/rpc/src/*"
-      ]
+      "@effect/rpc/test/*": ["./packages/rpc/test/*"],
+      "@effect/rpc/examples/*": ["./packages/rpc/examples/*"],
+      "@effect/rpc/*": ["./packages/rpc/src/*"],
+      "@effect/rpc-http/test/*": ["./packages/http/test/*"],
+      "@effect/rpc-http/examples/*": ["./packages/http/examples/*"],
+      "@effect/rpc-http/*": ["./packages/http/src/*"],
+      "@effect/rpc-http": ["./packages/http/src/index.ts"]
     },
-    "plugins": [
-      {
-        "name": "@effect/language-service",
-      }
-    ]
+    "plugins": [{ "name": "@effect/language-service" }]
   },
   "include": [],
-  "exclude": [
-    "node_modules",
-    "build",
-    "lib"
-  ]
+  "exclude": ["node_modules", "build", "lib"]
 }
