@@ -29,7 +29,7 @@ Added in v1.0.0
 
 ```ts
 export declare const make: <R>(
-  send: (requests: ReadonlyArray<RpcRequest>) => Effect.Effect<R, any, readonly RpcResponse[]>
+  send: (requests: ReadonlyArray<RpcRequest>) => Effect.Effect<R, any, unknown>
 ) => RpcResolver<R>
 ```
 
@@ -52,7 +52,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface RpcResolver<R> extends Resolver.RequestResolver<R, RpcRequest> {}
+export interface RpcResolver<R> extends Resolver.RequestResolver<RpcRequest, R> {}
 ```
 
 Added in v1.0.0

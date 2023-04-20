@@ -9,7 +9,7 @@ import type { Tag } from "@effect/data/Context"
 import type { LazyArg } from "@effect/data/Function"
 
 /**
- * @category router models
+ * @category handler models
  * @since 1.0.0
  */
 export type RpcHandler<R, E, I, O> =
@@ -21,24 +21,24 @@ export type RpcHandler<R, E, I, O> =
  */
 export namespace RpcHandler {
   /**
-   * @category router models
+   * @category handler models
    * @since 1.0.0
    */
   export type IO<R, E, I, O> = (input: I) => Effect<R, E, O>
   /**
-   * @category router models
+   * @category handler models
    * @since 1.0.0
    */
   export type NoInput<R, E, O> = Effect<R, E, O>
 
   /**
-   * @category router models
+   * @category handler models
    * @since 1.0.0
    */
   export type Any = RpcHandler<any, any, any, any>
 
   /**
-   * @category router utils
+   * @category handler utils
    * @since 1.0.0
    */
   export type FromSchema<C extends RpcSchema.Any> = C extends RpcSchema.IO<
@@ -59,7 +59,7 @@ export namespace RpcHandler {
     : never
 
   /**
-   * @category router utils
+   * @category handler utils
    * @since 1.0.0
    */
   export type FromMethod<H extends RpcHandlers, M, XR, E2> = Extract<
@@ -71,7 +71,7 @@ export namespace RpcHandler {
 }
 
 /**
- * @category router
+ * @category handlers models
  * @since 1.0.0
  */
 export interface RpcHandlers
@@ -82,7 +82,7 @@ export interface RpcHandlers
  */
 export namespace RpcHandlers {
   /**
-   * @category router models
+   * @category handlers utils
    * @since 1.0.0
    */
   export type FromService<S extends RpcService.DefinitionWithId> = {
@@ -94,7 +94,7 @@ export namespace RpcHandlers {
   }
 
   /**
-   * @category router models
+   * @category handlers utils
    * @since 1.0.0
    */
   export type Services<H extends RpcHandlers> = H[keyof H] extends RpcHandler<
@@ -107,7 +107,7 @@ export namespace RpcHandlers {
     : never
 
   /**
-   * @category router models
+   * @category handlers utils
    * @since 1.0.0
    */
   export type Error<H extends RpcHandlers> = H[keyof H] extends RpcHandler<
@@ -120,7 +120,7 @@ export namespace RpcHandlers {
     : never
 
   /**
-   * @category router utils
+   * @category handlers utils
    * @since 1.0.0
    */
   export type Map<H extends RpcHandlers, XR, E2, P extends string = ""> = {
@@ -200,7 +200,7 @@ export namespace RpcRouter {
 }
 
 /**
- * @category constructors
+ * @category router constructors
  * @since 1.0.0
  */
 export const make: <

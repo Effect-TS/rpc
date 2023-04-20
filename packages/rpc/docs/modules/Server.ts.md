@@ -1,6 +1,6 @@
 ---
 title: Server.ts
-nav_order: 5
+nav_order: 6
 parent: Modules
 ---
 
@@ -16,11 +16,7 @@ Added in v1.0.0
   - [handler](#handler)
   - [handlerRaw](#handlerraw)
   - [makeUndecodedClient](#makeundecodedclient)
-  - [router](#router)
 - [models](#models)
-  - [RpcHandler (type alias)](#rpchandler-type-alias)
-  - [RpcHandlers (interface)](#rpchandlers-interface)
-  - [RpcRouter (interface)](#rpcrouter-interface)
   - [RpcUndecodedClient (type alias)](#rpcundecodedclient-type-alias)
   - [UndecodedRpcResponse (interface)](#undecodedrpcresponse-interface)
 
@@ -33,9 +29,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const handler: <R extends RpcRouter.Base>(
-  router: R
-) => (requests: unknown) => Effect<Exclude<RpcHandlers.Services<R['handlers']>, Span>, never, readonly any[]>
+export declare const handler: <R extends any>(router: R) => (requests: unknown) => Effect<any, never, readonly any[]>
 ```
 
 Added in v1.0.0
@@ -45,11 +39,9 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const handlerRaw: <R extends RpcRouter.Base>(
+export declare const handlerRaw: <R extends any>(
   router: R
-) => <Req extends any>(
-  request: Req
-) => Req extends { _tag: infer M } ? RpcHandler.FromMethod<R['handlers'], M, Span, any> : never
+) => <Req extends any>(request: Req) => Req extends { _tag: infer M } ? any : never
 ```
 
 Added in v1.0.0
@@ -59,65 +51,16 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const makeUndecodedClient: <S extends any, H extends RpcHandlers.FromService<S>>(
+export declare const makeUndecodedClient: <S extends any, H extends any>(
   schemas: S,
   handlers: H,
-  options: RpcRouter.Options
+  options: any
 ) => RpcUndecodedClient<H, ''>
 ```
 
 Added in v1.0.0
 
-## router
-
-**Signature**
-
-```ts
-export declare const router: <S extends any, H extends RpcHandlers.FromService<S>>(
-  schema: S,
-  handlers: H,
-  options?: Partial<RpcRouter.Options> | undefined
-) => RpcRouter<S, H>
-```
-
-Added in v1.0.0
-
 # models
-
-## RpcHandler (type alias)
-
-**Signature**
-
-```ts
-export type RpcHandler<R, E, I, O> = RpcHandler.IO<R, E, I, O> | RpcHandler.NoInput<R, E, O>
-```
-
-Added in v1.0.0
-
-## RpcHandlers (interface)
-
-**Signature**
-
-```ts
-export interface RpcHandlers extends Record<string, RpcHandler.Any | { handlers: RpcHandlers }> {}
-```
-
-Added in v1.0.0
-
-## RpcRouter (interface)
-
-**Signature**
-
-```ts
-export interface RpcRouter<S extends RpcService.DefinitionWithId, H extends RpcHandlers.FromService<S>>
-  extends RpcRouter.Base {
-  readonly handlers: H
-  readonly schema: S
-  readonly undecoded: RpcUndecodedClient<H>
-}
-```
-
-Added in v1.0.0
 
 ## RpcUndecodedClient (type alias)
 
