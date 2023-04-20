@@ -113,8 +113,8 @@ importers:
         specifier: ^0.12.2
         version: 0.12.2
       '@effect/io':
-        specifier: ^0.24.0
-        version: 0.24.2
+        specifier: ^0.24.3
+        version: 0.24.3
       '@effect/rpc':
         specifier: workspace:*
         version: link:../rpc/dist
@@ -130,8 +130,8 @@ importers:
         specifier: ^0.12.2
         version: 0.12.2
       '@effect/io':
-        specifier: ^0.24.0
-        version: 0.24.2
+        specifier: ^0.24.3
+        version: 0.24.3
       '@effect/schema':
         specifier: ^0.15.0
         version: 0.15.0
@@ -680,8 +680,8 @@ packages:
   /@effect/data@0.12.2:
     resolution: {integrity: sha512-bmWRTcsSRG1FlBswT+D8SxW6r3c4B3pKJrjYfitCD03tXHnup5gLHaWqbFgIjiyYITS+UsJRRjVrNxvyGG4ZNQ==}
 
-  /@effect/io@0.24.2:
-    resolution: {integrity: sha512-T0itAO6H6rVZAmCF4b3uLa1aSOBRnM7W+3HrN21U+M8ZC9tBRtxJkg85SYkDClw265bBZTxuZQSy2O0CXydx2w==}
+  /@effect/io@0.24.3:
+    resolution: {integrity: sha512-jpCeMoWdQXOhcpJ/NhAc0TF1+jfybZf7KSsF5tpivrq1vbDGxHM9tkGOaJUWxTzI7SVQ4GyCspYx8HW0oeKbCA==}
     dependencies:
       '@effect/data': 0.12.2
 
@@ -696,7 +696,7 @@ packages:
     resolution: {integrity: sha512-62qhGEAP0c+fFUfk/uXJ8hHIt+W9s+KKn5vLMaxw76kvwgYU2P71bFesZ6vjx5bV77GQ0CAWEc2IwfvQ3bs5qw==}
     dependencies:
       '@effect/data': 0.12.2
-      '@effect/io': 0.24.2
+      '@effect/io': 0.24.3
       fast-check: 3.8.0
 
   /@esbuild/android-arm64@0.17.17:
