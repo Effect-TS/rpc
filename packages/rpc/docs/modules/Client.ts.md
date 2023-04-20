@@ -18,6 +18,9 @@ Added in v1.0.0
   - [Rpc (type alias)](#rpc-type-alias)
   - [RpcClient (type alias)](#rpcclient-type-alias)
   - [RpcClientOptions (interface)](#rpcclientoptions-interface)
+- [tags](#tags)
+  - [RpcCache](#rpccache)
+  - [RpcCache (interface)](#rpccache-interface)
 
 ---
 
@@ -30,11 +33,11 @@ Creates an RPC client
 **Signature**
 
 ```ts
-export declare const make: <S extends any, T extends any>(
+export declare const make: <S extends any>(
   schemas: S,
-  transport: T,
+  transport: any,
   options?: RpcClientOptions | undefined
-) => RpcClient<S, T extends any ? R : never>
+) => RpcClient<S>
 ```
 
 Added in v1.0.0
@@ -48,7 +51,7 @@ Represents an RPC method signature.
 **Signature**
 
 ```ts
-export type Rpc<C extends RpcSchema.Any, TR> = C extends RpcSchema.IO<
+export type Rpc<C extends RpcSchema.Any> = C extends RpcSchema.IO<
   infer _IE,
   infer E,
   infer _II,
@@ -56,13 +59,13 @@ export type Rpc<C extends RpcSchema.Any, TR> = C extends RpcSchema.IO<
   infer _IO,
   infer O
 >
-  ? (input: I) => Effect<TR, RpcError | E, O>
+  ? (input: I) => Effect<never, RpcError | E, O>
   : C extends RpcSchema.NoError<infer _II, infer I, infer _IO, infer O>
-  ? (input: I) => Effect<TR, RpcError, O>
+  ? (input: I) => Effect<never, RpcError, O>
   : C extends RpcSchema.NoInput<infer _IE, infer E, infer _IO, infer O>
-  ? Effect<TR, RpcError | E, O>
+  ? Effect<never, RpcError | E, O>
   : C extends RpcSchema.NoInputNoError<infer _IO, infer O>
-  ? Effect<TR, RpcError, O>
+  ? Effect<never, RpcError, O>
   : never
 ```
 
@@ -75,7 +78,7 @@ Represents an RPC client
 **Signature**
 
 ```ts
-export type RpcClient<S extends RpcService.DefinitionWithId, TR> = RpcClientRpcs<S, TR> & {
+export type RpcClient<S extends RpcService.DefinitionWithId> = RpcClientRpcs<S> & {
   _schemas: S
   _unsafeDecode: <M extends RpcService.Methods<S>, O extends UndecodedRpcResponse<M, any>>(
     method: M,
@@ -93,6 +96,30 @@ Added in v1.0.0
 ```ts
 export interface RpcClientOptions {
   readonly spanPrefix?: string
+}
+```
+
+Added in v1.0.0
+
+# tags
+
+## RpcCache
+
+**Signature**
+
+```ts
+export declare const RpcCache: Tag<RpcCache, Cache<any>>
+```
+
+Added in v1.0.0
+
+## RpcCache (interface)
+
+**Signature**
+
+```ts
+export interface RpcCache {
+  readonly _: unique symbol
 }
 ```
 

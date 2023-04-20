@@ -10,8 +10,7 @@ const babelConfig = require("./.babel.mjs.json")
 export default defineConfig({
   plugins: [babel({ babel: babelConfig })],
   test: {
-    include: ["packages/*/test/**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
-    exclude: ["packages/*/test/utils/**/*.ts", "./test/**/*.init.ts"],
+    include: ["packages/*/test/**/*.test.ts"],
     globals: true,
   },
   resolve: {
