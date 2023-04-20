@@ -40,6 +40,7 @@ export namespace RpcRequest {
   export interface Fields extends Tracing {
     readonly _tag: string
     readonly input?: unknown
+    readonly hash: number
   }
 
   /**
