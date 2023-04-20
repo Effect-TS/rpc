@@ -2,8 +2,9 @@ import { Tag } from "@effect/data/Context"
 import * as Effect from "@effect/io/Effect"
 import * as _ from "@effect/rpc/Router"
 import * as RS from "@effect/rpc/Schema"
+import { typeEquals } from "@effect/rpc/test/utils"
 import * as S from "@effect/schema/Schema"
-import { describe, expectTypeOf, it } from "vitest"
+import { describe, it } from "vitest"
 
 const makeCounter = () => {
   let count = 0
@@ -30,14 +31,14 @@ const router = _.make(schema, {
 
 describe("Router", () => {
   it("provideServiceSync/", () => {
-    expectTypeOf(router.handlers.getCount).toMatchTypeOf<
+    typeEquals(router.handlers.getCount)<
       Effect.Effect<Counter, never, readonly [number, number]>
-    >()
+    >() satisfies true
 
     const provided = _.provideServiceSync(router, Counter, makeCounter)
-    expectTypeOf(provided.handlers.getCount).toMatchTypeOf<
+    typeEquals(provided.handlers.getCount)<
       Effect.Effect<never, never, readonly [number, number]>
-    >()
+    >() satisfies true
 
     expect(Effect.runSync(provided.handlers.getCount)).toEqual([0, 1])
   })
@@ -47,9 +48,10 @@ describe("Router", () => {
       Effect.sync(makeCounter)
 
     const provided = _.provideServiceEffect(router, Counter, counterEffect)
-    expectTypeOf(provided.handlers.getCount).toMatchTypeOf<
+
+    typeEquals(provided.handlers.getCount)<
       Effect.Effect<never, Error, readonly [number, number]>
-    >()
+    >() satisfies true
 
     expect(Effect.runSync(provided.handlers.getCount)).toEqual([0, 1])
   })
@@ -62,8 +64,8 @@ describe("Router", () => {
       Effect.sync(makeCounter)
 
     const provided = _.provideServiceEffect(router, Counter, counterEffect)
-    expectTypeOf(provided.handlers.getCount).toMatchTypeOf<
+    typeEquals(provided.handlers.getCount)<
       Effect.Effect<Foo, Error, readonly [number, number]>
-    >()
+    >() satisfies true
   })
 })
