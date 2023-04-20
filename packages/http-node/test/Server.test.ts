@@ -4,29 +4,21 @@ import * as Resolver from "@effect/rpc-http-node/Resolver"
 import * as _ from "@effect/rpc-http-node/Server"
 import * as Client from "@effect/rpc/Client"
 import * as Router from "@effect/rpc/Router"
-import * as RS from "@effect/rpc/Schema"
+import * as RpcSchema from "@effect/rpc/Schema"
 import * as S from "@effect/schema/Schema"
 import * as Http from "node:http"
 import { describe, expect, it } from "vitest"
 
-const schema = RS.make({
+const schema = RpcSchema.make({
   greet: {
     input: S.string,
     output: S.string,
     error: S.never,
   },
-
-  headers: {
-    output: S.record(S.string, S.string),
-  },
 })
 
 const router = Router.make(schema, {
   greet: (name) => Effect.succeed(`Hello, ${name}!`),
-
-  headers: Effect.map(_.HttpRequest, (request) =>
-    Object.fromEntries(request.headers),
-  ),
 })
 
 const handler = _.make(router)
