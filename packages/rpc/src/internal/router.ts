@@ -43,19 +43,19 @@ export const provideServiceEffect: {
     effect: Effect.Effect<R, E, Tag.Service<T>>,
   ): <Router extends RpcRouter.Base>(
     self: Router,
-  ) => RpcRouter.Provide<Router, Tag.Identifier<T>, E>
+  ) => RpcRouter.Provide<Router, Tag.Identifier<T>, R, E>
   <Router extends RpcRouter.Base, T extends Tag<any, any>, R, E>(
     self: Router,
     tag: T,
     effect: Effect.Effect<R, E, Tag.Service<T>>,
-  ): RpcRouter.Provide<Router, Tag.Identifier<T>, E>
+  ): RpcRouter.Provide<Router, Tag.Identifier<T>, R, E>
 } = dual(
   3,
   <Router extends RpcRouter.Base, T extends Tag<any, any>, R, E>(
     self: Router,
     tag: T,
     effect: Effect.Effect<R, E, Tag.Service<T>>,
-  ): RpcRouter.Provide<Router, Tag.Identifier<T>, E> => {
+  ): RpcRouter.Provide<Router, Tag.Identifier<T>, R, E> => {
     return {
       ...self,
       handlers: Object.fromEntries(
@@ -75,19 +75,19 @@ export const provideServiceSync: {
     Router extends RpcRouter.Base,
   >(
     self: Router,
-  ) => RpcRouter.Provide<Router, Tag.Identifier<T>, never>
+  ) => RpcRouter.Provide<Router, Tag.Identifier<T>, never, never>
   <Router extends RpcRouter.Base, T extends Tag<any, any>>(
     self: Router,
     tag: T,
     service: LazyArg<Tag.Service<T>>,
-  ): RpcRouter.Provide<Router, Tag.Identifier<T>, never>
+  ): RpcRouter.Provide<Router, Tag.Identifier<T>, never, never>
 } = dual(
   3,
   <Router extends RpcRouter.Base, T extends Tag<any, any>>(
     self: Router,
     tag: T,
     service: LazyArg<Tag.Service<T>>,
-  ): RpcRouter.Provide<Router, Tag.Identifier<T>, never> =>
+  ): RpcRouter.Provide<Router, Tag.Identifier<T>, never, never> =>
     provideServiceEffect(self, tag, Effect.sync(service)),
 )
 
@@ -97,18 +97,18 @@ export const provideService: {
     Router extends RpcRouter.Base,
   >(
     self: Router,
-  ) => RpcRouter.Provide<Router, Tag.Identifier<T>, never>
+  ) => RpcRouter.Provide<Router, Tag.Identifier<T>, never, never>
   <Router extends RpcRouter.Base, T extends Tag<any, any>>(
     self: Router,
     tag: T,
     service: Tag.Service<T>,
-  ): RpcRouter.Provide<Router, Tag.Identifier<T>, never>
+  ): RpcRouter.Provide<Router, Tag.Identifier<T>, never, never>
 } = dual(
   3,
   <Router extends RpcRouter.Base, T extends Tag<any, any>>(
     self: Router,
     tag: T,
     service: Tag.Service<T>,
-  ): RpcRouter.Provide<Router, Tag.Identifier<T>, never> =>
+  ): RpcRouter.Provide<Router, Tag.Identifier<T>, never, never> =>
     provideServiceEffect(self, tag, Effect.succeed(service)),
 )

@@ -176,24 +176,24 @@ export namespace RpcRouter {
    * @category router utils
    * @since 1.0.0
    */
-  export type Provide<Router extends Base, PR, PE> = RpcRouter<
+  export type Provide<Router extends Base, XR, PR, PE> = RpcRouter<
     Router["schema"],
     {
       [M in keyof Router["handlers"]]: Router["handlers"][M] extends Base
-        ? Provide<Router["handlers"][M], PR, PE>
+        ? Provide<Router["handlers"][M], XR, PR, PE>
         : Router["handlers"][M] extends RpcHandler.IO<
             infer R,
             infer E,
             infer I,
             infer O
           >
-        ? RpcHandler.IO<Exclude<R, PR>, E | PE, I, O>
+        ? RpcHandler.IO<Exclude<R, XR> | PR, E | PE, I, O>
         : Router["handlers"][M] extends RpcHandler.NoInput<
             infer R,
             infer E,
             infer O
           >
-        ? RpcHandler.NoInput<Exclude<R, PR>, E | PE, O>
+        ? RpcHandler.NoInput<Exclude<R, XR> | PR, E | PE, O>
         : never
     }
   >
@@ -221,12 +221,12 @@ export const provideService: {
     Router extends RpcRouter.Base,
   >(
     self: Router,
-  ) => RpcRouter.Provide<Router, Tag.Identifier<T>, never>
+  ) => RpcRouter.Provide<Router, Tag.Identifier<T>, never, never>
   <Router extends RpcRouter.Base, T extends Tag<any, any>>(
     self: Router,
     tag: T,
     service: Tag.Service<T>,
-  ): RpcRouter.Provide<Router, Tag.Identifier<T>, never>
+  ): RpcRouter.Provide<Router, Tag.Identifier<T>, never, never>
 } = internal.provideService
 
 /**
@@ -239,12 +239,12 @@ export const provideServiceEffect: {
     effect: Effect<R, E, Tag.Service<T>>,
   ): <Router extends RpcRouter.Base>(
     self: Router,
-  ) => RpcRouter.Provide<Router, Tag.Identifier<T>, E>
+  ) => RpcRouter.Provide<Router, Tag.Identifier<T>, R, E>
   <Router extends RpcRouter.Base, T extends Tag<any, any>, R, E>(
     self: Router,
     tag: T,
     effect: Effect<R, E, Tag.Service<T>>,
-  ): RpcRouter.Provide<Router, Tag.Identifier<T>, E>
+  ): RpcRouter.Provide<Router, Tag.Identifier<T>, R, E>
 } = internal.provideServiceEffect
 
 /**
@@ -256,10 +256,10 @@ export const provideServiceSync: {
     Router extends RpcRouter.Base,
   >(
     self: Router,
-  ) => RpcRouter.Provide<Router, Tag.Identifier<T>, never>
+  ) => RpcRouter.Provide<Router, Tag.Identifier<T>, never, never>
   <Router extends RpcRouter.Base, T extends Tag<any, any>>(
     self: Router,
     tag: T,
     service: LazyArg<Tag.Service<T>>,
-  ): RpcRouter.Provide<Router, Tag.Identifier<T>, never>
+  ): RpcRouter.Provide<Router, Tag.Identifier<T>, never, never>
 } = internal.provideServiceSync

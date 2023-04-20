@@ -41,4 +41,29 @@ describe("Router", () => {
 
     expect(Effect.runSync(provided.handlers.getCount)).toEqual([0, 1])
   })
+
+  it("provideServiceEffect/ error", () => {
+    const counterEffect: Effect.Effect<never, Error, Counter> =
+      Effect.sync(makeCounter)
+
+    const provided = _.provideServiceEffect(router, Counter, counterEffect)
+    expectTypeOf(provided.handlers.getCount).toMatchTypeOf<
+      Effect.Effect<never, Error, readonly [number, number]>
+    >()
+
+    expect(Effect.runSync(provided.handlers.getCount)).toEqual([0, 1])
+  })
+
+  it("provideServiceEffect/ env", () => {
+    interface Foo {
+      readonly _: unique symbol
+    }
+    const counterEffect: Effect.Effect<Foo, Error, Counter> =
+      Effect.sync(makeCounter)
+
+    const provided = _.provideServiceEffect(router, Counter, counterEffect)
+    expectTypeOf(provided.handlers.getCount).toMatchTypeOf<
+      Effect.Effect<Foo, Error, readonly [number, number]>
+    >()
+  })
 })
