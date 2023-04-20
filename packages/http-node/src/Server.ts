@@ -10,6 +10,14 @@ import type { RpcHandlers, RpcRouter } from "@effect/rpc/Router"
 import type { IncomingMessage, ServerResponse } from "node:http"
 import type { Readable } from "node:stream"
 
+export {
+  /**
+   * @category tags
+   * @since 1.0.0
+   */
+  HttpRequest,
+} from "@effect/rpc-http/Server"
+
 /**
  * @category models
  * @since 1.0.0
