@@ -39,10 +39,15 @@
       "@effect/rpc/test/*": ["./packages/rpc/test/*"],
       "@effect/rpc/examples/*": ["./packages/rpc/examples/*"],
       "@effect/rpc/*": ["./packages/rpc/src/*"],
+
       "@effect/rpc-http/test/*": ["./packages/http/test/*"],
       "@effect/rpc-http/examples/*": ["./packages/http/examples/*"],
       "@effect/rpc-http/*": ["./packages/http/src/*"],
-      "@effect/rpc-http": ["./packages/http/src/index.ts"]
+      "@effect/rpc-http": ["./packages/http/src/index.ts"],
+
+      "@effect/rpc-http-node/test/*": ["./packages/http-node/test/*"],
+      "@effect/rpc-http-node/examples/*": ["./packages/http-node/examples/*"],
+      "@effect/rpc-http-node/*": ["./packages/http-node/src/*"]
     },
     "plugins": [{ "name": "@effect/language-service" }]
   },
