@@ -21,6 +21,5 @@ pipe(
       console.log(users)
     }),
   ),
-  Effect.provideLayer(Client.RpcCacheLive),
   Effect.runFork,
 )

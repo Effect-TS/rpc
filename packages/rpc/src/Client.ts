@@ -7,7 +7,6 @@ import type { RpcRequest, RpcResolver } from "@effect/rpc/Resolver"
 import type { RpcSchema, RpcService } from "@effect/rpc/Schema"
 import type { UndecodedRpcResponse } from "@effect/rpc/Server"
 import * as internal from "@effect/rpc/internal/client"
-import type * as Layer from "@effect/io/Layer"
 import type { Tag } from "@effect/data/Context"
 import type { Cache } from "@effect/io/Request"
 
@@ -17,7 +16,7 @@ import type { Cache } from "@effect/io/Request"
  * @category models
  * @since 1.0.0
  */
-export type Rpc<C extends RpcSchema.Any, TR> = C extends RpcSchema.IO<
+export type Rpc<C extends RpcSchema.Any> = C extends RpcSchema.IO<
   infer _IE,
   infer E,
   infer _II,
@@ -25,25 +24,25 @@ export type Rpc<C extends RpcSchema.Any, TR> = C extends RpcSchema.IO<
   infer _IO,
   infer O
 >
-  ? (input: I) => Effect<TR, RpcError | E, O>
+  ? (input: I) => Effect<never, RpcError | E, O>
   : C extends RpcSchema.NoError<infer _II, infer I, infer _IO, infer O>
-  ? (input: I) => Effect<TR, RpcError, O>
+  ? (input: I) => Effect<never, RpcError, O>
   : C extends RpcSchema.NoInput<infer _IE, infer E, infer _IO, infer O>
-  ? Effect<TR, RpcError | E, O>
+  ? Effect<never, RpcError | E, O>
   : C extends RpcSchema.NoInputNoError<infer _IO, infer O>
-  ? Effect<TR, RpcError, O>
+  ? Effect<never, RpcError, O>
   : never
 
-type RpcClientRpcs<S extends RpcService.DefinitionWithId, TR> = {
+type RpcClientRpcs<S extends RpcService.DefinitionWithId> = {
   [K in keyof S]: S[K] extends RpcService.DefinitionWithId
-    ? RpcClientRpcs<S[K], TR>
+    ? RpcClientRpcs<S[K]>
     : S[K] extends RpcSchema.Any
-    ? Rpc<S[K], TR>
+    ? Rpc<S[K]>
     : never
 }
 
 /**
- * @category models
+ * @category cache
  * @since 1.0.0
  */
 export interface RpcCache {
@@ -57,31 +56,22 @@ export interface RpcCache {
 export const RpcCache: Tag<RpcCache, Cache<RpcRequest>> = internal.RpcCache
 
 /**
- * @category cache
- * @since 1.0.0
- */
-export const RpcCacheLive: Layer.Layer<never, never, RpcCache> =
-  internal.RpcCacheLive
-
-/**
  * Represents an RPC client
  *
  * @category models
  * @since 1.0.0
  */
-export type RpcClient<
-  S extends RpcService.DefinitionWithId,
-  TR,
-> = RpcClientRpcs<S, TR> & {
-  _schemas: S
-  _unsafeDecode: <
-    M extends RpcService.Methods<S>,
-    O extends UndecodedRpcResponse<M, any>,
-  >(
-    method: M,
-    output: O,
-  ) => O extends UndecodedRpcResponse<M, infer O> ? O : never
-}
+export type RpcClient<S extends RpcService.DefinitionWithId> =
+  RpcClientRpcs<S> & {
+    _schemas: S
+    _unsafeDecode: <
+      M extends RpcService.Methods<S>,
+      O extends UndecodedRpcResponse<M, any>,
+    >(
+      method: M,
+      output: O,
+    ) => O extends UndecodedRpcResponse<M, infer O> ? O : never
+  }
 /**
  * @category models
  * @since 1.0.0
@@ -96,11 +86,8 @@ export interface RpcClientOptions {
  * @category constructors
  * @since 1.0.0
  */
-export const make: <
-  S extends RpcService.DefinitionWithId,
-  T extends RpcResolver<any>,
->(
+export const make: <S extends RpcService.DefinitionWithId>(
   schemas: S,
-  transport: T,
+  transport: RpcResolver<never>,
   options?: RpcClientOptions,
-) => RpcClient<S, T extends RpcResolver<infer R> ? R : never> = internal.make
+) => RpcClient<S> = internal.make
