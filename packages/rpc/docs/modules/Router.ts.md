@@ -78,10 +78,11 @@ Added in v1.0.0
 
 ```ts
 export declare const provideServiceEffect: {
-  <T extends Tag<any, any>, R, E>(tag: T, effect: Effect<R, E, Tag.Service<T>>): <Router extends RpcRouter.Base>(
-    self: Router
-  ) => RpcRouter.Provide<Router, Tag.Identifier<T>, R, E>
-  <Router extends RpcRouter.Base, T extends Tag<any, any>, R, E>(
+  <Router extends RpcRouter.Base, T extends Tag<any, any>, R, E extends any>(
+    tag: T,
+    effect: Effect<R, E, Tag.Service<T>>
+  ): (self: Router) => RpcRouter.Provide<Router, Tag.Identifier<T>, R, E>
+  <Router extends RpcRouter.Base, T extends Tag<any, any>, R, E extends any>(
     self: Router,
     tag: T,
     effect: Effect<R, E, Tag.Service<T>>

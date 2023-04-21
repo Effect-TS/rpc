@@ -51,7 +51,7 @@ Represents an RPC method signature.
 **Signature**
 
 ```ts
-export type Rpc<C extends RpcSchema.Any> = C extends RpcSchema.IO<
+export type Rpc<C extends RpcSchema.Any, SE> = C extends RpcSchema.IO<
   infer _IE,
   infer E,
   infer _II,
@@ -59,13 +59,13 @@ export type Rpc<C extends RpcSchema.Any> = C extends RpcSchema.IO<
   infer _IO,
   infer O
 >
-  ? (input: I) => Effect<never, RpcError | E, O>
+  ? (input: I) => Effect<never, RpcError | SE | E, O>
   : C extends RpcSchema.NoError<infer _II, infer I, infer _IO, infer O>
-  ? (input: I) => Effect<never, RpcError, O>
+  ? (input: I) => Effect<never, RpcError | SE, O>
   : C extends RpcSchema.NoInput<infer _IE, infer E, infer _IO, infer O>
-  ? Effect<never, RpcError | E, O>
+  ? Effect<never, RpcError | SE | E, O>
   : C extends RpcSchema.NoInputNoError<infer _IO, infer O>
-  ? Effect<never, RpcError, O>
+  ? Effect<never, RpcError | SE, O>
   : never
 ```
 
