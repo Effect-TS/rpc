@@ -3,6 +3,7 @@ import * as S from "@effect/schema/Schema"
 import * as AST from "@effect/schema/AST"
 import { dual, pipe } from "@effect/data/Function"
 import * as Option from "@effect/data/Option"
+import * as ReadonlyArray from "@effect/data/ReadonlyArray"
 
 /**
  * @category models
@@ -85,21 +86,22 @@ export const transferable: {
 export const getTransferables: {
   <I>(value: I): <A>(
     self: S.Schema<I, A>,
-  ) => Option.Option<ReadonlyArray<Transferable>>
+  ) => Option.Option<ReadonlyArray.NonEmptyReadonlyArray<Transferable>>
 
   <I, A>(self: S.Schema<I, A>, value: I): Option.Option<
-    ReadonlyArray<Transferable>
+    ReadonlyArray.NonEmptyReadonlyArray<Transferable>
   >
 } = dual(
   2,
   <I, A>(
     self: S.Schema<I, A>,
     value: I,
-  ): Option.Option<ReadonlyArray<Transferable>> =>
+  ): Option.Option<ReadonlyArray.NonEmptyReadonlyArray<Transferable>> =>
     pipe(
       AST.getAnnotation<(value: I) => ReadonlyArray<Transferable>>(
         TransferableAnnotationId,
       )(self.ast),
       Option.map((f) => f(value)),
+      Option.filter(ReadonlyArray.isNonEmptyReadonlyArray),
     ),
 )
