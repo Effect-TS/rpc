@@ -17,6 +17,8 @@ Added in v1.0.0
   - [makeRequestUnion](#makerequestunion)
   - [makeWith](#makewith)
 - [utils](#utils)
+  - [RpcServiceErrorId](#rpcserviceerrorid)
+  - [RpcServiceErrorId (type alias)](#rpcserviceerrorid-type-alias)
   - [RpcServiceId](#rpcserviceid)
   - [RpcServiceId (type alias)](#rpcserviceid-type-alias)
 
@@ -31,7 +33,14 @@ Make a RPC service schema that can be encoded and decoded from JSON.
 **Signature**
 
 ```ts
-export declare const make: <S>(schema: S) => RpcService.Simplify<RpcService.Validate<'Schema.Json', Schema.Json, S>>
+export declare const make: {
+  <S>(schema: S): RpcService.Simplify<RpcService.Validate<'Schema.Json', Schema.Json, S>, never, never>
+  <S, EI, E>(schema: S, options: { serviceErrors: Schema.Schema<EI, E> }): RpcService.Simplify<
+    RpcService.Validate<'Schema.Json', Schema.Json, S>,
+    EI,
+    E
+  >
+}
 ```
 
 Added in v1.0.0
@@ -53,14 +62,38 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const makeWith: <VL extends string, V>() => <S extends RpcService.Definition>(
-  schema: S
-) => RpcService.Simplify<RpcService.Validate<VL, V, S>>
+export declare const makeWith: <VL extends string, V>() => {
+  <S extends RpcService.Definition>(schema: S): RpcService.Simplify<RpcService.Validate<VL, V, S>, never, never>
+  <S extends RpcService.Definition, EI extends V, E>(
+    schema: S,
+    options: { serviceErrors: Schema.Schema<EI, E> }
+  ): RpcService.Simplify<RpcService.Validate<VL, V, S>, EI, E>
+}
 ```
 
 Added in v1.0.0
 
 # utils
+
+## RpcServiceErrorId
+
+**Signature**
+
+```ts
+export declare const RpcServiceErrorId: typeof RpcServiceErrorId
+```
+
+Added in v1.0.0
+
+## RpcServiceErrorId (type alias)
+
+**Signature**
+
+```ts
+export type RpcServiceErrorId = typeof RpcServiceErrorId
+```
+
+Added in v1.0.0
 
 ## RpcServiceId
 
