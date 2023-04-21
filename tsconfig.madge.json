@@ -21,7 +21,13 @@
 
       "@effect/rpc-nextjs/test/*": ["./packages/nextjs/build/test/*"],
       "@effect/rpc-nextjs/examples/*": ["./packages/nextjs/build/examples/*"],
-      "@effect/rpc-nextjs/*": ["./packages/nextjs/build/esm/*"]
+      "@effect/rpc-nextjs/*": ["./packages/nextjs/build/esm/*"],
+
+      "@effect/rpc-webworkers/test/*": ["./packages/webworkers/build/test/*"],
+      "@effect/rpc-webworkers/examples/*": [
+        "./packages/webworkers/build/examples/*"
+      ],
+      "@effect/rpc-webworkers/*": ["./packages/webworkers/build/esm/*"]
     }
   },
   "include": [

@@ -180,6 +180,23 @@ importers:
         version: 0.15.0
     publishDirectory: dist
 
+  packages/webworkers:
+    dependencies:
+      '@effect/data':
+        specifier: ^0.12.2
+        version: 0.12.2
+      '@effect/io':
+        specifier: ^0.24.3
+        version: 0.24.3
+      '@effect/rpc':
+        specifier: workspace:*
+        version: link:../rpc/dist
+    devDependencies:
+      '@effect/schema':
+        specifier: ^0.15.0
+        version: 0.15.0
+    publishDirectory: dist
+
 packages:
 
   /@ampproject/remapping@2.2.1:

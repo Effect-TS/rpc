@@ -51,7 +51,11 @@
 
       "@effect/rpc-nextjs/test/*": ["./packages/nextjs/test/*"],
       "@effect/rpc-nextjs/examples/*": ["./packages/nextjs/examples/*"],
-      "@effect/rpc-nextjs/*": ["./packages/nextjs/src/*"]
+      "@effect/rpc-nextjs/*": ["./packages/nextjs/src/*"],
+
+      "@effect/rpc-webworkers/test/*": ["./packages/webworkers/test/*"],
+      "@effect/rpc-webworkers/examples/*": ["./packages/webworkers/examples/*"],
+      "@effect/rpc-webworkers/*": ["./packages/webworkers/src/*"]
     },
     "plugins": [{ "name": "@effect/language-service" }]
   },
