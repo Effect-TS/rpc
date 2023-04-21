@@ -24,7 +24,9 @@ const posts = RS.make(
       output: S.struct({ id: S.number, body: S.string }),
     },
   },
-  SomeError,
+  {
+    serviceErrors: SomeError,
+  },
 )
 
 const schema = RS.make({

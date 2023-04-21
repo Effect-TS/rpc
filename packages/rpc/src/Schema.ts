@@ -192,16 +192,16 @@ export const makeWith =
 
     <S extends RpcService.Definition, EI extends V, E>(
       schema: S,
-      serviceErrors: Schema.Schema<EI, E>,
+      options: { serviceErrors: Schema.Schema<EI, E> },
     ): RpcService.Simplify<RpcService.Validate<VL, V, S>, EI, E>
   } =>
   <S extends RpcService.Definition>(
     schema: S,
-    errors?: Schema.Schema<any, any>,
+    options?: { serviceErrors: Schema.Schema<any, any> },
   ): any => ({
     ...(schema as any),
     [RpcServiceId]: RpcServiceId,
-    [RpcServiceErrorId]: errors ?? Schema.never,
+    [RpcServiceErrorId]: options?.serviceErrors ?? Schema.never,
   })
 
 /**

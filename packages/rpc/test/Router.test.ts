@@ -37,7 +37,7 @@ const schema = RS.make(
     },
     posts,
   },
-  SomeError,
+  { serviceErrors: SomeError },
 )
 
 const router = _.make(schema, {
