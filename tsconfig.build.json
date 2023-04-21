@@ -3,6 +3,7 @@
   "references": [
     { "path": "packages/rpc/tsconfig.build.json" },
     { "path": "packages/http/tsconfig.build.json" },
-    { "path": "packages/http-node/tsconfig.build.json" }
+    { "path": "packages/http-node/tsconfig.build.json" },
+    { "path": "packages/nextjs/tsconfig.build.json" }
   ]
 }

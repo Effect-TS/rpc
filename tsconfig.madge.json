@@ -17,7 +17,11 @@
       "@effect/rpc-http-node/examples/*": [
         "./packages/http-node/build/examples/*"
       ],
-      "@effect/rpc-http-node/*": ["./packages/http-node/build/esm/*"]
+      "@effect/rpc-http-node/*": ["./packages/http-node/build/esm/*"],
+
+      "@effect/rpc-nextjs/test/*": ["./packages/nextjs/build/test/*"],
+      "@effect/rpc-nextjs/examples/*": ["./packages/nextjs/build/examples/*"],
+      "@effect/rpc-nextjs/*": ["./packages/nextjs/build/esm/*"]
     }
   },
   "include": [

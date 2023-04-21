@@ -47,7 +47,11 @@
 
       "@effect/rpc-http-node/test/*": ["./packages/http-node/test/*"],
       "@effect/rpc-http-node/examples/*": ["./packages/http-node/examples/*"],
-      "@effect/rpc-http-node/*": ["./packages/http-node/src/*"]
+      "@effect/rpc-http-node/*": ["./packages/http-node/src/*"],
+
+      "@effect/rpc-nextjs/test/*": ["./packages/nextjs/test/*"],
+      "@effect/rpc-nextjs/examples/*": ["./packages/nextjs/examples/*"],
+      "@effect/rpc-nextjs/*": ["./packages/nextjs/src/*"]
     },
     "plugins": [{ "name": "@effect/language-service" }]
   },

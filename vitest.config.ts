@@ -26,6 +26,9 @@ export default defineConfig({
         "packages/http-node/test",
       ),
       "@effect/rpc-http-node": path.join(__dirname, "packages/http-node/src"),
+
+      "@effect/rpc-nextjs/test": path.join(__dirname, "packages/nextjs/test"),
+      "@effect/rpc-nextjs": path.join(__dirname, "packages/nextjs/src"),
     },
   },
 })
