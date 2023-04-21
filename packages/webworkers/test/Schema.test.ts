@@ -22,12 +22,17 @@ describe("Schema", () => {
   it("transferable", () => {
     const schema = _.make({
       binary: {
-        output: _.transferable(S.instanceOf(Uint8Array), (_) => [_.buffer]),
+        output: _.transferable(
+          S.struct({
+            data: S.instanceOf(Uint8Array),
+          }),
+          (_) => [_.data.buffer],
+        ),
       },
     })
 
     const data = new Uint8Array([1, 2, 3])
-    expect(_.getTransferables(schema.binary.output, data)).toEqual([
+    expect(_.getTransferables(schema.binary.output, { data })).toEqual([
       data.buffer,
     ])
   })
