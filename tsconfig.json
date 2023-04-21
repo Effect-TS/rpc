@@ -4,6 +4,7 @@
     { "path": "packages/rpc" },
     { "path": "packages/http" },
     { "path": "packages/http-node" },
-    { "path": "packages/nextjs" }
+    { "path": "packages/nextjs" },
+    { "path": "packages/webworkers" }
   ]
 }

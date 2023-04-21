@@ -29,6 +29,12 @@ export default defineConfig({
 
       "@effect/rpc-nextjs/test": path.join(__dirname, "packages/nextjs/test"),
       "@effect/rpc-nextjs": path.join(__dirname, "packages/nextjs/src"),
+
+      "@effect/rpc-webworkers/test": path.join(
+        __dirname,
+        "packages/webworkers/test",
+      ),
+      "@effect/rpc-webworkers": path.join(__dirname, "packages/webworkers/src"),
     },
   },
 })
