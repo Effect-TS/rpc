@@ -1,3 +1,6 @@
+/**
+ * @since 1.0.0
+ */
 import * as Schema from "@effect/rpc/Schema"
 import * as S from "@effect/schema/Schema"
 import * as AST from "@effect/schema/AST"
