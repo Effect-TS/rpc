@@ -1,3 +1,6 @@
+/**
+ * @since 1.0.0
+ */
 import type { RpcHandlers, RpcRouter } from "@effect/rpc/Router"
 import type { Effect } from "@effect/io/Effect"
 import type { Span } from "@effect/io/Tracer"

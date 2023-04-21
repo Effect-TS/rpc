@@ -13,6 +13,8 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [constructors](#constructors)
+  - [handleSingle](#handlesingle)
+  - [handleSingleWithSchema](#handlesinglewithschema)
   - [handler](#handler)
   - [handlerRaw](#handlerraw)
   - [makeUndecodedClient](#makeundecodedclient)
@@ -23,6 +25,28 @@ Added in v1.0.0
 ---
 
 # constructors
+
+## handleSingle
+
+**Signature**
+
+```ts
+export declare const handleSingle: <R extends any>(router: R) => (request: unknown) => Effect<any, never, any>
+```
+
+Added in v1.0.0
+
+## handleSingleWithSchema
+
+**Signature**
+
+```ts
+export declare const handleSingleWithSchema: <R extends any>(
+  router: R
+) => (request: unknown) => Effect<any, never, readonly [any, any]>
+```
+
+Added in v1.0.0
 
 ## handler
 

@@ -1,6 +1,6 @@
 ---
 title: Schema.ts
-nav_order: 1
+nav_order: 2
 parent: Modules
 ---
 
@@ -34,8 +34,8 @@ Added in v1.0.0
 
 ```ts
 export declare const getTransferables: {
-  <I>(value: I): <A>(self: S.Schema<I, A>) => Option.Option<ReadonlyArray.NonEmptyReadonlyArray<Transferable>>
-  <I, A>(self: S.Schema<I, A>, value: I): Option.Option<ReadonlyArray.NonEmptyReadonlyArray<Transferable>>
+  <I>(value: I): <A>(self: S.Schema<I, A>) => Array<Transferable>
+  <I, A>(self: S.Schema<I, A>, value: I): Array<Transferable>
 }
 ```
 

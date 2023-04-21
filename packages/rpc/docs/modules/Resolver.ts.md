@@ -14,6 +14,9 @@ Added in v1.0.0
 
 - [constructors](#constructors)
   - [make](#make)
+  - [makeSingle](#makesingle)
+  - [makeSingleWithSchema](#makesinglewithschema)
+  - [makeWithSchema](#makewithschema)
 - [models](#models)
   - [RpcRequest (interface)](#rpcrequest-interface)
   - [RpcResolver (interface)](#rpcresolver-interface)
@@ -29,6 +32,42 @@ Added in v1.0.0
 
 ```ts
 export declare const make: <R>(
+  send: (requests: ReadonlyArray<RpcRequest.Payload>) => Effect.Effect<R, any, unknown>
+) => RpcResolver<R>
+```
+
+Added in v1.0.0
+
+## makeSingle
+
+**Signature**
+
+```ts
+export declare const makeSingle: <R>(
+  send: (request: RpcRequest.Payload) => Effect.Effect<R, any, unknown>
+) => RpcResolver<R>
+```
+
+Added in v1.0.0
+
+## makeSingleWithSchema
+
+**Signature**
+
+```ts
+export declare const makeSingleWithSchema: <R>(
+  send: (request: RpcRequest) => Effect.Effect<R, any, unknown>
+) => RpcResolver<R>
+```
+
+Added in v1.0.0
+
+## makeWithSchema
+
+**Signature**
+
+```ts
+export declare const makeWithSchema: <R>(
   send: (requests: ReadonlyArray<RpcRequest>) => Effect.Effect<R, any, unknown>
 ) => RpcResolver<R>
 ```
@@ -42,7 +81,11 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface RpcRequest extends Request.Request<RpcError, unknown>, RpcRequest.Fields {}
+export interface RpcRequest extends Request.Request<RpcError, unknown> {
+  readonly payload: RpcRequest.Payload
+  readonly hash: number
+  readonly schema: RpcSchema.Any
+}
 ```
 
 Added in v1.0.0

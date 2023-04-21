@@ -33,11 +33,11 @@ Creates an RPC client
 **Signature**
 
 ```ts
-export declare const make: <S extends any>(
+export declare const make: <S extends any, Resolver extends unknown>(
   schemas: S,
-  transport: any,
+  resolver: Resolver,
   options?: RpcClientOptions | undefined
-) => RpcClient<S>
+) => RpcClient<S, [Resolver] extends [Effect<any, any, any>] ? unknown : never>
 ```
 
 Added in v1.0.0
@@ -51,7 +51,7 @@ Represents an RPC method signature.
 **Signature**
 
 ```ts
-export type Rpc<C extends RpcSchema.Any, SE> = C extends RpcSchema.IO<
+export type Rpc<C extends RpcSchema.Any, R, SE> = C extends RpcSchema.IO<
   infer _IE,
   infer E,
   infer _II,
@@ -59,13 +59,13 @@ export type Rpc<C extends RpcSchema.Any, SE> = C extends RpcSchema.IO<
   infer _IO,
   infer O
 >
-  ? (input: I) => Effect<never, RpcError | SE | E, O>
+  ? (input: I) => Effect<R, RpcError | SE | E, O>
   : C extends RpcSchema.NoError<infer _II, infer I, infer _IO, infer O>
-  ? (input: I) => Effect<never, RpcError | SE, O>
+  ? (input: I) => Effect<R, RpcError | SE, O>
   : C extends RpcSchema.NoInput<infer _IE, infer E, infer _IO, infer O>
-  ? Effect<never, RpcError | SE | E, O>
+  ? Effect<R, RpcError | SE | E, O>
   : C extends RpcSchema.NoInputNoError<infer _IO, infer O>
-  ? Effect<never, RpcError | SE, O>
+  ? Effect<R, RpcError | SE, O>
   : never
 ```
 
@@ -78,7 +78,7 @@ Represents an RPC client
 **Signature**
 
 ```ts
-export type RpcClient<S extends RpcService.DefinitionWithId> = RpcClientRpcs<S> & {
+export type RpcClient<S extends RpcService.DefinitionWithId, R> = RpcClientRpcs<S, R> & {
   _schemas: S
   _unsafeDecode: <M extends RpcService.Methods<S>, O extends UndecodedRpcResponse<M, any>>(
     method: M,
