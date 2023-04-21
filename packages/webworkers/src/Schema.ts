@@ -8,7 +8,7 @@ import * as Option from "@effect/data/Option"
  * @category models
  * @since 1.0.0
  */
-export type WebWorkerPrimitive =
+export type Primitive =
   | null
   | undefined
   | boolean
@@ -35,11 +35,11 @@ export type WebWorkerPrimitive =
  * @since 1.0.0
  */
 export type WebWorkerType =
-  | WebWorkerPrimitive
-  | Map<WebWorkerPrimitive, WebWorkerPrimitive>
-  | Set<WebWorkerPrimitive>
-  | ReadonlyArray<WebWorkerPrimitive>
-  | Record<string, WebWorkerPrimitive>
+  | Primitive
+  | Map<Primitive, Primitive>
+  | Set<Primitive>
+  | ReadonlyArray<Primitive>
+  | Record<string, Primitive>
 
 /**
  * @category constructors
@@ -67,6 +67,7 @@ export const transferable: {
   <I>(f: (a: I) => ReadonlyArray<Transferable>): <A>(
     self: S.Schema<I, A>,
   ) => S.Schema<I, A>
+
   <I, A>(
     self: S.Schema<I, A>,
     f: (a: I) => ReadonlyArray<Transferable>,
@@ -82,16 +83,23 @@ export const transferable: {
  * @since 1.0.0
  */
 export const getTransferables: {
-  <I>(value: I): <A>(self: S.Schema<I, A>) => ReadonlyArray<Transferable>
-  <I, A>(self: S.Schema<I, A>, value: I): ReadonlyArray<Transferable>
+  <I>(value: I): <A>(
+    self: S.Schema<I, A>,
+  ) => Option.Option<ReadonlyArray<Transferable>>
+
+  <I, A>(self: S.Schema<I, A>, value: I): Option.Option<
+    ReadonlyArray<Transferable>
+  >
 } = dual(
   2,
-  <I, A>(self: S.Schema<I, A>, value: I): ReadonlyArray<Transferable> =>
+  <I, A>(
+    self: S.Schema<I, A>,
+    value: I,
+  ): Option.Option<ReadonlyArray<Transferable>> =>
     pipe(
       AST.getAnnotation<(value: I) => ReadonlyArray<Transferable>>(
         TransferableAnnotationId,
       )(self.ast),
       Option.map((f) => f(value)),
-      Option.getOrElse(() => []),
     ),
 )

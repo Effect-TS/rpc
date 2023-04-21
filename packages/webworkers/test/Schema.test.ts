@@ -2,6 +2,7 @@ import { describe, it } from "vitest"
 import * as _ from "@effect/rpc-webworkers/Schema"
 import * as S from "@effect/schema/Schema"
 import { typeEquals } from "@effect/rpc-webworkers/test/utils"
+import * as Option from "@effect/data/Option"
 
 describe("Schema", () => {
   it("allow WebWorkerType", () => {
@@ -32,8 +33,8 @@ describe("Schema", () => {
     })
 
     const data = new Uint8Array([1, 2, 3])
-    expect(_.getTransferables(schema.binary.output, { data })).toEqual([
-      data.buffer,
-    ])
+    expect(_.getTransferables(schema.binary.output, { data })).toEqual(
+      Option.some([data.buffer]),
+    )
   })
 })
