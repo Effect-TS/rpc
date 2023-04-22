@@ -1,6 +1,7 @@
 import { Tag } from "@effect/data/Context"
 import type { LazyArg } from "@effect/data/Function"
 import { pipe } from "@effect/data/Function"
+import * as Deferred from "@effect/io/Deferred"
 import * as Effect from "@effect/io/Effect"
 import * as Layer from "@effect/io/Layer"
 import * as Pool from "@effect/io/Pool"
@@ -8,6 +9,8 @@ import type * as WWResolver from "@effect/rpc-webworkers/Resolver"
 import * as schema from "@effect/rpc-webworkers/Schema"
 import type { RpcTransportError } from "@effect/rpc/Error"
 import * as Resolver from "@effect/rpc/Resolver"
+import type { Exit } from "@effect/io/Exit"
+import * as Queue from "@effect/io/Queue"
 
 /** @internal */
 export const WebWorkerResolver = Tag<
@@ -21,6 +24,52 @@ const makeWorker = (evaluate: LazyArg<Worker>) =>
   Effect.acquireRelease(Effect.sync(evaluate), (worker) =>
     Effect.sync(() => worker.terminate()),
   )
+
+const test = <E, I, O>(
+  evaluate: LazyArg<Worker>,
+  onError: (error: ErrorEvent) => E,
+  permits: number,
+) =>
+  Effect.gen(function* ($) {
+    const worker = yield* $(
+      Effect.acquireRelease(Effect.sync(evaluate), (worker) =>
+        Effect.sync(() => worker.terminate()),
+      ),
+    )
+
+    let idCounter = 0
+
+    const semaphore = yield* $(Effect.makeSemaphore(permits))
+    const outbound = yield* $(Queue.unbounded<readonly [number, I]>())
+    const requestMap = new Map<number, Deferred.Deferred<E, O>>()
+
+    const handleExit = (exit: Exit<E, O>) =>
+      Effect.allDiscard(
+        [...requestMap.values()].map((_) => Deferred.complete(_, exit)),
+      )
+
+    const send = (request: I) =>
+      pipe(
+        Deferred.make<E, O>(),
+        Effect.flatMap((deferred) =>
+          Effect.suspend(() => {
+            const id = idCounter++
+            requestMap.set(id, deferred)
+            return Effect.zipRight(
+              Queue.offer(outbound, [id, request]),
+              Deferred.await(deferred),
+            )
+          }),
+        ),
+        semaphore.withPermits(1),
+      )
+
+    const run = Effect.asyncInterrupt<never, E, never>((resume) => {
+      const controller = new AbortController()
+
+      return Effect.sync(() => controller.abort())
+    })
+  })
 
 /** @internal */
 export const WebWorkerResolverLive = (
