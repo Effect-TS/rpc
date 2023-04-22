@@ -200,6 +200,28 @@ importers:
         version: 0.30.1(vitest@0.30.1)
     publishDirectory: dist
 
+  packages/webworkers-example:
+    dependencies:
+      '@effect/data':
+        specifier: ^0.12.2
+        version: 0.12.2
+      '@effect/io':
+        specifier: ^0.25.0
+        version: 0.25.0
+      '@effect/rpc-webworkers':
+        specifier: workspace:^
+        version: link:../webworkers/dist
+      '@effect/schema':
+        specifier: ^0.16.0
+        version: 0.16.0
+    devDependencies:
+      typescript:
+        specifier: ^5.0.2
+        version: 5.0.4
+      vite:
+        specifier: ^4.3.0
+        version: 4.3.1(@types/node@18.15.13)
+
 packages:
 
   /@ampproject/remapping@2.2.1:
@@ -2632,7 +2654,7 @@ packages:
       debug: 4.3.4
       filing-cabinet: 3.3.1
       precinct: 9.2.1
-      typescript: 4.1.6
+      typescript: 4.9.5
     transitivePeerDependencies:
       - supports-color
     dev: true
