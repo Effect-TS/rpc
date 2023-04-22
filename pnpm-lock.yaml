@@ -195,6 +195,9 @@ importers:
       '@effect/schema':
         specifier: ^0.15.0
         version: 0.15.0
+      '@vitest/web-worker':
+        specifier: ^0.30.1
+        version: 0.30.1(vitest@0.30.1)
     publishDirectory: dist
 
 packages:
@@ -1674,6 +1677,17 @@ packages:
       concordance: 5.0.4
       loupe: 2.3.6
       pretty-format: 27.5.1
+    dev: true
+
+  /@vitest/web-worker@0.30.1(vitest@0.30.1):
+    resolution: {integrity: sha512-fHe81VYe/Ch6VrM83UUB874ZZ2qzbDAee1MrGwPd3KN6btGfBdeCSu8AO+lvxVxUVQFw7dNrMRnIRkYYtf3YUg==}
+    peerDependencies:
+      vitest: '*'
+    dependencies:
+      debug: 4.3.4
+      vitest: 0.30.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /acorn-jsx@5.3.2(acorn@8.8.2):
