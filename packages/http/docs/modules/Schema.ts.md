@@ -1,10 +1,10 @@
 ---
-title: index.ts
-nav_order: 2
+title: Schema.ts
+nav_order: 5
 parent: Modules
 ---
 
-## index overview
+## Schema overview
 
 Added in v1.0.0
 

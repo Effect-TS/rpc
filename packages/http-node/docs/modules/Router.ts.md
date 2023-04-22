@@ -1,10 +1,10 @@
 ---
-title: index.ts
-nav_order: 2
+title: Router.ts
+nav_order: 3
 parent: Modules
 ---
 
-## index overview
+## Router overview
 
 Added in v1.0.0
 
