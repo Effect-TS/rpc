@@ -1,10 +1,10 @@
 ---
-title: index.ts
-nav_order: 2
+title: Client.ts
+nav_order: 1
 parent: Modules
 ---
 
-## index overview
+## Client overview
 
 Added in v1.0.0
 

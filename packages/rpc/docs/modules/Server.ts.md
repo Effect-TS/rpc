@@ -43,7 +43,7 @@ Added in v1.0.0
 ```ts
 export declare const handleSingleWithSchema: <R extends any>(
   router: R
-) => (request: unknown) => Effect<any, never, readonly [any, any]>
+) => (request: any) => Effect<any, never, readonly [any, Option<any>]>
 ```
 
 Added in v1.0.0
@@ -92,7 +92,9 @@ Added in v1.0.0
 
 ```ts
 export type RpcUndecodedClient<H extends RpcHandlers, P extends string = ''> = {
-  [K in Extract<keyof H, string>]: H[K] extends { handlers: RpcHandlers }
+  readonly [K in Extract<keyof H, string>]: H[K] extends {
+    handlers: RpcHandlers
+  }
     ? RpcUndecodedClient<H[K]['handlers'], `${P}${K}.`>
     : H[K] extends RpcHandler.IO<infer R, infer E, infer I, infer O>
     ? (
