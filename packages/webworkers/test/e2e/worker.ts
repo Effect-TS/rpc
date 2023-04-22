@@ -11,6 +11,6 @@ const router = Router.make(schema, {
 
 const handler = Server.make(router)
 
-self.onmessage = (e) => {
+self.addEventListener("message", (e) => {
   Effect.runFork(handler(e))
-}
+})

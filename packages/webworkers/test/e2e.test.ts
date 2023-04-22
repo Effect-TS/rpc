@@ -8,6 +8,7 @@ import { schema } from "./e2e/schema"
 import * as Chunk from "@effect/data/Chunk"
 
 // TODO: test more than one worker
+// vitest/web-worker doesn't seem to support this
 const ResolverLive = Resolver.WebWorkerResolverLive(
   () => new Worker(new URL("./e2e/worker.ts", import.meta.url)),
   { size: Effect.succeed(1) },
@@ -26,19 +27,23 @@ describe("e2e", () => {
       Effect.runPromise,
     ))
 
-  it(
-    "100x",
-    () =>
-      pipe(
-        Effect.allPar(
-          Chunk.map(Chunk.range(1, 100), () =>
-            client.getBinary(new Uint8Array([1, 2, 3])),
-          ),
+  it("currentDate", () =>
+    pipe(
+      client.currentDate,
+      Effect.tap((_) => Effect.sync(() => expect(_).toBeInstanceOf(Date))),
+      Effect.provideLayer(ResolverLive),
+      Effect.runPromise,
+    ))
+
+  it("100x", () =>
+    pipe(
+      Effect.allPar(
+        Chunk.map(Chunk.range(1, 100), () =>
+          client.getBinary(new Uint8Array([1, 2, 3])),
         ),
-        Effect.tap((_) => Effect.sync(() => expect(_.length).toEqual(100))),
-        Effect.provideLayer(ResolverLive),
-        Effect.runPromise,
       ),
-    30000,
-  )
+      Effect.tap((_) => Effect.sync(() => expect(_.length).toEqual(100))),
+      Effect.provideLayer(ResolverLive),
+      Effect.runPromise,
+    ))
 })
