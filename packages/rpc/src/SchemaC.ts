@@ -33,24 +33,23 @@ export const withConstructor: {
     self: Schema.Schema<I, A>,
     f: (input: C) => A,
   ): SchemaC<I, A, C> => {
-    const to = Schema.to(self)
-    const encode = Schema.encode(to)
-    const encodeEither = Schema.encodeEither(to)
-    const encodeEffect = Schema.encodeEffect(to)
-    const encodeOption = Schema.encodeOption(to)
+    const validate = Schema.validate(self)
+    const validateEither = Schema.validateEither(self)
+    const validateEffect = Schema.validateEffect(self)
+    const validateOption = Schema.validateOption(self)
 
     function make(input: C): A {
-      return encode(f(input))
+      return validate(f(input))
     }
     make.ast = self.ast
     make.either = function makeEither(input: C): Either<ParseError, A> {
-      return encodeEither(f(input))
+      return validateEither(f(input))
     }
-    make.effect = function makeEither(input: C): Effect<never, ParseError, A> {
-      return encodeEffect(f(input))
+    make.effect = function makeEffect(input: C): Effect<never, ParseError, A> {
+      return validateEffect(f(input))
     }
     make.option = function makeOption(input: C): Option<A> {
-      return encodeOption(f(input))
+      return validateOption(f(input))
     }
 
     return make as any
