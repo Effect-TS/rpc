@@ -21,6 +21,7 @@ Added in v1.0.0
   - [WebWorker (interface)](#webworker-interface)
   - [WebWorkerOptions (interface)](#webworkeroptions-interface)
   - [WebWorkerPoolConstructor (interface)](#webworkerpoolconstructor-interface)
+  - [WebWorkerQueue (interface)](#webworkerqueue-interface)
 - [tags](#tags)
   - [WebWorkerResolver](#webworkerresolver)
   - [WebWorkerResolver (interface)](#webworkerresolver-interface)
@@ -53,6 +54,9 @@ export declare const makeEffect: (
         size?: Effect.Effect<never, never, number> | undefined
         workerPermits?: number | undefined
         makePool?: WebWorkerPoolConstructor | undefined
+        makeWorkerQueue?:
+          | Effect.Effect<never, never, WebWorkerQueue<RpcTransportError, Resolver.RpcRequest, Resolver.RpcResponse>>
+          | undefined
       }
     | undefined
 ) => Effect.Effect<Scope, never, Resolver.RpcResolver<never>>
@@ -72,6 +76,9 @@ export declare const makeLayer: (
         size?: Effect.Effect<never, never, number> | undefined
         workerPermits?: number | undefined
         makePool?: WebWorkerPoolConstructor | undefined
+        makeWorkerQueue?:
+          | Effect.Effect<never, never, WebWorkerQueue<RpcTransportError, Resolver.RpcRequest, Resolver.RpcResponse>>
+          | undefined
       }
     | undefined
 ) => Layer.Layer<never, never, WebWorkerResolver>
@@ -86,7 +93,7 @@ Added in v1.0.0
 ```ts
 export declare const makeWorker: <E, I, O>(
   evaluate: LazyArg<Worker>,
-  options: WebWorkerOptions<E, I>
+  options: WebWorkerOptions<E, I, O>
 ) => Effect.Effect<never, never, WebWorker<E, I, O>>
 ```
 
@@ -112,11 +119,12 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface WebWorkerOptions<E, I> {
+export interface WebWorkerOptions<E, I, O> {
   readonly payload: (value: I) => unknown
   readonly transferables: (value: I) => Array<Transferable>
   readonly onError: (error: ErrorEvent) => E
   readonly permits: number
+  readonly makeQueue?: Effect.Effect<never, never, WebWorkerQueue<E, I, O>>
 }
 ```
 
@@ -132,6 +140,20 @@ export interface WebWorkerPoolConstructor {
     spawn: Effect.Effect<Scope, never, WebWorker<RpcTransportError, Resolver.RpcRequest, Resolver.RpcResponse>>,
     size: number
   ): Effect.Effect<Scope, never, Pool<never, WebWorker<RpcTransportError, Resolver.RpcRequest, Resolver.RpcResponse>>>
+}
+```
+
+Added in v1.0.0
+
+## WebWorkerQueue (interface)
+
+**Signature**
+
+```ts
+export interface WebWorkerQueue<E, I, O> {
+  readonly offer: (item: readonly [request: I, deferred: Deferred<E, O>]) => Effect.Effect<never, never, void>
+
+  readonly take: Effect.Effect<never, never, readonly [request: I, deferred: Deferred<E, O>]>
 }
 ```
 
