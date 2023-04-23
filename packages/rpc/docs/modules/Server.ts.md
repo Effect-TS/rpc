@@ -1,6 +1,6 @@
 ---
 title: Server.ts
-nav_order: 6
+nav_order: 7
 parent: Modules
 ---
 
@@ -21,6 +21,10 @@ Added in v1.0.0
 - [models](#models)
   - [RpcUndecodedClient (type alias)](#rpcundecodedclient-type-alias)
   - [UndecodedRpcResponse (interface)](#undecodedrpcresponse-interface)
+- [utils](#utils)
+  - [RpcServer (interface)](#rpcserver-interface)
+  - [RpcServerSingle (interface)](#rpcserversingle-interface)
+  - [RpcServerSingleWithSchema (interface)](#rpcserversinglewithschema-interface)
 
 ---
 
@@ -43,7 +47,7 @@ Added in v1.0.0
 ```ts
 export declare const handleSingleWithSchema: <R extends any>(
   router: R
-) => (request: any) => Effect<any, never, readonly [any, Option<any>]>
+) => (request: unknown) => Effect<any, never, readonly [any, Option<any>]>
 ```
 
 Added in v1.0.0
@@ -116,6 +120,44 @@ Added in v1.0.0
 export interface UndecodedRpcResponse<M, O> {
   readonly __rpc: M
   readonly __output: O
+}
+```
+
+Added in v1.0.0
+
+# utils
+
+## RpcServer (interface)
+
+**Signature**
+
+```ts
+export interface RpcServer {
+  (request: unknown): Effect<never, never, ReadonlyArray<RpcResponse>>
+}
+```
+
+Added in v1.0.0
+
+## RpcServerSingle (interface)
+
+**Signature**
+
+```ts
+export interface RpcServerSingle {
+  (request: unknown): Effect<never, never, RpcResponse>
+}
+```
+
+Added in v1.0.0
+
+## RpcServerSingleWithSchema (interface)
+
+**Signature**
+
+```ts
+export interface RpcServerSingleWithSchema {
+  (request: unknown): Effect<never, never, readonly [RpcResponse, Option<RpcSchema.Base>]>
 }
 ```
 

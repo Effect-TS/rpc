@@ -14,8 +14,13 @@ Added in v1.0.0
 
 - [constructors](#constructors)
   - [make](#make)
-- [layers](#layers)
-  - [WebWorkerResolverLive](#webworkerresolverlive)
+  - [makeEffect](#makeeffect)
+  - [makeLayer](#makelayer)
+  - [makeWorker](#makeworker)
+- [models](#models)
+  - [WebWorker (interface)](#webworker-interface)
+  - [WebWorkerOptions (interface)](#webworkeroptions-interface)
+  - [WebWorkerPoolConstructor (interface)](#webworkerpoolconstructor-interface)
 - [tags](#tags)
   - [WebWorkerResolver](#webworkerresolver)
   - [WebWorkerResolver (interface)](#webworkerresolver-interface)
@@ -29,22 +34,105 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const make: (pool: Pool<never, Worker>) => Resolver.RpcResolver<never>
+export declare const make: (
+  pool: Pool<never, WebWorker<RpcTransportError, Resolver.RpcRequest, Resolver.RpcResponse>>
+) => Resolver.RpcResolver<never>
 ```
 
 Added in v1.0.0
 
-# layers
-
-## WebWorkerResolverLive
+## makeEffect
 
 **Signature**
 
 ```ts
-export declare const WebWorkerResolverLive: (
+export declare const makeEffect: (
   evaluate: LazyArg<Worker>,
-  { size }?: { size?: Effect.Effect<never, never, number> | undefined } | undefined
+  options?:
+    | {
+        size?: Effect.Effect<never, never, number> | undefined
+        workerPermits?: number | undefined
+        makePool?: WebWorkerPoolConstructor | undefined
+      }
+    | undefined
+) => Effect.Effect<Scope, never, Resolver.RpcResolver<never>>
+```
+
+Added in v1.0.0
+
+## makeLayer
+
+**Signature**
+
+```ts
+export declare const makeLayer: (
+  evaluate: LazyArg<Worker>,
+  options?:
+    | {
+        size?: Effect.Effect<never, never, number> | undefined
+        workerPermits?: number | undefined
+        makePool?: WebWorkerPoolConstructor | undefined
+      }
+    | undefined
 ) => Layer.Layer<never, never, WebWorkerResolver>
+```
+
+Added in v1.0.0
+
+## makeWorker
+
+**Signature**
+
+```ts
+export declare const makeWorker: <E, I, O>(
+  evaluate: LazyArg<Worker>,
+  options: WebWorkerOptions<E, I>
+) => Effect.Effect<never, never, WebWorker<E, I, O>>
+```
+
+Added in v1.0.0
+
+# models
+
+## WebWorker (interface)
+
+**Signature**
+
+```ts
+export interface WebWorker<E, I, O> {
+  readonly run: Effect.Effect<never, E, never>
+  readonly send: (request: I) => Effect.Effect<never, E, O>
+}
+```
+
+Added in v1.0.0
+
+## WebWorkerOptions (interface)
+
+**Signature**
+
+```ts
+export interface WebWorkerOptions<E, I> {
+  readonly payload: (value: I) => unknown
+  readonly transferables: (value: I) => Array<Transferable>
+  readonly onError: (error: ErrorEvent) => E
+  readonly permits: number
+}
+```
+
+Added in v1.0.0
+
+## WebWorkerPoolConstructor (interface)
+
+**Signature**
+
+```ts
+export interface WebWorkerPoolConstructor {
+  (
+    spawn: Effect.Effect<Scope, never, WebWorker<RpcTransportError, Resolver.RpcRequest, Resolver.RpcResponse>>,
+    size: number
+  ): Effect.Effect<Scope, never, Pool<never, WebWorker<RpcTransportError, Resolver.RpcRequest, Resolver.RpcResponse>>>
+}
 ```
 
 Added in v1.0.0
