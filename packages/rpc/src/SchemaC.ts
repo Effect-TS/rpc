@@ -114,3 +114,12 @@ export const withConstructorDataTagged: {
   ): SchemaC<I, Data.Data<A>, Omit<A, "_tag">> =>
     withConstructor(Schema.data(self), Data.tagged(tag) as any),
 )
+
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+export const withTo =
+  <A>() =>
+  <I, X extends A, C>(self: SchemaC<I, X, C>): SchemaC<I, A, C> =>
+    self as any
