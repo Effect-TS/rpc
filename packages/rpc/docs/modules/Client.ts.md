@@ -18,9 +18,6 @@ Added in v1.0.0
   - [Rpc (type alias)](#rpc-type-alias)
   - [RpcClient (type alias)](#rpcclient-type-alias)
   - [RpcClientOptions (interface)](#rpcclientoptions-interface)
-- [tags](#tags)
-  - [RpcCache](#rpccache)
-  - [RpcCache (interface)](#rpccache-interface)
 
 ---
 
@@ -96,30 +93,6 @@ Added in v1.0.0
 ```ts
 export interface RpcClientOptions {
   readonly spanPrefix?: string
-}
-```
-
-Added in v1.0.0
-
-# tags
-
-## RpcCache
-
-**Signature**
-
-```ts
-export declare const RpcCache: Tag<RpcCache, Cache<any>>
-```
-
-Added in v1.0.0
-
-## RpcCache (interface)
-
-**Signature**
-
-```ts
-export interface RpcCache {
-  readonly _: unique symbol
 }
 ```
 
