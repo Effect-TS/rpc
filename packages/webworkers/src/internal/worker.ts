@@ -10,7 +10,8 @@ import type {
   WebWorkerQueue,
 } from "@effect/rpc-webworkers/Resolver"
 
-const defaultQueue = <E, I, O>() =>
+/** @internal */
+export const defaultQueue = <E, I, O>() =>
   Effect.map(
     Queue.unbounded<readonly [I, Deferred.Deferred<E, O>]>(),
     (queue): WebWorkerQueue<E, I, O> => ({
