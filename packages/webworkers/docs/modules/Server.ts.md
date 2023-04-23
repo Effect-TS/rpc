@@ -14,7 +14,9 @@ Added in v1.0.0
 
 - [constructors](#constructors)
   - [make](#make)
+  - [makeHandler](#makehandler)
 - [models](#models)
+  - [RpcWorker (type alias)](#rpcworker-type-alias)
   - [RpcWorkerHandler (interface)](#rpcworkerhandler-interface)
 
 ---
@@ -26,12 +28,36 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const make: <Router extends RpcRouter.Base>(router: Router) => RpcWorkerHandler<Router>
+export declare const make: <Router extends RpcRouter.Base>(router: Router) => RpcWorker<Router>
+```
+
+Added in v1.0.0
+
+## makeHandler
+
+**Signature**
+
+```ts
+export declare const makeHandler: <Router extends RpcRouter.Base>(router: Router) => RpcWorkerHandler<Router>
 ```
 
 Added in v1.0.0
 
 # models
+
+## RpcWorker (type alias)
+
+**Signature**
+
+```ts
+export type RpcWorker<R extends RpcRouter.Base> = Effect<
+  Exclude<RpcHandlers.Services<R['handlers']>, Span>,
+  never,
+  never
+>
+```
+
+Added in v1.0.0
 
 ## RpcWorkerHandler (interface)
 
