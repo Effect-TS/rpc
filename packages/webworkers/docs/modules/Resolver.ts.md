@@ -14,19 +14,20 @@ Added in v1.0.0
 
 - [constructors](#constructors)
   - [make](#make)
-  - [makeEffect](#makeeffect)
-  - [makeLayer](#makelayer)
+  - [makePool](#makepool)
+  - [makePoolLayer](#makepoollayer)
   - [makeWorker](#makeworker)
 - [models](#models)
+  - [RpcWebWorker (interface)](#rpcwebworker-interface)
   - [WebWorker (interface)](#webworker-interface)
   - [WebWorkerOptions (interface)](#webworkeroptions-interface)
-  - [WebWorkerPoolConstructor (interface)](#webworkerpoolconstructor-interface)
   - [WebWorkerQueue (interface)](#webworkerqueue-interface)
 - [tags](#tags)
+  - [RpcWorkerPool](#rpcworkerpool)
+  - [RpcWorkerPool (interface)](#rpcworkerpool-interface)
   - [RpcWorkerQueue](#rpcworkerqueue)
   - [RpcWorkerQueue (interface)](#rpcworkerqueue-interface)
-  - [WebWorkerResolver](#webworkerresolver)
-  - [WebWorkerResolver (interface)](#webworkerresolver-interface)
+  - [RpcWorkerResolverLive](#rpcworkerresolverlive)
 
 ---
 
@@ -37,47 +38,35 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const make: (
-  pool: Pool<never, WebWorker<RpcTransportError, Resolver.RpcRequest, Resolver.RpcResponse>>
-) => Resolver.RpcResolver<never>
+export declare const make: Effect.Effect<RpcWorkerPool, never, Resolver.RpcResolver<never>>
 ```
 
 Added in v1.0.0
 
-## makeEffect
+## makePool
 
 **Signature**
 
 ```ts
-export declare const makeEffect: (
-  evaluate: LazyArg<Worker>,
-  options?:
-    | {
-        size?: Effect.Effect<never, never, number> | undefined
-        workerPermits?: number | undefined
-        makePool?: WebWorkerPoolConstructor | undefined
-      }
-    | undefined
-) => Effect.Effect<Scope, never, Resolver.RpcResolver<never>>
+export declare const makePool: <R, E>(
+  create: (
+    spawn: (evaluate: LazyArg<Worker>, permits?: number | undefined) => Effect.Effect<Scope, never, RpcWebWorker>
+  ) => Effect.Effect<R, E, RpcWorkerPool>
+) => Effect.Effect<R, E, RpcWorkerPool>
 ```
 
 Added in v1.0.0
 
-## makeLayer
+## makePoolLayer
 
 **Signature**
 
 ```ts
-export declare const makeLayer: (
-  evaluate: LazyArg<Worker>,
-  options?:
-    | {
-        size?: Effect.Effect<never, never, number> | undefined
-        workerPermits?: number | undefined
-        makePool?: WebWorkerPoolConstructor | undefined
-      }
-    | undefined
-) => Layer.Layer<never, never, WebWorkerResolver>
+export declare const makePoolLayer: <R, E>(
+  create: (
+    spawn: (evaluate: LazyArg<Worker>, permits?: number | undefined) => Effect.Effect<Scope, never, RpcWebWorker>
+  ) => Effect.Effect<R, E, RpcWorkerPool>
+) => Layer.Layer<Exclude<R, Scope>, E, RpcWorkerPool>
 ```
 
 Added in v1.0.0
@@ -96,6 +85,16 @@ export declare const makeWorker: <E, I, O>(
 Added in v1.0.0
 
 # models
+
+## RpcWebWorker (interface)
+
+**Signature**
+
+```ts
+export interface RpcWebWorker extends WebWorker<RpcTransportError, Resolver.RpcRequest, Resolver.RpcResponse> {}
+```
+
+Added in v1.0.0
 
 ## WebWorker (interface)
 
@@ -126,21 +125,6 @@ export interface WebWorkerOptions<E, I, O> {
 
 Added in v1.0.0
 
-## WebWorkerPoolConstructor (interface)
-
-**Signature**
-
-```ts
-export interface WebWorkerPoolConstructor {
-  (
-    spawn: Effect.Effect<Scope, never, WebWorker<RpcTransportError, Resolver.RpcRequest, Resolver.RpcResponse>>,
-    size: number
-  ): Effect.Effect<Scope, never, Pool<never, WebWorker<RpcTransportError, Resolver.RpcRequest, Resolver.RpcResponse>>>
-}
-```
-
-Added in v1.0.0
-
 ## WebWorkerQueue (interface)
 
 **Signature**
@@ -157,15 +141,32 @@ Added in v1.0.0
 
 # tags
 
+## RpcWorkerPool
+
+**Signature**
+
+```ts
+export declare const RpcWorkerPool: Tag<RpcWorkerPool, RpcWorkerPool>
+```
+
+Added in v1.0.0
+
+## RpcWorkerPool (interface)
+
+**Signature**
+
+```ts
+export interface RpcWorkerPool extends Pool<never, RpcWebWorker> {}
+```
+
+Added in v1.0.0
+
 ## RpcWorkerQueue
 
 **Signature**
 
 ```ts
-export declare const RpcWorkerQueue: Tag<
-  RpcWorkerQueue,
-  WebWorkerQueue<RpcTransportError, Resolver.RpcRequest, Resolver.RpcResponse>
->
+export declare const RpcWorkerQueue: Tag<RpcWorkerQueue, RpcWorkerQueue>
 ```
 
 Added in v1.0.0
@@ -175,31 +176,17 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface RpcWorkerQueue {
-  readonly _: unique symbol
-}
+export interface RpcWorkerQueue extends WebWorkerQueue<RpcTransportError, Resolver.RpcRequest, Resolver.RpcResponse> {}
 ```
 
 Added in v1.0.0
 
-## WebWorkerResolver
+## RpcWorkerResolverLive
 
 **Signature**
 
 ```ts
-export declare const WebWorkerResolver: Tag<WebWorkerResolver, Resolver.RpcResolver<never>>
-```
-
-Added in v1.0.0
-
-## WebWorkerResolver (interface)
-
-**Signature**
-
-```ts
-export interface WebWorkerResolver {
-  readonly _: unique symbol
-}
+export declare const RpcWorkerResolverLive: Layer.Layer<RpcWorkerPool, never, Resolver.RpcResolver<never>>
 ```
 
 Added in v1.0.0

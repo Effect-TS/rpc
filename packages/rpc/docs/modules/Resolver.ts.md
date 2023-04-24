@@ -21,6 +21,8 @@ Added in v1.0.0
   - [RpcRequest (interface)](#rpcrequest-interface)
   - [RpcResolver (interface)](#rpcresolver-interface)
   - [RpcResponse (type alias)](#rpcresponse-type-alias)
+- [tags](#tags)
+  - [RpcResolver](#rpcresolver)
 
 ---
 
@@ -106,6 +108,18 @@ Added in v1.0.0
 
 ```ts
 export type RpcResponse = RpcResponse.Error | RpcResponse.Success
+```
+
+Added in v1.0.0
+
+# tags
+
+## RpcResolver
+
+**Signature**
+
+```ts
+export declare const RpcResolver: Tag<RpcResolver<never>, RpcResolver<never>>
 ```
 
 Added in v1.0.0
