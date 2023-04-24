@@ -14,6 +14,7 @@ Added in v1.0.0
 
 - [constructors](#constructors)
   - [make](#make)
+  - [makeWithResolver](#makewithresolver)
 - [models](#models)
   - [Rpc (type alias)](#rpc-type-alias)
   - [RpcClient (type alias)](#rpcclient-type-alias)
@@ -30,7 +31,19 @@ Creates an RPC client
 **Signature**
 
 ```ts
-export declare const make: <S extends any, Resolver extends unknown>(
+export declare const make: <S extends any>(schemas: S, options?: RpcClientOptions | undefined) => RpcClient<S, any>
+```
+
+Added in v1.0.0
+
+## makeWithResolver
+
+Creates an RPC client with the specified resolver
+
+**Signature**
+
+```ts
+export declare const makeWithResolver: <S extends any, Resolver extends unknown>(
   schemas: S,
   resolver: Resolver,
   options?: RpcClientOptions | undefined
