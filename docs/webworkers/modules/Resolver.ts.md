@@ -50,7 +50,10 @@ Added in v1.0.0
 ```ts
 export declare const makePool: <R, E>(
   create: (
-    spawn: (evaluate: LazyArg<Worker>, permits?: number | undefined) => Effect.Effect<Scope, never, RpcWebWorker>
+    spawn: (
+      evaluate: (id: number) => Worker | SharedWorker,
+      permits?: number | undefined
+    ) => Effect.Effect<Scope, never, RpcWebWorker>
   ) => Effect.Effect<R, E, RpcWorkerPool>
 ) => Effect.Effect<R, E, RpcWorkerPool>
 ```
@@ -64,7 +67,10 @@ Added in v1.0.0
 ```ts
 export declare const makePoolLayer: <R, E>(
   create: (
-    spawn: (evaluate: LazyArg<Worker>, permits?: number | undefined) => Effect.Effect<Scope, never, RpcWebWorker>
+    spawn: (
+      evaluate: (id: number) => Worker | SharedWorker,
+      permits?: number | undefined
+    ) => Effect.Effect<Scope, never, RpcWebWorker>
   ) => Effect.Effect<R, E, RpcWorkerPool>
 ) => Layer.Layer<Exclude<R, Scope>, E, RpcWorkerPool>
 ```
@@ -77,7 +83,7 @@ Added in v1.0.0
 
 ```ts
 export declare const makeWorker: <E, I, O>(
-  evaluate: LazyArg<Worker>,
+  evaluate: LazyArg<Worker | SharedWorker>,
   options: WebWorkerOptions<E, I, O>
 ) => Effect.Effect<never, never, WebWorker<E, I, O>>
 ```
