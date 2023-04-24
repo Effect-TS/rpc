@@ -14,9 +14,11 @@ Added in v1.0.0
 
 - [constructors](#constructors)
   - [make](#make)
+- [errors](#errors)
+  - [RpcFetchError](#rpcfetcherror)
+  - [RpcFetchError (interface)](#rpcfetcherror-interface)
 - [models](#models)
   - [FetchResolverOptions (interface)](#fetchresolveroptions-interface)
-  - [RpcFetchError (interface)](#rpcfetcherror-interface)
 
 ---
 
@@ -32,17 +34,18 @@ export declare const make: (options: FetchResolverOptions) => RpcResolver<never>
 
 Added in v1.0.0
 
-# models
+# errors
 
-## FetchResolverOptions (interface)
+## RpcFetchError
 
 **Signature**
 
 ```ts
-export interface FetchResolverOptions {
-  readonly url: string
-  readonly init?: Omit<RequestInit, 'signal' | 'body' | 'method'>
-}
+export declare const RpcFetchError: SchemaC<
+  RpcFetchError,
+  RpcFetchError,
+  { readonly reason: 'FetchError' | 'JsonDecodeError'; readonly error: unknown }
+>
 ```
 
 Added in v1.0.0
@@ -56,6 +59,21 @@ export interface RpcFetchError {
   readonly _tag: 'RpcFetchError'
   readonly reason: 'FetchError' | 'JsonDecodeError'
   readonly error: unknown
+}
+```
+
+Added in v1.0.0
+
+# models
+
+## FetchResolverOptions (interface)
+
+**Signature**
+
+```ts
+export interface FetchResolverOptions {
+  readonly url: string
+  readonly init?: Omit<RequestInit, 'signal' | 'body' | 'method'>
 }
 ```
 
