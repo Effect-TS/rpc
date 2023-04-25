@@ -1,7 +1,7 @@
 ---
 title: Error.ts
 nav_order: 2
-parent: @effect/rpc
+parent: "@effect/rpc"
 ---
 
 ## Error overview

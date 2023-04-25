@@ -1,7 +1,7 @@
 ---
 title: SchemaC.ts
 nav_order: 6
-parent: @effect/rpc
+parent: "@effect/rpc"
 ---
 
 ## SchemaC overview

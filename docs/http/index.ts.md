@@ -1,7 +1,7 @@
 ---
 title: index.ts
 nav_order: 2
-parent: @effect/rpc-http
+parent: "@effect/rpc-http"
 ---
 
 ## index overview

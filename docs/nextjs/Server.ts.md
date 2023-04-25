@@ -1,7 +1,7 @@
 ---
 title: Server.ts
 nav_order: 6
-parent: @effect/rpc-nextjs
+parent: "@effect/rpc-nextjs"
 ---
 
 ## Server overview

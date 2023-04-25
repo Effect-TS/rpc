@@ -21,7 +21,7 @@ function copyFiles(pkg) {
   for (const file of files) {
     const content = Fs.readFileSync(Path.join(docs, file), "utf8").replace(
       /^parent: Modules$/m,
-      `parent: ${name}`,
+      `parent: "${name}"`,
     )
     Fs.writeFileSync(Path.join(dest, file), content)
   }
@@ -30,7 +30,7 @@ function copyFiles(pkg) {
 function generateIndex(pkg, order) {
   const name = pkgName(pkg)
   const content = `---
-title: ${name}
+title: "${name}"
 has_children: true
 permalink: /docs/${pkg}
 nav_order: ${order}

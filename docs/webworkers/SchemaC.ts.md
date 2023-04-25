@@ -1,7 +1,7 @@
 ---
 title: SchemaC.ts
 nav_order: 5
-parent: @effect/rpc-webworkers
+parent: "@effect/rpc-webworkers"
 ---
 
 ## SchemaC overview

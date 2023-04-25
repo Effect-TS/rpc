@@ -1,7 +1,7 @@
 ---
 title: Server.ts
 nav_order: 6
-parent: @effect/rpc-http-node
+parent: "@effect/rpc-http-node"
 ---
 
 ## Server overview
