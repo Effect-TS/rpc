@@ -1,7 +1,7 @@
 ---
 title: Resolver.ts
 nav_order: 2
-parent: @effect/rpc-http-node
+parent: "@effect/rpc-http-node"
 ---
 
 ## Resolver overview

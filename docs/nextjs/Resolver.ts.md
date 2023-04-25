@@ -1,7 +1,7 @@
 ---
 title: Resolver.ts
 nav_order: 2
-parent: @effect/rpc-nextjs
+parent: "@effect/rpc-nextjs"
 ---
 
 ## Resolver overview

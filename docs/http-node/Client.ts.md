@@ -1,7 +1,7 @@
 ---
 title: Client.ts
 nav_order: 1
-parent: @effect/rpc-http-node
+parent: "@effect/rpc-http-node"
 ---
 
 ## Client overview

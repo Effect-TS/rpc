@@ -1,7 +1,7 @@
 ---
 title: Schema.ts
 nav_order: 5
-parent: @effect/rpc-http
+parent: "@effect/rpc-http"
 ---
 
 ## Schema overview

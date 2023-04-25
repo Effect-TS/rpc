@@ -1,7 +1,7 @@
 ---
 title: Schema.ts
 nav_order: 4
-parent: @effect/rpc-webworkers
+parent: "@effect/rpc-webworkers"
 ---
 
 ## Schema overview

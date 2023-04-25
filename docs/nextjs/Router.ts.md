@@ -1,7 +1,7 @@
 ---
 title: Router.ts
 nav_order: 3
-parent: @effect/rpc-nextjs
+parent: "@effect/rpc-nextjs"
 ---
 
 ## Router overview
