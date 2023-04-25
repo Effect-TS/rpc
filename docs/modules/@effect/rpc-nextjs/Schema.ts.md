@@ -1,7 +1,7 @@
 ---
 title: Schema.ts
 nav_order: 4
-parent: Modules
+parent: @effect/rpc-nextjs
 ---
 
 ## Schema overview

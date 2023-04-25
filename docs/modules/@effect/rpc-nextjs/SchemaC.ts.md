@@ -1,7 +1,7 @@
 ---
 title: SchemaC.ts
 nav_order: 5
-parent: Modules
+parent: @effect/rpc-nextjs
 ---
 
 ## SchemaC overview
