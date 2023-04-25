@@ -1,4 +1,3 @@
-
 ---
 title: @effect/rpc-nextjs
 has_children: true

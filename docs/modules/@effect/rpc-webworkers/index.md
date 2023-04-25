@@ -1,4 +1,3 @@
-
 ---
 title: @effect/rpc-webworkers
 has_children: true

@@ -1,4 +1,3 @@
-
 ---
 title: @effect/rpc-http-node
 has_children: true

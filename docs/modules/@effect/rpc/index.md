@@ -1,4 +1,3 @@
-
 ---
 title: @effect/rpc
 has_children: true
