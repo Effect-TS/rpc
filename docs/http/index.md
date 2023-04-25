@@ -1,6 +1,6 @@
 ---
 title: @effect/rpc-http
 has_children: true
-permalink: /docs/modules/@effect/rpc-http
+permalink: /docs/http
 nav_order: 2
 ---

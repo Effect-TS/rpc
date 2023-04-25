@@ -15,10 +15,8 @@ function pkgName(pkg) {
 function copyFiles(pkg) {
   const name = pkgName(pkg)
   const docs = Path.join("packages", pkg, "docs/modules")
-  const dest = Path.join("docs/modules", name)
+  const dest = Path.join("docs", pkg)
   const files = Fs.readdirSync(docs)
-
-  Fs.mkdirSync(dest, { recursive: true })
 
   for (const file of files) {
     const content = Fs.readFileSync(Path.join(docs, file), "utf8").replace(
@@ -31,19 +29,20 @@ function copyFiles(pkg) {
 
 function generateIndex(pkg, order) {
   const name = pkgName(pkg)
-  const docs = Path.join("docs/modules", name)
   const content = `---
 title: ${name}
 has_children: true
-permalink: /docs/modules/${name}
+permalink: /docs/${pkg}
 nav_order: ${order}
 ---
 `
 
-  Fs.writeFileSync(`${docs}/index.md`, content)
+  Fs.writeFileSync(Path.join("docs", pkg, "index.md"), content)
 }
 
 packages().forEach((pkg, i) => {
+  Fs.rmSync(Path.join("docs", pkg), { recursive: true })
+  Fs.mkdirSync(Path.join("docs", pkg), { recursive: true })
   copyFiles(pkg)
   generateIndex(pkg, i + 2)
 })

@@ -1,6 +1,6 @@
 ---
 title: @effect/rpc
 has_children: true
-permalink: /docs/modules/@effect/rpc
+permalink: /docs/rpc
 nav_order: 5
 ---
