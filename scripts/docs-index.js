@@ -11,8 +11,7 @@ function packages() {
 function generateIndex(pkg) {
   const name = pkg === "rpc" ? "@effect/rpc" : `@effect/rpc-${pkg}`
   const docs = Path.join("docs/modules", name)
-  const content = `
----
+  const content = `---
 title: ${name}
 has_children: true
 permalink: /docs/modules/${name}
@@ -27,8 +26,7 @@ packages().forEach(generateIndex)
 
 Fs.writeFileSync(
   `docs/modules/index.md`,
-  `
----
+  `---
 title: Modules
 has_children: true
 permalink: /docs/modules
