@@ -1,7 +1,7 @@
 ---
 title: Router.ts
 nav_order: 4
-parent: Modules
+parent: @effect/rpc
 ---
 
 ## Router overview
