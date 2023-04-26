@@ -174,7 +174,7 @@ export namespace RpcService {
     V,
     S extends RpcService.Definition,
   > = {
-    readonly [K in keyof S]: K extends "__setup" | "__teardown"
+    readonly [K in keyof S]: K extends "__setup"
       ? S[K]
       : S[K] extends DefinitionWithId
       ? Validate<VL, V, S[K]>
