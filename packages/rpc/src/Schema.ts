@@ -1,6 +1,8 @@
 /**
  * @since 1.0.0
  */
+import type { Context } from "@effect/data/Context"
+import type { Layer } from "@effect/io/Layer"
 import type { RpcRequest } from "@effect/rpc/Resolver"
 import * as internal from "@effect/rpc/internal/schema"
 import * as Schema from "@effect/schema/Schema"
@@ -95,7 +97,25 @@ export namespace RpcService {
    * @since 1.0.0
    */
   export interface Definition
-    extends Record<string, RpcSchema.Any | WithId<any, any, any>> {}
+    extends Record<string, RpcSchema.Any | WithId<any, any, any>> {
+    __setup?:
+      | RpcSchema.IO<any, any, any, any, Context<any>, Context<any>>
+      | RpcSchema.IO<
+          any,
+          any,
+          any,
+          any,
+          Layer<never, never, any>,
+          Layer<never, never, any>
+        >
+      | RpcSchema.NoError<any, any, Context<any>, Context<any>>
+      | RpcSchema.NoError<
+          any,
+          any,
+          Layer<never, never, any>,
+          Layer<never, never, any>
+        >
+  }
 
   /**
    * @category models
@@ -154,7 +174,9 @@ export namespace RpcService {
     V,
     S extends RpcService.Definition,
   > = {
-    readonly [K in keyof S]: S[K] extends DefinitionWithId
+    readonly [K in keyof S]: K extends "__setup" | "__teardown"
+      ? S[K]
+      : S[K] extends DefinitionWithId
       ? Validate<VL, V, S[K]>
       : S[K] extends RpcSchema.IO<
           infer IE,
@@ -334,6 +356,18 @@ export namespace RpcRequestSchema {
     To<S>
   > & {}
 }
+
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+export const context = <R>(): Schema.Schema<Context<R>> => Schema.any
+
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+export const layer = <R>(): Schema.Schema<Layer<never, never, R>> => Schema.any
 
 /**
  * @category constructors
