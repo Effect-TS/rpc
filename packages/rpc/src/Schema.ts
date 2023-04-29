@@ -66,6 +66,36 @@ export namespace RpcSchema {
     readonly output: Schema.Schema<any>
     readonly error: Schema.Schema<any>
   }
+
+  /**
+   * @category utils
+   * @since 1.0.0
+   */
+  export type Input<S extends RpcSchema.Any> = S extends {
+    readonly input: Schema.Schema<infer _I, infer A>
+  }
+    ? A
+    : never
+
+  /**
+   * @category utils
+   * @since 1.0.0
+   */
+  export type Error<S extends RpcSchema.Any> = S extends {
+    readonly error: Schema.Schema<infer _I, infer A>
+  }
+    ? A
+    : never
+
+  /**
+   * @category utils
+   * @since 1.0.0
+   */
+  export type Output<S extends RpcSchema.Any> = S extends {
+    readonly output: Schema.Schema<infer _I, infer A>
+  }
+    ? A
+    : never
 }
 
 /**
@@ -132,6 +162,22 @@ export namespace RpcService {
    * @category models
    * @since 1.0.0
    */
+  export interface DefinitionWithoutSetup extends DefinitionWithId {
+    readonly __setup?: never
+  }
+
+  /**
+   * @category models
+   * @since 1.0.0
+   */
+  export interface DefinitionWithSetup extends DefinitionWithId {
+    readonly __setup: Definition["__setup"] & {}
+  }
+
+  /**
+   * @category models
+   * @since 1.0.0
+   */
   export type WithId<S extends RpcService.Definition, EI, E> = S & {
     readonly [RpcServiceId]: RpcServiceId
     readonly [RpcServiceErrorId]: Schema.Schema<EI, E>
@@ -151,6 +197,30 @@ export namespace RpcService {
    */
   export type ErrorsFrom<S extends DefinitionWithId> = Schema.From<
     S[RpcServiceErrorId]
+  >
+
+  /**
+   * @category utils
+   * @since 1.0.0
+   */
+  export type SetupInput<S extends DefinitionWithSetup> = RpcSchema.Input<
+    S["__setup"]
+  >
+
+  /**
+   * @category utils
+   * @since 1.0.0
+   */
+  export type SetupError<S extends DefinitionWithSetup> = RpcSchema.Error<
+    S["__setup"]
+  >
+
+  /**
+   * @category utils
+   * @since 1.0.0
+   */
+  export type SetupOutput<S extends DefinitionWithSetup> = RpcSchema.Output<
+    S["__setup"]
   >
 
   /**

@@ -5,8 +5,9 @@ import type { Effect } from "@effect/io/Effect"
 import type { RpcSchema, RpcService } from "@effect/rpc/Schema"
 import type { RpcUndecodedClient } from "@effect/rpc/Server"
 import * as internal from "@effect/rpc/internal/router"
-import type { Tag } from "@effect/data/Context"
+import type { Context, Tag } from "@effect/data/Context"
 import type { LazyArg } from "@effect/data/Function"
+import { Layer } from "@effect/io/Layer"
 
 /**
  * @category handler models
@@ -169,6 +170,26 @@ export namespace RpcRouter {
    * @category router models
    * @since 1.0.0
    */
+  export interface WithSetup extends Base {
+    readonly handlers: RpcHandlers & {
+      readonly __setup: RpcHandler.Any
+    }
+  }
+
+  /**
+   * @category router models
+   * @since 1.0.0
+   */
+  export interface WithoutSetup extends Base {
+    readonly handlers: RpcHandlers & {
+      readonly __setup?: never
+    }
+  }
+
+  /**
+   * @category router models
+   * @since 1.0.0
+   */
   export interface Options {
     readonly spanPrefix: string
   }
@@ -198,6 +219,24 @@ export namespace RpcRouter {
         : never
     }
   >
+
+  /**
+   * @category router utils
+   * @since 1.0.0
+   */
+  export type SetupServices<R extends WithSetup> =
+    R["handlers"]["__setup"] extends RpcHandler.IO<
+      infer _R,
+      infer _E,
+      infer _I,
+      infer O
+    >
+      ? O extends Context<infer Env>
+        ? Env
+        : O extends Layer<never, never, infer Env>
+        ? Env
+        : never
+      : never
 }
 
 /**
