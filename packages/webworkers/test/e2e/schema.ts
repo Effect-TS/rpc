@@ -31,7 +31,7 @@ export const Name = Tag<Name>()
 export const schemaWithSetup = Schema.make({
   __setup: {
     input: S.string,
-    output: Schema.layer<Name>(),
+    output: Schema.context<Name>(),
   },
 
   getName: {

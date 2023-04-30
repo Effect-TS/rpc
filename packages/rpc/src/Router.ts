@@ -7,7 +7,7 @@ import type { RpcUndecodedClient } from "@effect/rpc/Server"
 import * as internal from "@effect/rpc/internal/router"
 import type { Context, Tag } from "@effect/data/Context"
 import type { LazyArg } from "@effect/data/Function"
-import { Layer } from "@effect/io/Layer"
+import type { Layer } from "@effect/io/Layer"
 
 /**
  * @category handler models
@@ -63,6 +63,27 @@ export namespace RpcHandler {
    * @category handler utils
    * @since 1.0.0
    */
+  export type FromSetupSchema<C extends RpcSchema.Any> = C extends RpcSchema.IO<
+    infer _IE,
+    infer E,
+    infer _II,
+    infer I,
+    infer _IO,
+    infer O
+  >
+    ? O extends Context<infer A>
+      ? IO<any, E, I, Layer<any, E, A> | Context<A>>
+      : never
+    : C extends RpcSchema.NoError<infer _II, infer I, infer _IO, infer O>
+    ? O extends Context<infer A>
+      ? IO<any, never, I, Layer<any, never, A> | Context<A>>
+      : never
+    : never
+
+  /**
+   * @category handler utils
+   * @since 1.0.0
+   */
   export type FromMethod<H extends RpcHandlers, M, XR, E2> = Extract<
     RpcHandlers.Map<H, XR, E2>,
     [M, any]
@@ -93,7 +114,9 @@ export namespace RpcHandlers {
     >]: S[K] extends RpcService.DefinitionWithId
       ? { handlers: FromService<S[K]> }
       : S[K] extends RpcSchema.Any
-      ? RpcHandler.FromSchema<S[K]>
+      ? K extends "__setup"
+        ? RpcHandler.FromSetupSchema<S[K]>
+        : RpcHandler.FromSchema<S[K]>
       : never
   }
 
@@ -104,8 +127,10 @@ export namespace RpcHandlers {
   export type Services<H extends RpcHandlers> = {
     [M in keyof H]: H[M] extends { readonly handlers: RpcHandlers }
       ? Services<H[M]["handlers"]>
-      : H[M] extends RpcHandler<infer R, infer _E, infer _I, infer _O>
-      ? R
+      : H[M] extends RpcHandler<infer R, infer _E, infer _I, infer O>
+      ? O extends Layer<infer LR, infer _LE, infer _LA>
+        ? R | LR
+        : R
       : never
   }[keyof H]
 
@@ -116,8 +141,10 @@ export namespace RpcHandlers {
   export type Error<H extends RpcHandlers> = {
     [M in keyof H]: H[M] extends { readonly handlers: RpcHandlers }
       ? Services<H[M]["handlers"]>
-      : H[M] extends RpcHandler<infer _R, infer E, infer _I, infer _O>
-      ? E
+      : H[M] extends RpcHandler<infer _R, infer E, infer _I, infer O>
+      ? O extends Layer<infer _LR, infer LE, infer _LA>
+        ? LE | E
+        : E
       : never
   }[keyof H]
 
@@ -233,7 +260,7 @@ export namespace RpcRouter {
     >
       ? O extends Context<infer Env>
         ? Env
-        : O extends Layer<never, never, infer Env>
+        : O extends Layer<infer _R, infer _E, infer Env>
         ? Env
         : never
       : never
