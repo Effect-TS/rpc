@@ -38,7 +38,14 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const makeHandler: <Router extends RpcRouter.Base>(router: Router) => RpcWorkerHandler<Router>
+export declare const makeHandler: {
+  <R extends RpcRouter.WithSetup>(router: R): Effect<
+    Scope,
+    never,
+    (port: typeof globalThis | MessagePort) => RpcWorkerHandler<R>
+  >
+  <R extends RpcRouter.WithoutSetup>(router: R): (port: typeof globalThis | MessagePort) => RpcWorkerHandler<R>
+}
 ```
 
 Added in v1.0.0
@@ -50,11 +57,9 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type RpcWorker<R extends RpcRouter.Base> = Effect<
-  Exclude<RpcHandlers.Services<R['handlers']>, Span>,
-  never,
-  never
->
+export type RpcWorker<R extends RpcRouter.Base> = R extends RpcRouter.WithSetup
+  ? Effect<Exclude<RpcHandlers.Services<R['handlers']>, Span | RpcRouter.SetupServices<R>>, never, void>
+  : Effect<Exclude<RpcHandlers.Services<R['handlers']>, Span>, never, void>
 ```
 
 Added in v1.0.0

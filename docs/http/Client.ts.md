@@ -24,7 +24,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const make: <S extends RpcService.DefinitionWithId>(
+export declare const make: <S extends RpcService.DefinitionWithoutSetup>(
   schemas: S,
   options: Client.RpcClientOptions & Resolver.FetchResolverOptions
 ) => Client.RpcClient<S, never>

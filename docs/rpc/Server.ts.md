@@ -35,7 +35,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const handleSingle: <R extends any>(router: R) => (request: unknown) => Effect<any, never, any>
+export declare const handleSingle: {
+  <R extends any>(router: R): Effect<Scope, never, (request: unknown) => Effect<never, never, any>>
+  <R extends any>(router: R): (request: unknown) => Effect<any, never, any>
+}
 ```
 
 Added in v1.0.0
@@ -45,9 +48,14 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const handleSingleWithSchema: <R extends any>(
-  router: R
-) => (request: unknown) => Effect<any, never, readonly [any, Option<any>]>
+export declare const handleSingleWithSchema: {
+  <R extends any>(router: R): Effect<
+    Scope,
+    never,
+    (request: unknown) => Effect<never, never, readonly [any, Option<any>]>
+  >
+  <R extends any>(router: R): (request: unknown) => Effect<any, never, readonly [any, Option<any>]>
+}
 ```
 
 Added in v1.0.0
@@ -57,7 +65,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const handler: <R extends any>(router: R) => (requests: unknown) => Effect<any, never, readonly any[]>
+export declare const handler: {
+  <R extends any>(router: R): Effect<Scope, never, (request: unknown) => Effect<never, never, readonly any[]>>
+  <R extends any>(router: R): (request: unknown) => Effect<any, never, readonly any[]>
+}
 ```
 
 Added in v1.0.0

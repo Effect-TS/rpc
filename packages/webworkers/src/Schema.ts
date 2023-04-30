@@ -7,7 +7,13 @@ import * as AST from "@effect/schema/AST"
 import { dual, pipe } from "@effect/data/Function"
 import * as Option from "@effect/data/Option"
 
-export { context } from "@effect/rpc/Schema"
+export {
+  /**
+   * @category constructors
+   * @since 1.0.0
+   */
+  context,
+} from "@effect/rpc/Schema"
 
 /**
  * @category models

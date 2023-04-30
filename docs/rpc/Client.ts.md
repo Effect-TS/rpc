@@ -31,7 +31,14 @@ Creates an RPC client
 **Signature**
 
 ```ts
-export declare const make: <S extends any>(schemas: S, options?: RpcClientOptions | undefined) => RpcClient<S, any>
+export declare const make: {
+  <S extends any>(schemas: S, init: any, options?: RpcClientOptions | undefined): Effect<
+    never,
+    any,
+    RpcClient<S, never>
+  >
+  <S extends any>(schemas: S, options?: RpcClientOptions | undefined): RpcClient<S, never>
+}
 ```
 
 Added in v1.0.0
@@ -43,11 +50,19 @@ Creates an RPC client with the specified resolver
 **Signature**
 
 ```ts
-export declare const makeWithResolver: <S extends any, Resolver extends unknown>(
-  schemas: S,
-  resolver: Resolver,
-  options?: RpcClientOptions | undefined
-) => RpcClient<S, [Resolver] extends [Effect<any, any, any>] ? unknown : never>
+export declare const makeWithResolver: {
+  <S extends any, Resolver extends unknown>(
+    schemas: S,
+    resolver: Resolver,
+    init: any,
+    options?: RpcClientOptions | undefined
+  ): Effect<never, any, RpcClient<S, [Resolver] extends [Effect<any, any, any>] ? unknown : never>>
+  <S extends any, Resolver extends unknown>(
+    schemas: S,
+    resolver: Resolver,
+    options?: RpcClientOptions | undefined
+  ): RpcClient<S, [Resolver] extends [Effect<any, any, any>] ? unknown : never>
+}
 ```
 
 Added in v1.0.0

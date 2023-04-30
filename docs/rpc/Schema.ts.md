@@ -15,6 +15,7 @@ Added in v1.0.0
 - [combinators](#combinators)
   - [withServiceError](#withserviceerror)
 - [constructors](#constructors)
+  - [context](#context)
   - [make](#make)
   - [makeRequestUnion](#makerequestunion)
   - [makeWith](#makewith)
@@ -49,6 +50,16 @@ export declare const withServiceError: {
 Added in v1.0.0
 
 # constructors
+
+## context
+
+**Signature**
+
+```ts
+export declare const context: <R>() => Schema.Schema<Context<R>, Context<R>>
+```
+
+Added in v1.0.0
 
 ## make
 
