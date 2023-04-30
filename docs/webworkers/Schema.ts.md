@@ -16,6 +16,7 @@ Added in v1.0.0
   - [getTransferables](#gettransferables)
   - [transferable](#transferable)
 - [constructors](#constructors)
+  - [context](#context)
   - [make](#make)
 - [models](#models)
   - [Primitive (type alias)](#primitive-type-alias)
@@ -55,6 +56,16 @@ export declare const transferable: {
 Added in v1.0.0
 
 # constructors
+
+## context
+
+**Signature**
+
+```ts
+export declare const context: <R>() => S.Schema<Context<R>, Context<R>>
+```
+
+Added in v1.0.0
 
 ## make
 
