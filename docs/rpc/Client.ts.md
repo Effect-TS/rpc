@@ -32,12 +32,8 @@ Creates an RPC client
 
 ```ts
 export declare const make: {
-  <S extends any>(schemas: S, init: any, options?: RpcClientOptions | undefined): Effect<
-    never,
-    any,
-    RpcClient<S, never>
-  >
-  <S extends any>(schemas: S, options?: RpcClientOptions | undefined): RpcClient<S, never>
+  <S extends any>(schemas: S, init: any, options?: RpcClientOptions | undefined): Effect<never, any, RpcClient<S, any>>
+  <S extends any>(schemas: S, options?: RpcClientOptions | undefined): RpcClient<S, any>
 }
 ```
 
