@@ -9,7 +9,7 @@ function packages() {
 }
 
 function pkgName(pkg) {
-  return pkg === "rpc" ? "@effect/rpc" : `@effect/rpc-${pkg}`
+  return require(Path.join(process.cwd(), "packages", pkg, "package.json")).name
 }
 
 function copyFiles(pkg) {

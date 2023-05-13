@@ -34,7 +34,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type RpcHandler<R, E, I, O> = RpcHandler.IO<R, E, I, O> | RpcHandler.NoInput<R, E, O>
+export type RpcHandler<R, E, I, O> =
+  | RpcHandler.IO<R, E, I, O>
+  | RpcHandler.IOLayer<R, E, I, O>
+  | RpcHandler.NoInput<R, E, O>
 ```
 
 Added in v1.0.0
