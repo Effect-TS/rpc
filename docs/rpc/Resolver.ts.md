@@ -34,7 +34,7 @@ Added in v1.0.0
 
 ```ts
 export declare const make: <R>(
-  send: (requests: ReadonlyArray<RpcRequest.Payload>) => Effect.Effect<R, any, unknown>
+  send: (requests: ReadonlyArray<RpcRequest.Payload>) => Effect.Effect<R, RpcTransportError, unknown>
 ) => RpcResolver<R>
 ```
 
@@ -46,7 +46,7 @@ Added in v1.0.0
 
 ```ts
 export declare const makeSingle: <R>(
-  send: (request: RpcRequest.Payload) => Effect.Effect<R, any, unknown>
+  send: (request: RpcRequest.Payload) => Effect.Effect<R, RpcTransportError, unknown>
 ) => RpcResolver<R>
 ```
 
@@ -58,7 +58,7 @@ Added in v1.0.0
 
 ```ts
 export declare const makeSingleWithSchema: <R>(
-  send: (request: RpcRequest) => Effect.Effect<R, any, unknown>
+  send: (request: RpcRequest) => Effect.Effect<R, RpcTransportError, unknown>
 ) => RpcResolver<R>
 ```
 
@@ -70,7 +70,7 @@ Added in v1.0.0
 
 ```ts
 export declare const makeWithSchema: <R>(
-  send: (requests: ReadonlyArray<RpcRequest>) => Effect.Effect<R, any, unknown>
+  send: (requests: ReadonlyArray<RpcRequest>) => Effect.Effect<R, RpcTransportError, unknown>
 ) => RpcResolver<R>
 ```
 

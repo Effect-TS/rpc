@@ -39,8 +39,12 @@ Added in v1.0.0
 
 ```ts
 export declare const makeHandler: {
-  <R extends any>(router: R): Effect<Scope, never, (port: typeof globalThis | MessagePort) => RpcWorkerHandler<R>>
-  <R extends any>(router: R): (port: typeof globalThis | MessagePort) => RpcWorkerHandler<R>
+  <R extends RpcRouter.WithSetup>(router: R): Effect<
+    Scope,
+    never,
+    (port: typeof globalThis | MessagePort) => RpcWorkerHandler<R>
+  >
+  <R extends RpcRouter.WithoutSetup>(router: R): (port: typeof globalThis | MessagePort) => RpcWorkerHandler<R>
 }
 ```
 

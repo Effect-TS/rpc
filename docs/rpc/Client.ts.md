@@ -32,8 +32,19 @@ Creates an RPC client
 
 ```ts
 export declare const make: {
-  <S extends any>(schemas: S, init: any, options?: RpcClientOptions | undefined): Effect<never, any, RpcClient<S, any>>
-  <S extends any>(schemas: S, options?: RpcClientOptions | undefined): RpcClient<S, any>
+  <S extends RpcService.DefinitionWithSetup>(
+    schemas: S,
+    init: RpcSchema.Input<S['__setup']>,
+    options?: RpcClientOptions | undefined
+  ): Effect<
+    never,
+    RpcEncodeFailure | RpcTransportError | RpcNotFound | RpcDecodeFailure | RpcSchema.Error<S['__setup']>,
+    RpcClient<S, RpcResolver<never>>
+  >
+  <S extends RpcService.DefinitionWithoutSetup>(schemas: S, options?: RpcClientOptions | undefined): RpcClient<
+    S,
+    RpcResolver<never>
+  >
 }
 ```
 
@@ -47,13 +58,23 @@ Creates an RPC client with the specified resolver
 
 ```ts
 export declare const makeWithResolver: {
-  <S extends any, Resolver extends unknown>(
+  <
+    S extends RpcService.DefinitionWithSetup,
+    Resolver extends RpcResolver<never> | Effect<any, never, RpcResolver<never>>
+  >(
     schemas: S,
     resolver: Resolver,
-    init: any,
+    init: RpcSchema.Input<S['__setup']>,
     options?: RpcClientOptions | undefined
-  ): Effect<never, any, RpcClient<S, [Resolver] extends [Effect<any, any, any>] ? unknown : never>>
-  <S extends any, Resolver extends unknown>(
+  ): Effect<
+    never,
+    RpcEncodeFailure | RpcTransportError | RpcNotFound | RpcDecodeFailure | RpcSchema.Error<S['__setup']>,
+    RpcClient<S, [Resolver] extends [Effect<any, any, any>] ? unknown : never>
+  >
+  <
+    S extends RpcService.DefinitionWithoutSetup,
+    Resolver extends RpcResolver<never> | Effect<any, never, RpcResolver<never>>
+  >(
     schemas: S,
     resolver: Resolver,
     options?: RpcClientOptions | undefined

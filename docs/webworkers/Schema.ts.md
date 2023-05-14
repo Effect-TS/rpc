@@ -74,7 +74,7 @@ Added in v1.0.0
 ```ts
 export declare const make: <S>(
   schema: S
-) => Schema.RpcService.Simplify<Schema.RpcService.Validate<'WebWorkerType', WebWorkerType, S>, never, never>
+) => Schema.RpcService.Simplify<Schema.RpcService.Validate<'WebWorkerType', any, S>, never, never>
 ```
 
 Added in v1.0.0
