@@ -35,7 +35,11 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const RpcDecodeFailure: any
+export declare const RpcDecodeFailure: SchemaC<
+  RpcDecodeFailure,
+  RpcDecodeFailure,
+  { readonly errors: readonly [ParseResult.ParseErrors, ...ParseResult.ParseErrors[]] }
+>
 ```
 
 Added in v1.0.0
@@ -45,7 +49,11 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const RpcEncodeFailure: any
+export declare const RpcEncodeFailure: SchemaC<
+  RpcEncodeFailure,
+  RpcEncodeFailure,
+  { readonly errors: readonly [ParseResult.ParseErrors, ...ParseResult.ParseErrors[]] }
+>
 ```
 
 Added in v1.0.0
@@ -55,7 +63,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const RpcNotFound: any
+export declare const RpcNotFound: SchemaC<RpcNotFound, RpcNotFound, { readonly method: string }>
 ```
 
 Added in v1.0.0
@@ -65,7 +73,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const RpcTransportError: any
+export declare const RpcTransportError: SchemaC<RpcTransportError, RpcTransportError, { readonly error: unknown }>
 ```
 
 Added in v1.0.0
@@ -141,7 +149,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const RpcError: Schema.Schema<unknown, unknown>
+export declare const RpcError: Schema.Schema<
+  RpcEncodeFailure | RpcTransportError | RpcNotFound | RpcDecodeFailure,
+  RpcEncodeFailure | RpcTransportError | RpcNotFound | RpcDecodeFailure
+>
 ```
 
 Added in v1.0.0
