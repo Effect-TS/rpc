@@ -88,7 +88,7 @@ export declare const handler: {
     (
       request: unknown
     ) => Effect<
-      Exclude<RpcHandlers.Services<R['handlers']>, RpcRouter.SetupServices<R> | Span>,
+      Exclude<RpcHandlers.Services<R['handlers']>, Span | RpcRouter.SetupServices<R>>,
       never,
       readonly RpcResponse[]
     >

@@ -39,11 +39,11 @@ Add a service level error, which can then be used with `Router.provideServiceEff
 export declare const withServiceError: {
   <EI extends Schema.Json, E>(error: Schema.Schema<EI, E>): <S extends RpcService.DefinitionWithId>(
     self: S
-  ) => RpcService.WithId<S, EI | Schema.From<S[typeof RpcServiceErrorId]>, E | Schema.To<S[typeof RpcServiceErrorId]>>
+  ) => RpcService.WithId<S, EI | RpcService.ErrorsFrom<S>, E | RpcService.Errors<S>>
   <S extends RpcService.DefinitionWithId, EI extends Schema.Json, E>(
     self: S,
     error: Schema.Schema<EI, E>
-  ): RpcService.WithId<S, EI | Schema.From<S[typeof RpcServiceErrorId]>, E | Schema.To<S[typeof RpcServiceErrorId]>>
+  ): RpcService.WithId<S, EI | RpcService.ErrorsFrom<S>, E | RpcService.Errors<S>>
 }
 ```
 

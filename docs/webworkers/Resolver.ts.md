@@ -52,7 +52,7 @@ export declare const makePool: <R, E>(
   create: (
     spawn: (
       evaluate: (id: number) => Worker | SharedWorker,
-      permits?: number | undefined
+      permits?: number
     ) => Effect.Effect<Scope, never, RpcWebWorker>
   ) => Effect.Effect<R, E, RpcWorkerPool>
 ) => Effect.Effect<R, E, RpcWorkerPool>
@@ -69,7 +69,7 @@ export declare const makePoolLayer: <R, E>(
   create: (
     spawn: (
       evaluate: (id: number) => Worker | SharedWorker,
-      permits?: number | undefined
+      permits?: number
     ) => Effect.Effect<Scope, never, RpcWebWorker>
   ) => Effect.Effect<R, E, RpcWorkerPool>
 ) => Layer.Layer<Exclude<R, Scope>, E, RpcWorkerPool>

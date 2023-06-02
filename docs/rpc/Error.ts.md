@@ -150,8 +150,8 @@ Added in v1.0.0
 
 ```ts
 export declare const RpcError: Schema.Schema<
-  RpcEncodeFailure | RpcTransportError | RpcNotFound | RpcDecodeFailure,
-  RpcEncodeFailure | RpcTransportError | RpcNotFound | RpcDecodeFailure
+  RpcDecodeFailure | RpcEncodeFailure | RpcNotFound | RpcTransportError,
+  RpcDecodeFailure | RpcEncodeFailure | RpcNotFound | RpcTransportError
 >
 ```
 

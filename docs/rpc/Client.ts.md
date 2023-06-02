@@ -35,13 +35,9 @@ export declare const make: {
   <S extends RpcService.DefinitionWithSetup>(
     schemas: S,
     init: RpcSchema.Input<S['__setup']>,
-    options?: RpcClientOptions | undefined
-  ): Effect<
-    never,
-    RpcEncodeFailure | RpcTransportError | RpcNotFound | RpcDecodeFailure | RpcSchema.Error<S['__setup']>,
-    RpcClient<S, RpcResolver<never>>
-  >
-  <S extends RpcService.DefinitionWithoutSetup>(schemas: S, options?: RpcClientOptions | undefined): RpcClient<
+    options?: RpcClientOptions
+  ): Effect<never, RpcError | RpcSchema.Error<S['__setup']>, RpcClient<S, RpcResolver<never>>>
+  <S extends RpcService.DefinitionWithoutSetup>(schemas: S, options?: RpcClientOptions): RpcClient<
     S,
     RpcResolver<never>
   >
@@ -68,8 +64,8 @@ export declare const makeWithResolver: {
     options?: RpcClientOptions | undefined
   ): Effect<
     never,
-    RpcEncodeFailure | RpcTransportError | RpcNotFound | RpcDecodeFailure | RpcSchema.Error<S['__setup']>,
-    RpcClient<S, [Resolver] extends [Effect<any, any, any>] ? unknown : never>
+    RpcError | RpcSchema.Error<S['__setup']>,
+    RpcClient<S, [Resolver] extends [Effect<any, any, any>] ? Effect.Context<Resolver> : never>
   >
   <
     S extends RpcService.DefinitionWithoutSetup,
@@ -78,7 +74,7 @@ export declare const makeWithResolver: {
     schemas: S,
     resolver: Resolver,
     options?: RpcClientOptions | undefined
-  ): RpcClient<S, [Resolver] extends [Effect<any, any, any>] ? unknown : never>
+  ): RpcClient<S, [Resolver] extends [Effect<any, any, any>] ? Effect.Context<Resolver> : never>
 }
 ```
 
