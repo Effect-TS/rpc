@@ -81,11 +81,11 @@ Added in v1.0.0
 
 ```ts
 export declare const provideServiceEffect: {
-  <Router extends RpcRouter.Base, T extends Tag<any, any>, R, E extends To<Router['schema'][typeof RpcServiceErrorId]>>(
+  <Router extends RpcRouter.Base, T extends Tag<any, any>, R, E extends RpcService.Errors<Router['schema']>>(
     tag: T,
     effect: Effect<R, E, Tag.Service<T>>
   ): (self: Router) => RpcRouter.Provide<Router, Tag.Identifier<T>, R, E>
-  <Router extends RpcRouter.Base, T extends Tag<any, any>, R, E extends To<Router['schema'][typeof RpcServiceErrorId]>>(
+  <Router extends RpcRouter.Base, T extends Tag<any, any>, R, E extends RpcService.Errors<Router['schema']>>(
     self: Router,
     tag: T,
     effect: Effect<R, E, Tag.Service<T>>
@@ -124,7 +124,7 @@ Added in v1.0.0
 export declare const make: <S extends RpcService.DefinitionWithId, H extends RpcHandlers.FromService<S>>(
   schema: S,
   handlers: H,
-  options?: Partial<RpcRouter.Options> | undefined
+  options?: Partial<RpcRouter.Options>
 ) => RpcRouter<S, H>
 ```
 
