@@ -27,6 +27,61 @@ export const make = <
   }
 }
 
+const provideHandlerLayer = (
+  handler: RpcHandler.Any,
+  layer: Layer.Layer<any, any, any>
+) =>
+  Effect.isEffect(handler)
+    ? Effect.provideLayer(handler, layer)
+    : (input: any) => {
+      const effectOrLayer = (handler as Function)(input)
+      return Effect.provideLayer(
+        Layer.isLayer(effectOrLayer)
+          ? Layer.build(effectOrLayer)
+          : effectOrLayer,
+        layer
+      )
+    }
+
+
+/** @internal */
+export const provideLayer: {
+  <
+    Router extends RpcRouter.Base,
+    T extends Layer.Layer<any, any, any>,
+    R,
+    E extends RpcService.Errors<Router['schema']>
+  >(
+    layer: T
+  ): (self: Router) => RpcRouter.Provide<Router, Layer.Layer.Success<T>, R, E>
+  <
+    Router extends RpcRouter.Base,
+    R,
+    E extends RpcService.Errors<Router['schema']>,
+    A
+  >(
+    self: Router,
+    layer: Layer.Layer<R, E, A>
+  ): RpcRouter.Provide<Router, Layer.Layer.Success<any>, R, E>
+} = dual(
+  2,
+  <Router extends RpcRouter.Base, T extends Layer.Layer<any, any, any>, R, E>(
+    self: Router,
+    layer: T
+  ): RpcRouter.Provide<Router, Layer.Layer.Success<T>, R, E> => {
+    return {
+      ...self,
+      handlers: Object.fromEntries(
+        Object.entries(self.handlers).map(([method, handler]) =>
+          'handlers' in handler
+            ? [method, provideLayer(handler as any, layer)]
+            : [method, provideHandlerLayer(handler, layer)]
+        )
+      ),
+    } as any
+  }
+)
+
 const provideHandlerEffect = (
   handler: RpcHandler.Any,
   tag: Tag<any, any>,
