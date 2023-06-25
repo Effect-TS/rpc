@@ -300,17 +300,17 @@ export const make: <
  * @since 1.0.0
  */
 export const provideLayer: {
-  <T extends Layer.Layer<any, any, any>>(layer: T): <
+  <T extends Layer<any, any, any>>(layer: T): <
     Router extends RpcRouter.Base
   >(
     self: Router
-  ) => RpcRouter.Provide<Router, Layer.Layer.Success<T>, never, never>
-  <Router extends RpcRouter.Base, T extends Layer.Layer<any, any, any>>(
+  ) => RpcRouter.Provide<Router, Layer.Success<T>, never, never>
+  <Router extends RpcRouter.Base, T extends Layer<any, any, any>>(
     self: Router,
     layer: T
-  ): RpcRouter.Provide<Router, Layer.Layer.Success<T>, never, never>
+  ): RpcRouter.Provide<Router, Layer.Success<T>, never, never>
 } =
- internal.provideLayer
+ internal.provideLayer as any
 
 /**
  * @category router combinators

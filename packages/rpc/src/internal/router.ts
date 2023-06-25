@@ -56,13 +56,13 @@ export const provideLayer: {
   ): (self: Router) => RpcRouter.Provide<Router, Layer.Layer.Success<T>, R, E>
   <
     Router extends RpcRouter.Base,
+    T extends Layer.Layer<any, any, any>,
     R,
     E extends RpcService.Errors<Router['schema']>,
-    A
   >(
     self: Router,
-    layer: Layer.Layer<R, E, A>
-  ): RpcRouter.Provide<Router, Layer.Layer.Success<any>, R, E>
+    layer: T
+  ): RpcRouter.Provide<Router, Layer.Layer.Success<T>, R, E>
 } = dual(
   2,
   <Router extends RpcRouter.Base, T extends Layer.Layer<any, any, any>, R, E>(
