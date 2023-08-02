@@ -142,17 +142,18 @@ export const handleSingle: {
           Effect.match({
             onFailure:
               (error) =>
-                Effect.succeed({
+                ({
                   _tag: "Error",
                   error,
-                } as RpcResponse),
+                }),
             onSuccess: x =>
               pipe(x,
                 Either.match({
                   onLeft: (error): RpcResponse => ({
                     _tag: "Error",
                     error,
-                  }), onRight: (value): RpcResponse => ({
+                  }),
+                  onRight: (value): RpcResponse => ({
                     _tag: "Success",
                     value,
                   })
@@ -212,11 +213,11 @@ export const handleSingleWithSchema: {
         request: unknown,
       ) => Effect.Effect<unknown, unknown, RpcResponse>,
     ) =>
-    (request: RpcRequest.Payload) =>
-      Effect.map(handle(request), (response) => [
-        response,
-        Option.fromNullable(schemaMap[request._tag]),
-      ])
+      (request: RpcRequest.Payload) =>
+        Effect.map(handle(request), (response) => [
+          response,
+          Option.fromNullable(schemaMap[request._tag]),
+        ])
 
   if (Effect.isEffect(handler)) {
     return Effect.map(handler as any, run)
