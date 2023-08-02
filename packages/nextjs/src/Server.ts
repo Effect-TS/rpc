@@ -52,7 +52,7 @@ export function make<R extends RpcRouter.Base>(router: R): RpcNextjsHandler<R> {
         }),
       ),
       Effect.catchAllCause((cause) =>
-        Effect.flatMap(Effect.logErrorCause(cause), () =>
+        Effect.flatMap(Effect.logError(cause), () =>
           Effect.sync(() => {
             response.writeHead(500)
             response.end()

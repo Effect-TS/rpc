@@ -159,10 +159,11 @@ export const handleSingle: {
                   })
                 })),
           }),
+          // @ts-expect-error
           Effect.withSpan(`${router.options.spanPrefix}.${request._tag}`, {
             parent: {
               _tag: "ExternalSpan",
-              name: request.spanName,
+              name: request.spanName ,
               spanId: request.spanId,
               traceId: request.traceId,
               context: Context.empty(),
@@ -175,7 +176,7 @@ export const handleSingle: {
   }
 
   return Effect.map(
-    Effect.zip(Ref.make(Option.none()), Effect.scope()),
+    Effect.zip(Ref.make(Option.none()), Effect.scope),
     ([contextRef, scope]) => handler(contextRef, scope),
   )
 }

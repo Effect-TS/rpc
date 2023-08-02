@@ -26,4 +26,4 @@ const client = Client.makeWithResolver(
   Resolver.make(Server.handler(router)),
 )
 
-Effect.flatMap(client.getIds, (ids) => Effect.allPar(ids.map(client.getUser)))
+Effect.flatMap(client.getIds, (ids) => Effect.all(ids.map(client.getUser), { concurrency: 'unbounded' }))

@@ -5,13 +5,9 @@ import type { Context } from "@effect/data/Context"
 import type { RpcRequest } from "@effect/rpc/Resolver"
 import * as internal from "@effect/rpc/internal/schema"
 import * as Schema from "@effect/schema/Schema"
+import { Json } from "@effect/rpc/internal/schema"
 
 
-type JsonArray = ReadonlyArray<Json>
-
-type JsonObject = { readonly [key: string]: Json }
-
-type Json = null | boolean | number | string | JsonArray | JsonObject
 
 
 /**
@@ -313,7 +309,7 @@ export const make = makeWith<"Schema.Json", Json>()
  * @since 1.0.0
  */
 export const withServiceError: {
-  <EI extends Schema.Json, E>(error: Schema.Schema<EI, E>): <
+  <EI extends Json, E>(error: Schema.Schema<EI, E>): <
     S extends RpcService.DefinitionWithId,
   >(
     self: S,
@@ -322,7 +318,7 @@ export const withServiceError: {
     EI | RpcService.ErrorsFrom<S>,
     E | RpcService.Errors<S>
   >
-  <S extends RpcService.DefinitionWithId, EI extends Schema.Json, E>(
+  <S extends RpcService.DefinitionWithId, EI extends Json, E>(
     self: S,
     error: Schema.Schema<EI, E>,
   ): RpcService.WithId<

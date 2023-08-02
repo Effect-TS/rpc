@@ -5,6 +5,11 @@ import type * as schema from "@effect/rpc/Schema"
 import { decode, encode, encodeEffect } from "@effect/rpc/internal/codec"
 import * as Schema from "@effect/schema/Schema"
 
+type JsonArray = ReadonlyArray<Json>
+type JsonObject = { readonly [key: string]: Json }
+export type Json = null | boolean | number | string | JsonArray | JsonObject
+
+
 /** @internal */
 export const RpcServiceId: schema.RpcServiceId = Symbol.for(
   "@effect/rpc/Schema/RpcService",
@@ -117,7 +122,7 @@ export const inputEncodeMap = <S extends schema.RpcService.DefinitionWithId>(
 
 /** @internal */
 export const withServiceError: {
-  <EI extends Schema.Json, E>(error: Schema.Schema<EI, E>): <
+  <EI extends Json, E>(error: Schema.Schema<EI, E>): <
     S extends schema.RpcService.DefinitionWithId,
   >(
     self: S,
@@ -126,7 +131,7 @@ export const withServiceError: {
     schema.RpcService.ErrorsFrom<S> | EI,
     schema.RpcService.Errors<S> | E
   >
-  <S extends schema.RpcService.DefinitionWithId, EI extends Schema.Json, E>(
+  <S extends schema.RpcService.DefinitionWithId, EI extends Json, E>(
     self: S,
     error: Schema.Schema<EI, E>,
   ): schema.RpcService.WithId<
@@ -136,7 +141,7 @@ export const withServiceError: {
   >
 } = dual(
   2,
-  <S extends schema.RpcService.DefinitionWithId, EI extends Schema.Json, E>(
+  <S extends schema.RpcService.DefinitionWithId, EI extends Json, E>(
     self: S,
     error: Schema.Schema<EI, E>,
   ): schema.RpcService.WithId<
