@@ -15,7 +15,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@effect/rpc": path.join(__dirname, "../rpc/src"),
-
+      "@effect/io": "@effect/io",
       "@effect/rpc-webworkers/test": path.join(__dirname, "test"),
       "@effect/rpc-webworkers": path.join(__dirname, "src"),
     },
