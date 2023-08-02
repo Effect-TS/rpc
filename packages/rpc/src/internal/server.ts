@@ -73,98 +73,101 @@ export const handleSingle: {
 
   const handler =
     (contextRef?: Ref.Ref<Option.Option<Context.Context<unknown>>>, scope?: Scope) =>
-    (request: RpcRequest.Payload) =>
-      pipe(
-        Either.Do(),
-        Either.bind("codecs", () =>
-          Either.fromNullable(codecsMap[request._tag], () =>
-            RpcNotFound({ method: request._tag ?? "" }),
+      (request: RpcRequest.Payload) =>
+        pipe(
+          Effect.Do,
+          Effect.bind("codecs", () =>
+            Either.fromNullable(codecsMap[request._tag], () =>
+              RpcNotFound({ method: request._tag ?? "" }),
+            ),
           ),
-        ),
-        Either.bind("handler", () =>
-          Either.fromNullable(handlerMap[request._tag], () =>
-            RpcNotFound({ method: request._tag }),
+          Effect.bind("handler", () =>
+            Either.fromNullable(handlerMap[request._tag], () =>
+              RpcNotFound({ method: request._tag }),
+            ),
           ),
-        ),
-        Either.bind("input", ({ codecs }) =>
-          codecs.input ? codecs.input(request.input) : Either.right(null),
-        ),
-        Either.map(({ codecs, handler, input }) => {
-          const effect: Effect.Effect<any, unknown, unknown> = Effect.isEffect(
-            handler,
-          )
-            ? handler
-            : (handler as any)(input)
+          Effect.bind("input", ({ codecs }) =>
+            codecs.input ? codecs.input(request.input) : Either.right(null),
+          ),
+          Effect.flatMap(({ codecs, handler, input }) => {
+            const effect: Effect.Effect<any, unknown, unknown> = Effect.isEffect(
+              handler,
+            )
+              ? handler
+              : (handler as any)(input)
 
-          if (request._tag === "__setup" && contextRef && scope) {
-            return pipe(
-              Ref.get(contextRef),
-              Effect.flatMap(
-                Option.match(
-                  () =>
-                    pipe(
-                      Layer.isLayer(effect) ? Layer.build(effect) : effect,
-                      Effect.tap((_) => Ref.set(contextRef, Option.some(_))),
-                    ),
-                  () => Effect.unit(),
+            if (request._tag === "__setup" && contextRef && scope) {
+              return pipe(
+                Ref.get(contextRef),
+                Effect.flatMap(
+                  Option.match({
+                      onNone:
+                        () =>
+                          pipe(
+                            Layer.isLayer(effect) ? Layer.build(effect) : effect,
+                            Effect.tap((_) => Ref.set(contextRef, Option.some(_))),
+                          ),
+                      onSome: () => Effect.unit
+                    },
+                  ),
                 ),
-              ),
-              Effect.as(null),
-              Effect.either,
-              Effect.provideService(Scope, scope),
-            ) as Effect.Effect<any, never, Either.Either<RpcError, unknown>>
-          }
+                Effect.as(null),
+                Effect.either,
+                Effect.provideService(Scope, scope),
+              ) as Effect.Effect<any, never, Either.Either<RpcError, unknown>>
+            }
 
-          return pipe(
-            contextRef
-              ? pipe(
+            return pipe(
+              contextRef
+                ? pipe(
                   Ref.get(contextRef),
                   Effect.flatMap(
-                    Option.match(
-                      () =>
-                        Effect.fail(
-                          RpcTransportError({ error: "__setup not called" }),
-                        ),
-                      (ctx) => Effect.provideSomeContext(effect, ctx),
-                    ),
+                    Option.match({
+                      onNone:
+                        () =>
+                          Effect.fail(
+                            RpcTransportError({ error: "__setup not called" }),
+                          ),
+                      onSome: (ctx) => Effect.provideSomeContext(effect, ctx),
+                    }),
                   ),
                 )
-              : effect,
-            Effect.map(codecs.output),
-            Effect.catchAll((_) =>
-              Effect.succeed(Either.flatMap(codecs.error(_), Either.left)),
-            ),
-          ) as Effect.Effect<any, never, Either.Either<RpcError, unknown>>
-        }),
-        Either.match(
-          (error) =>
-            Effect.succeed({
-              _tag: "Error",
-              error,
-            } as RpcResponse),
-          Effect.map(
-            Either.match(
-              (error): RpcResponse => ({
-                _tag: "Error",
-                error,
-              }),
-              (value): RpcResponse => ({
-                _tag: "Success",
-                value,
-              }),
-            ),
-          ),
-        ),
-        Effect.withSpan(`${router.options.spanPrefix}.${request._tag}`, {
-          parent: {
-            _tag: "ExternalSpan",
-            name: request.spanName,
-            spanId: request.spanId,
-            traceId: request.traceId,
-            context: Context.empty(),
-          },
-        }),
-      )
+                : effect,
+              Effect.map(codecs.output),
+              Effect.catchAll((_) =>
+                Effect.succeed(Either.flatMap(codecs.error(_), Either.left)),
+              ),
+            ) as Effect.Effect<any, never, Either.Either<RpcError, unknown>>
+          }),
+          Effect.match({
+            onFailure:
+              (error) =>
+                Effect.succeed({
+                  _tag: "Error",
+                  error,
+                } as RpcResponse),
+            onSuccess: x =>
+              pipe(x,
+                Either.match({
+                  onLeft: (error): RpcResponse => ({
+                    _tag: "Error",
+                    error,
+                  }), onRight: (value): RpcResponse => ({
+                    _tag: "Success",
+                    value,
+                  })
+                })),
+          }),
+          Effect.withSpan(`${router.options.spanPrefix}.${request._tag}`, {
+            parent: {
+              _tag: "ExternalSpan",
+              name: request.spanName,
+              spanId: request.spanId,
+              traceId: request.traceId,
+              context: Context.empty(),
+            },
+          }),
+        )
 
   if (!hasSetup) {
     return handler() as any
@@ -270,10 +273,10 @@ export const handler: {
 
   const run =
     (handler: () => Effect.Effect<unknown, unknown, RpcResponse>) =>
-    (u: Array<unknown>) =>
-      Array.isArray(u)
-        ? Effect.allPar(u.map(handler))
-        : Effect.die(new Error("expected an array of requests"))
+      (u: Array<unknown>) =>
+        Array.isArray(u)
+          ? Effect.all(u.map(handler), { concurrency: 'unbounded' })
+          : Effect.die(new Error("expected an array of requests"))
 
   if (Effect.isEffect(handler)) {
     return Effect.map(handler as any, run) as any

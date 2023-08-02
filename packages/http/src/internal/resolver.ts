@@ -24,8 +24,8 @@ export function make(
 ): Resolver.RpcResolver<never> {
   return Resolver.make((requests) =>
     pipe(
-      Effect.tryCatchPromiseInterrupt(
-        (signal) => {
+      Effect.tryPromise({
+        try: (signal) => {
           const headers = new Headers(options.init?.headers)
           headers.set("Content-Type", "application/json; charset=utf-8")
           return fetch(options.url, {
@@ -36,13 +36,13 @@ export function make(
             signal,
           })
         },
-        (error) => RpcFetchError({ reason: "FetchError", error }),
-      ),
+        catch: (error) => RpcFetchError({ reason: "FetchError", error }),
+      }),
       Effect.flatMap((response) =>
-        Effect.tryCatchPromise(
-          () => response.json(),
-          (error) => RpcFetchError({ reason: "JsonDecodeError", error }),
-        ),
+        Effect.tryPromise({
+          try: () => response.json(),
+          catch: (error) => RpcFetchError({ reason: "JsonDecodeError", error }),
+        }),
       ),
       Effect.mapError((error) => RpcTransportError({ error })),
     ),

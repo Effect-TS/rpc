@@ -93,7 +93,7 @@ export const make = <Router extends RpcRouter.Base>(
               if ((event as MessageEvent).data === "close") {
                 portCount--
                 if (portCount === 0) {
-                  resume(Effect.unit())
+                  resume(Effect.unit)
                 }
               } else {
                 runFork(portHandler(event as MessageEvent) as any)

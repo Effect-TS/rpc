@@ -63,7 +63,7 @@ export function make<R extends RpcRouter.Base>(
         }),
       ),
       Effect.catchAllCause((cause) =>
-        Effect.flatMap(Effect.logErrorCause(cause), () =>
+        Effect.flatMap(Effect.logError(cause), () =>
           Effect.sync(() => {
             response.writeHead(500)
             response.end()
@@ -90,7 +90,7 @@ const bodyToString = (stream: Readable) =>
   })
 
 const parseJson = (body: string) =>
-  Effect.tryCatch(
-    () => JSON.parse(body) as unknown,
-    (error) => new Error(`Failed to parse JSON: ${error}`),
-  )
+  Effect.try({
+    try: () => JSON.parse(body) as unknown,
+    catch: (error) => new Error(`Failed to parse JSON: ${error}`),
+  })

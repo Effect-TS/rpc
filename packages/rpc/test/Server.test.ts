@@ -73,13 +73,13 @@ const router = Router.make(schema, {
   encodeInput: (date) => Effect.succeed(date),
 
   encodeDate: (dateString) =>
-    Effect.tryCatch(
-      () => new Date(dateString),
-      () => ({
+    Effect.try({
+      try: () => new Date(dateString),
+      catch: () => ({
         _tag: "SomeError",
         message: "fail",
       }),
-    ),
+    }),
 
   refined: (n) => Effect.succeed(n),
 
@@ -114,6 +114,7 @@ describe("Server", () => {
       ]),
     )
     expect(result.length).toEqual(9)
+    console.log("RESULT",JSON.stringify(result,null,2))
 
     expect(result[0]).toEqual({ _tag: "Success", value: "Hello, John!" })
     expect(result[1]._tag === "Error" && result[1].error._tag).toEqual(

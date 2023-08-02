@@ -85,16 +85,17 @@ const router = Router.make(
     encodeInput: (date) => Effect.succeed(date),
     currentSpanName:
       Effect.flatMap(
-        Effect.currentSpan(),
+        Effect.currentSpan,
         (maybeSpan) =>
           Effect.match(maybeSpan,
-            () => "",
-            (_) =>
-            `${Option.getOrElse(
-              Option.map(_.parent, (_) => _.name),
-              () => "",
-            )} > ${_.name}`,
-          )),
+            {
+              onFailure: () => "",
+              onSuccess: (_) =>
+                `${Option.getOrElse(
+                  Option.map(_.parent, (_) => _._tag==="Span"? _.name : _.spanId),
+                  () => "",
+                )} > ${_.name}`,
+            })),
     getCount: (_) => Effect.flatMap(Counter, (_) => _.get),
     posts: Router.make(posts, {
       create: (post) =>
@@ -164,7 +165,7 @@ describe("Client", () => {
   })
 
   it("caching", () => {
-    const getA = Effect.withRequestCaching("on")(client.getCount("a"))
+    const getA = Effect.withRequestCaching(true)(client.getCount("a"))
     expect(Effect.runSync(getA)).toEqual(0)
     expect(Effect.runSync(getA)).toEqual(0)
     expect(Effect.runSync(client.getCount("b"))).toEqual(1)

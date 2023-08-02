@@ -16,7 +16,7 @@ export const decode = <I, A>(schema: Schema.Schema<I, A>) => {
 
 /** @internal */
 export const decodeEffect = <I, A>(schema: Schema.Schema<I, A>) => {
-  const decode = Schema.parseEffect(schema)
+  const decode = Schema.parse(schema)
   return (input: unknown): Effect.Effect<never, RpcDecodeFailure, A> =>
     Effect.mapError(decode(input), (error) =>
       RpcDecodeFailure({ errors: error.errors }),
@@ -50,7 +50,7 @@ export const encodeEffect: <I, A>(
 ) => Effect.Effect<never, RpcEncodeFailure, I> = <I, A>(
   schema: Schema.Schema<I, A>,
 ) => {
-  const encode = Schema.encodeEffect(schema)
+  const encode = Schema.encode(schema)
 
   return (input: A, options?: ParseOptions | undefined) =>
     Effect.mapError(encode(input, options), (error) =>

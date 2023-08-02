@@ -69,7 +69,7 @@ export const makeWithSchema = <R>(
       send(requests),
       Effect.flatMap(decodeResponses),
       Effect.flatMap((responses) =>
-        Effect.forEachWithIndex(requests, (request, index) => {
+        Effect.forEach(requests, (request, index) => {
           const response = responses[index]
           return Request.complete(
             request,
@@ -80,7 +80,7 @@ export const makeWithSchema = <R>(
         }),
       ),
       Effect.catchAll((_) =>
-        Effect.forEachDiscard(requests, (request) => Request.fail(request, _)),
+        Effect.forEach(requests, (request) => Request.fail(request, _), { discard: true }),
       ),
     ),
   )

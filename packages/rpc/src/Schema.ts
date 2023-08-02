@@ -6,6 +6,14 @@ import type { RpcRequest } from "@effect/rpc/Resolver"
 import * as internal from "@effect/rpc/internal/schema"
 import * as Schema from "@effect/schema/Schema"
 
+
+type JsonArray = ReadonlyArray<Json>
+
+type JsonObject = { readonly [key: string]: Json }
+
+type Json = null | boolean | number | string | JsonArray | JsonObject
+
+
 /**
  * @since 1.0.0
  */
@@ -296,7 +304,7 @@ export const makeWith =
  * @category constructors
  * @since 1.0.0
  */
-export const make = makeWith<"Schema.Json", Schema.Json>()
+export const make = makeWith<"Schema.Json", Json>()
 
 /**
  * Add a service level error, which can then be used with `Router.provideServiceEffect`.

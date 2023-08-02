@@ -118,7 +118,7 @@ describe("Schema", () => {
       })
 
       expect(
-        S.decode(schema)({
+        S.decodeSync(schema)({
           _tag: "greet",
           input: "John",
         }),
@@ -127,7 +127,7 @@ describe("Schema", () => {
         input: "John",
       })
 
-      expect(S.decode(schema)({ _tag: "currentTime" })).toEqual({
+      expect(S.decodeSync(schema)({ _tag: "currentTime" })).toEqual({
         _tag: "currentTime",
       })
 

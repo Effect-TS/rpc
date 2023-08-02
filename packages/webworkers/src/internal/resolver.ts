@@ -20,13 +20,15 @@ export const RpcWorkerPool = Tag<WWResolver.RpcWorkerPool>()
 
 const getQueue = Effect.flatMap(
   Effect.serviceOption(RpcWorkerQueue),
-  Option.match(
-    WW.defaultQueue<
-      RpcTransportError,
-      Resolver.RpcRequest,
-      Resolver.RpcResponse
-    >,
-    Effect.succeed,
+  Option.match({
+      onNone:
+        WW.defaultQueue<
+          RpcTransportError,
+          Resolver.RpcRequest,
+          Resolver.RpcResponse
+        >,
+      onSome: Effect.succeed,
+    }
   ),
 )
 
@@ -78,9 +80,9 @@ const makeWorker = (
         transferables: (request) =>
           "input" in request.schema
             ? schema.getTransferables(
-                request.schema.input,
-                request.payload.input,
-              )
+              request.schema.input,
+              request.payload.input,
+            )
             : [],
       },
     ),

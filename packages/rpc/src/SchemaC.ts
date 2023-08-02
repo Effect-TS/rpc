@@ -33,9 +33,9 @@ export const withConstructor: {
     self: Schema.Schema<I, A>,
     f: (input: C) => A,
   ): SchemaC<I, A, C> => {
-    const validate = Schema.validate(self)
+    const validate = Schema.validateSync(self)
     const validateEither = Schema.validateEither(self)
-    const validateEffect = Schema.validateEffect(self)
+    const validateEffect = Schema.validate(self)
     const validateOption = Schema.validateOption(self)
 
     function make(input: C): A {

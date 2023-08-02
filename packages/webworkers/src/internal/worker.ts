@@ -40,7 +40,7 @@ export const make = <E, I, O>(
 
     const handleExit = (exit: Exit.Exit<E, O>) =>
       Effect.zipRight(
-        Effect.forEachDiscard(requestMap.values(), Deferred.complete(exit)),
+        Effect.forEach(requestMap.values(), Deferred.complete(exit), { discard: true }),
         Effect.sync(() => requestMap.clear()),
       )
 
@@ -48,7 +48,7 @@ export const make = <E, I, O>(
       Effect.suspend(() => {
         const [id, response] = event.data
         const deferred = requestMap.get(id)
-        if (!deferred) return Effect.unit()
+        if (!deferred) return Effect.unit
         return Deferred.succeed(deferred, response)
       })
 
@@ -76,7 +76,7 @@ export const make = <E, I, O>(
           ),
         ),
         Effect.onExit((exit) =>
-          Exit.isFailure(exit) ? semaphore.release(1) : Effect.unit(),
+          Exit.isFailure(exit) ? semaphore.release(1) : Effect.unit,
         ),
         Effect.forever,
       )
@@ -91,7 +91,7 @@ export const make = <E, I, O>(
           ),
         (deferred) =>
           Effect.flatMap(Deferred.isDone(deferred), (done) =>
-            done ? Effect.unit() : Deferred.interrupt(deferred),
+            done ? Effect.unit : Deferred.interrupt(deferred),
           ),
       )
 
@@ -105,11 +105,8 @@ export const make = <E, I, O>(
         return [worker, worker] as const
       }),
       ([worker, port]) =>
-        Effect.zipParRight(
-          Effect.asyncInterrupt<never, E, never>((resume) => {
-            const controller = new AbortController()
-            const signal = controller.signal
-
+        Effect.zipRight(
+          Effect.async<never, E, never>((resume, signal) => {
             port.addEventListener(
               "message",
               (event) => Effect.runFork(handleMessage(event as MessageEvent)),
@@ -120,11 +117,9 @@ export const make = <E, I, O>(
               (event) => resume(Effect.fail(onError(event as ErrorEvent))),
               { signal },
             )
-
-            return Effect.sync(() => controller.abort())
           }),
           postMessages(port),
-        ),
+          { concurrent: true }),
       ([, port], exit) =>
         Effect.zipRight(
           handleExit(exit),
