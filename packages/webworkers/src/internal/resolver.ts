@@ -41,7 +41,7 @@ export const makePool = <R, E>(
     ) => Effect.Effect<Scope, never, WWResolver.RpcWebWorker>,
   ) => Effect.Effect<R, E, WWResolver.RpcWorkerPool>,
 ) =>
-  Effect.flatMap(Effect.all(getQueue, Ref.make(0)), ([queue, ref]) =>
+  Effect.flatMap(Effect.all([getQueue, Ref.make(0)]), ([queue, ref]) =>
     create((evaluate, permits = 1) =>
       Effect.flatMap(
         Ref.getAndUpdate(ref, (n) => n + 1),
