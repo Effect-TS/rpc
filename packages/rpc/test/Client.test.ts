@@ -92,7 +92,10 @@ const router = Router.make(
               onFailure: () => "",
               onSuccess: (_) =>
                 `${Option.getOrElse(
-                  Option.map(_.parent, (_) => _._tag==="Span"? _.name : _.spanId),
+                  Option.map(_.parent, (_) => 
+                    _._tag === "Span" ? _.name 
+                    // @ts-expect-error
+                    : _.name),
                   () => "",
                 )} > ${_.name}`,
             })),
