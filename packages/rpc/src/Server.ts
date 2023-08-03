@@ -20,7 +20,9 @@ import * as internal from "@effect/rpc/internal/server"
  * @since 1.0.0
  */
 export const handler: {
-  <R extends RpcRouter.WithSetup>(router: R): Effect<
+  <R extends RpcRouter.WithSetup>(
+    router: R,
+  ): Effect<
     Scope,
     never,
     (
@@ -34,7 +36,9 @@ export const handler: {
       ReadonlyArray<RpcResponse>
     >
   >
-  <R extends RpcRouter.WithoutSetup>(router: R): (
+  <R extends RpcRouter.WithoutSetup>(
+    router: R,
+  ): (
     request: unknown,
   ) => Effect<
     Exclude<RpcHandlers.Services<R["handlers"]>, Span>,
@@ -60,7 +64,9 @@ export const handlerRaw: <R extends RpcRouter.Base>(
  * @since 1.0.0
  */
 export const handleSingle: {
-  <R extends RpcRouter.WithSetup>(router: R): Effect<
+  <R extends RpcRouter.WithSetup>(
+    router: R,
+  ): Effect<
     Scope,
     never,
     (
@@ -74,7 +80,9 @@ export const handleSingle: {
       RpcResponse
     >
   >
-  <R extends RpcRouter.WithoutSetup>(router: R): (
+  <R extends RpcRouter.WithoutSetup>(
+    router: R,
+  ): (
     request: unknown,
   ) => Effect<
     Exclude<RpcHandlers.Services<R["handlers"]>, Span>,
@@ -88,7 +96,9 @@ export const handleSingle: {
  * @since 1.0.0
  */
 export const handleSingleWithSchema: {
-  <R extends RpcRouter.WithSetup>(router: R): Effect<
+  <R extends RpcRouter.WithSetup>(
+    router: R,
+  ): Effect<
     Scope,
     never,
     (
@@ -102,7 +112,9 @@ export const handleSingleWithSchema: {
       readonly [RpcResponse, Option<RpcSchema.Base>]
     >
   >
-  <R extends RpcRouter.WithoutSetup>(router: R): (
+  <R extends RpcRouter.WithoutSetup>(
+    router: R,
+  ): (
     request: unknown,
   ) => Effect<
     Exclude<RpcHandlers.Services<R["handlers"]>, Span>,
@@ -180,9 +192,7 @@ export interface RpcServerSingle {
  * @since 1.0.0
  */
 export interface RpcServerSingleWithSchema {
-  (request: unknown): Effect<
-    never,
-    never,
-    readonly [RpcResponse, Option<RpcSchema.Base>]
-  >
+  (
+    request: unknown,
+  ): Effect<never, never, readonly [RpcResponse, Option<RpcSchema.Base>]>
 }

@@ -9,7 +9,6 @@ type JsonArray = ReadonlyArray<Json>
 type JsonObject = { readonly [key: string]: Json }
 export type Json = null | boolean | number | string | JsonArray | JsonObject
 
-
 /** @internal */
 export const RpcServiceId: schema.RpcServiceId = Symbol.for(
   "@effect/rpc/Schema/RpcService",
@@ -24,7 +23,7 @@ export const RpcServiceErrorId: schema.RpcServiceErrorId = Symbol.for(
 export const schemasToUnion = (
   schemas: ReadonlyArray<Schema.Schema<any>>,
 ): Schema.Schema<any> => {
-  schemas = schemas.filter((s) => s !== (Schema.never as any))
+  schemas = schemas.filter(s => s !== (Schema.never as any))
 
   return schemas.length === 0
     ? (Schema.never as any)
@@ -83,14 +82,14 @@ export const methodSchemaTransform =
 export const methodSchemas = methodSchemaTransform(identity)
 
 /** @internal */
-export const methodCodecs = methodSchemaTransform((schema) => ({
+export const methodCodecs = methodSchemaTransform(schema => ({
   input: schema.input ? decode(schema.input) : undefined,
   output: encode(schema.output),
   error: encode(schema.error),
 }))
 
 /** @internal */
-export const methodClientCodecs = methodSchemaTransform((schema) => ({
+export const methodClientCodecs = methodSchemaTransform(schema => ({
   input: schema.input ? encode(schema.input) : undefined,
   output: decode(schema.output),
   error: decode(schema.error),
@@ -122,9 +121,9 @@ export const inputEncodeMap = <S extends schema.RpcService.DefinitionWithId>(
 
 /** @internal */
 export const withServiceError: {
-  <EI extends Json, E>(error: Schema.Schema<EI, E>): <
-    S extends schema.RpcService.DefinitionWithId,
-  >(
+  <EI extends Json, E>(
+    error: Schema.Schema<EI, E>,
+  ): <S extends schema.RpcService.DefinitionWithId>(
     self: S,
   ) => schema.RpcService.WithId<
     S,

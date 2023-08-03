@@ -17,7 +17,7 @@ const schema = RpcSchema.make({
 })
 
 const router = Router.make(schema, {
-  greet: (name) => Effect.succeed(`Hello, ${name}!`),
+  greet: name => Effect.succeed(`Hello, ${name}!`),
 })
 
 const handler = _.make(router)
@@ -26,20 +26,20 @@ describe("Server", () => {
   it("e2e", () =>
     pipe(
       Effect.acquireRelease(
-        Effect.async<never, never, Http.Server>((resume) => {
+        Effect.async<never, never, Http.Server>(resume => {
           const server = Http.createServer((req, res) =>
             Effect.runFork(handler(req, res)),
           )
           server.listen(() => resume(Effect.succeed(server)))
         }),
-        (server) => Effect.sync(() => server.close()),
+        server => Effect.sync(() => server.close()),
       ),
-      Effect.map((server) => {
+      Effect.map(server => {
         const port = (server.address() as any).port as number
         return Client.make(schema, { url: `http://127.0.0.1:${port}` })
       }),
-      Effect.flatMap((client) => client.greet("World")),
-      Effect.tap((greeting) =>
+      Effect.flatMap(client => client.greet("World")),
+      Effect.tap(greeting =>
         Effect.sync(() => expect(greeting).toBe("Hello, World!")),
       ),
       Effect.scoped,

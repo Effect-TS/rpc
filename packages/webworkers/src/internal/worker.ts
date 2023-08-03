@@ -15,7 +15,7 @@ export const defaultQueue = <E, I, O>() =>
   Effect.map(
     Queue.unbounded<readonly [I, Deferred.Deferred<E, O>]>(),
     (queue): WebWorkerQueue<E, I, O> => ({
-      offer: (_) => Queue.offer(queue, _),
+      offer: _ => Queue.offer(queue, _),
       take: Queue.take(queue),
     }),
   )
@@ -40,7 +40,9 @@ export const make = <E, I, O>(
 
     const handleExit = (exit: Exit.Exit<E, O>) =>
       Effect.zipRight(
-        Effect.forEach(requestMap.values(), Deferred.complete(exit), { discard: true }),
+        Effect.forEach(requestMap.values(), Deferred.complete(exit), {
+          discard: true,
+        }),
         Effect.sync(() => requestMap.clear()),
       )
 
@@ -75,7 +77,7 @@ export const make = <E, I, O>(
             ),
           ),
         ),
-        Effect.onExit((exit) =>
+        Effect.onExit(exit =>
           Exit.isFailure(exit) ? semaphore.release(1) : Effect.unit,
         ),
         Effect.forever,
@@ -84,19 +86,19 @@ export const make = <E, I, O>(
     const send = (request: I) =>
       Effect.acquireUseRelease(
         Deferred.make<E, O>(),
-        (deferred) =>
+        deferred =>
           Effect.zipRight(
             outbound.offer([request, deferred]),
             Deferred.await(deferred),
           ),
-        (deferred) =>
-          Effect.flatMap(Deferred.isDone(deferred), (done) =>
+        deferred =>
+          Effect.flatMap(Deferred.isDone(deferred), done =>
             done ? Effect.unit : Deferred.interrupt(deferred),
           ),
       )
 
     const run = Effect.acquireUseRelease(
-      Effect.map(Effect.sync(evaluate), (worker) => {
+      Effect.map(Effect.sync(evaluate), worker => {
         if ("port" in worker) {
           const port = worker.port
           port.start()
@@ -109,17 +111,18 @@ export const make = <E, I, O>(
           Effect.async<never, E, never>((resume, signal) => {
             port.addEventListener(
               "message",
-              (event) => Effect.runFork(handleMessage(event as MessageEvent)),
+              event => Effect.runFork(handleMessage(event as MessageEvent)),
               { signal },
             )
             worker.addEventListener(
               "error",
-              (event) => resume(Effect.fail(onError(event as ErrorEvent))),
+              event => resume(Effect.fail(onError(event as ErrorEvent))),
               { signal },
             )
           }),
           postMessages(port),
-          { concurrent: true }),
+          { concurrent: true },
+        ),
       ([, port], exit) =>
         Effect.zipRight(
           handleExit(exit),

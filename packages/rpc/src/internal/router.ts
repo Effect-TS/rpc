@@ -88,9 +88,10 @@ export const provideServiceEffect: {
 
 /** @internal */
 export const provideServiceSync: {
-  <T extends Tag<any, any>>(tag: T, service: LazyArg<Tag.Service<T>>): <
-    Router extends RpcRouter.Base,
-  >(
+  <T extends Tag<any, any>>(
+    tag: T,
+    service: LazyArg<Tag.Service<T>>,
+  ): <Router extends RpcRouter.Base>(
     self: Router,
   ) => RpcRouter.Provide<Router, Tag.Identifier<T>, never, never>
   <Router extends RpcRouter.Base, T extends Tag<any, any>>(
@@ -110,9 +111,10 @@ export const provideServiceSync: {
 
 /** @internal */
 export const provideService: {
-  <T extends Tag<any, any>>(tag: T, service: Tag.Service<T>): <
-    Router extends RpcRouter.Base,
-  >(
+  <T extends Tag<any, any>>(
+    tag: T,
+    service: Tag.Service<T>,
+  ): <Router extends RpcRouter.Base>(
     self: Router,
   ) => RpcRouter.Provide<Router, Tag.Identifier<T>, never, never>
   <Router extends RpcRouter.Base, T extends Tag<any, any>>(

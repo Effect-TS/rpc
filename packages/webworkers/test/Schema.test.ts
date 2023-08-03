@@ -26,7 +26,7 @@ describe("Schema", () => {
           S.struct({
             data: S.instanceOf(Uint8Array),
           }),
-          (_) => [_.data.buffer],
+          _ => [_.data.buffer],
         ),
       },
     })

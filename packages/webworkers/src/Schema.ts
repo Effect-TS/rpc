@@ -75,9 +75,9 @@ export type TransferableAnnotationId = typeof TransferableAnnotationId
  * @since 1.0.0
  */
 export const transferable: {
-  <I>(f: (a: I) => ReadonlyArray<Transferable>): <A>(
-    self: S.Schema<I, A>,
-  ) => S.Schema<I, A>
+  <I>(
+    f: (a: I) => ReadonlyArray<Transferable>,
+  ): <A>(self: S.Schema<I, A>) => S.Schema<I, A>
 
   <I, A>(
     self: S.Schema<I, A>,
@@ -104,7 +104,7 @@ export const getTransferables: {
       AST.getAnnotation<(value: I) => Array<Transferable>>(
         TransferableAnnotationId,
       )(self.ast),
-      Option.map((f) => f(value)),
+      Option.map(f => f(value)),
       Option.getOrElse(() => []),
     ),
 )

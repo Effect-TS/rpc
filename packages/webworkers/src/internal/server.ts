@@ -12,14 +12,16 @@ import * as Server from "@effect/rpc/Server"
 
 /** @internal */
 export const makeHandler: {
-  <R extends RpcRouter.WithSetup>(router: R): Effect.Effect<
+  <R extends RpcRouter.WithSetup>(
+    router: R,
+  ): Effect.Effect<
     Scope,
     never,
     (port: MessagePort | typeof globalThis) => RpcWorkerHandler<R>
   >
-  <R extends RpcRouter.WithoutSetup>(router: R): (
-    port: MessagePort | typeof globalThis,
-  ) => RpcWorkerHandler<R>
+  <R extends RpcRouter.WithoutSetup>(
+    router: R,
+  ): (port: MessagePort | typeof globalThis) => RpcWorkerHandler<R>
 } = (router: RpcRouter.Base) => {
   const handler = Server.handleSingleWithSchema(router) as unknown
 
@@ -28,14 +30,14 @@ export const makeHandler: {
     (
       port: MessagePort | typeof globalThis,
     ): RpcWorkerHandler<RpcRouter.Base> => {
-      return (message) => {
+      return message => {
         const [id, request] = message.data as [number, RpcRequest.Payload]
         return pipe(
           handler(request),
           Effect.flatMap(([response, schema]) =>
             Effect.sync(() => {
               const transfer = pipe(
-                Option.map(schema, (schema) =>
+                Option.map(schema, schema =>
                   response._tag === "Success"
                     ? getTransferables(schema.output, response.value)
                     : getTransferables(schema.error, response.error),
@@ -45,7 +47,7 @@ export const makeHandler: {
               return port.postMessage([id, response], { transfer })
             }),
           ),
-          Effect.catchAllDefect((error) =>
+          Effect.catchAllDefect(error =>
             Effect.sync(() =>
               port.postMessage([
                 id,
@@ -80,8 +82,8 @@ export const make = <Router extends RpcRouter.Base>(
   ) =>
     pipe(
       Effect.runtime<any>(),
-      Effect.flatMap((runtime) =>
-        Effect.async<never, never, void>((resume) => {
+      Effect.flatMap(runtime =>
+        Effect.async<never, never, void>(resume => {
           const runFork = Runtime.runFork(runtime)
           let portCount = 0
 
@@ -89,7 +91,7 @@ export const make = <Router extends RpcRouter.Base>(
             const portHandler = handler(port)
             portCount++
 
-            port.addEventListener("message", (event) => {
+            port.addEventListener("message", event => {
               if ((event as MessageEvent).data === "close") {
                 portCount--
                 if (portCount === 0) {
@@ -115,7 +117,7 @@ export const make = <Router extends RpcRouter.Base>(
             )
           }
 
-          self.addEventListener("unhandledrejection", (event) => {
+          self.addEventListener("unhandledrejection", event => {
             throw event.reason
           })
         }),

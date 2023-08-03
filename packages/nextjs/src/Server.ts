@@ -22,7 +22,10 @@ export {
  * @since 1.0.0
  */
 export interface RpcNextjsHandler<R extends RpcRouter.Base> {
-  (request: NextApiRequest, response: NextApiResponse): Effect.Effect<
+  (
+    request: NextApiRequest,
+    response: NextApiResponse,
+  ): Effect.Effect<
     Exclude<RpcHandlers.Services<R["handlers"]>, HttpRequest | Span>,
     never,
     void
@@ -46,12 +49,12 @@ export function make<R extends RpcRouter.Base>(router: R): RpcNextjsHandler<R> {
         headers: new Headers(request.headers as any),
         body: request.body,
       }),
-      Effect.tap((responses) =>
+      Effect.tap(responses =>
         Effect.sync(() => {
           response.json(responses)
         }),
       ),
-      Effect.catchAllCause((cause) =>
+      Effect.catchAllCause(cause =>
         Effect.flatMap(Effect.logError(cause), () =>
           Effect.sync(() => {
             response.writeHead(500)

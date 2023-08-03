@@ -21,15 +21,13 @@ export const RpcWorkerPool = Tag<WWResolver.RpcWorkerPool>()
 const getQueue = Effect.flatMap(
   Effect.serviceOption(RpcWorkerQueue),
   Option.match({
-      onNone:
-        WW.defaultQueue<
-          RpcTransportError,
-          Resolver.RpcRequest,
-          Resolver.RpcResponse
-        >,
-      onSome: Effect.succeed,
-    }
-  ),
+    onNone: WW.defaultQueue<
+      RpcTransportError,
+      Resolver.RpcRequest,
+      Resolver.RpcResponse
+    >,
+    onSome: Effect.succeed,
+  }),
 )
 
 /** @internal */
@@ -44,8 +42,8 @@ export const makePool = <R, E>(
   Effect.flatMap(Effect.all([getQueue, Ref.make(0)]), ([queue, ref]) =>
     create((evaluate, permits = 1) =>
       Effect.flatMap(
-        Ref.getAndUpdate(ref, (n) => n + 1),
-        (id) => makeWorker(() => evaluate(id), permits, queue),
+        Ref.getAndUpdate(ref, n => n + 1),
+        id => makeWorker(() => evaluate(id), permits, queue),
       ),
     ),
   )
@@ -75,25 +73,25 @@ const makeWorker = (
       {
         permits,
         makeQueue: Effect.succeed(queue),
-        onError: (error) => RpcTransportError({ error }),
-        payload: (request) => request.payload,
-        transferables: (request) =>
+        onError: error => RpcTransportError({ error }),
+        payload: request => request.payload,
+        transferables: request =>
           "input" in request.schema
             ? schema.getTransferables(
-              request.schema.input,
-              request.payload.input,
-            )
+                request.schema.input,
+                request.payload.input,
+              )
             : [],
       },
     ),
-    (worker) =>
+    worker =>
       pipe(Effect.ignoreLogged(worker.run), Effect.forever, Effect.forkScoped),
   )
 
 /** @internal */
-export const make = Effect.map(RpcWorkerPool, (pool) =>
-  Resolver.makeSingleWithSchema((request) =>
-    Effect.flatMap(Effect.scoped(pool.get()), (worker) => worker.send(request)),
+export const make = Effect.map(RpcWorkerPool, pool =>
+  Resolver.makeSingleWithSchema(request =>
+    Effect.flatMap(Effect.scoped(pool.get()), worker => worker.send(request)),
   ),
 )
 

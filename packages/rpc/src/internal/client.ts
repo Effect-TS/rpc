@@ -159,10 +159,10 @@ const makeRpc = <S extends RpcSchema.Any>(
 
     return ((input: any) => {
       const hash = resolverInternal.requestHash(method, input, spanPrefix)
-      return Effect.useSpan(`${spanPrefix}.${method}`, (span) =>
+      return Effect.useSpan(`${spanPrefix}.${method}`, span =>
         pipe(
           encodeInput(input),
-          Effect.flatMap((input) =>
+          Effect.flatMap(input =>
             Effect.request(
               resolverInternal.RpcRequest({
                 payload: {
@@ -179,7 +179,7 @@ const makeRpc = <S extends RpcSchema.Any>(
             ),
           ),
           Effect.flatMap(parseOutput),
-          Effect.catchAll((e) => Effect.flatMap(parseError(e), Effect.fail)),
+          Effect.catchAll(e => Effect.flatMap(parseError(e), Effect.fail)),
         ),
       )
     }) as any
@@ -187,7 +187,7 @@ const makeRpc = <S extends RpcSchema.Any>(
 
   const hash = resolverInternal.requestHash(method, undefined, spanPrefix)
 
-  return Effect.useSpan(`${spanPrefix}.${method}`, (span) =>
+  return Effect.useSpan(`${spanPrefix}.${method}`, span =>
     pipe(
       Effect.request(
         resolverInternal.RpcRequest({
@@ -203,7 +203,7 @@ const makeRpc = <S extends RpcSchema.Any>(
         resolver,
       ),
       Effect.flatMap(parseOutput),
-      Effect.catchAll((e) => Effect.flatMap(parseError(e), Effect.fail)),
+      Effect.catchAll(e => Effect.flatMap(parseError(e), Effect.fail)),
     ),
   ) as any
 }

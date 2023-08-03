@@ -22,10 +22,10 @@ export const RpcFetchError = withTo<resolver.RpcFetchError>()(RpcFetchError_)
 export function make(
   options: resolver.FetchResolverOptions,
 ): Resolver.RpcResolver<never> {
-  return Resolver.make((requests) =>
+  return Resolver.make(requests =>
     pipe(
       Effect.tryPromise({
-        try: (signal) => {
+        try: signal => {
           const headers = new Headers(options.init?.headers)
           headers.set("Content-Type", "application/json; charset=utf-8")
           return fetch(options.url, {
@@ -36,15 +36,15 @@ export function make(
             signal,
           })
         },
-        catch: (error) => RpcFetchError({ reason: "FetchError", error }),
+        catch: error => RpcFetchError({ reason: "FetchError", error }),
       }),
-      Effect.flatMap((response) =>
+      Effect.flatMap(response =>
         Effect.tryPromise({
           try: () => response.json(),
-          catch: (error) => RpcFetchError({ reason: "JsonDecodeError", error }),
+          catch: error => RpcFetchError({ reason: "JsonDecodeError", error }),
         }),
       ),
-      Effect.mapError((error) => RpcTransportError({ error })),
+      Effect.mapError(error => RpcTransportError({ error })),
     ),
   )
 }

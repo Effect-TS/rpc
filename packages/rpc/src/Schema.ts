@@ -7,9 +7,6 @@ import * as internal from "@effect/rpc/internal/schema"
 import * as Schema from "@effect/schema/Schema"
 import { Json } from "@effect/rpc/internal/schema"
 
-
-
-
 /**
  * @since 1.0.0
  */
@@ -309,9 +306,9 @@ export const make = makeWith<"Schema.Json", Json>()
  * @since 1.0.0
  */
 export const withServiceError: {
-  <EI extends Json, E>(error: Schema.Schema<EI, E>): <
-    S extends RpcService.DefinitionWithId,
-  >(
+  <EI extends Json, E>(
+    error: Schema.Schema<EI, E>,
+  ): <S extends RpcService.DefinitionWithId>(
     self: S,
   ) => RpcService.WithId<
     S,

@@ -64,11 +64,11 @@ export const makeWithSchema = <R>(
     requests: ReadonlyArray<resolver.RpcRequest>,
   ) => Effect.Effect<R, RpcTransportError, unknown>,
 ): resolver.RpcResolver<R> =>
-  Resolver.makeBatched<R, resolver.RpcRequest>((requests) =>
+  Resolver.makeBatched<R, resolver.RpcRequest>(requests =>
     pipe(
       send(requests),
       Effect.flatMap(decodeResponses),
-      Effect.flatMap((responses) =>
+      Effect.flatMap(responses =>
         Effect.forEach(requests, (request, index) => {
           const response = responses[index]
           return Request.complete(
@@ -79,8 +79,10 @@ export const makeWithSchema = <R>(
           )
         }),
       ),
-      Effect.catchAll((_) =>
-        Effect.forEach(requests, (request) => Request.fail(request, _), { discard: true }),
+      Effect.catchAll(_ =>
+        Effect.forEach(requests, request => Request.fail(request, _), {
+          discard: true,
+        }),
       ),
     ),
   )
@@ -91,7 +93,7 @@ export const make = <R>(
     requests: ReadonlyArray<resolver.RpcRequest.Payload>,
   ) => Effect.Effect<R, RpcTransportError, unknown>,
 ): resolver.RpcResolver<R> =>
-  makeWithSchema((requests) => send(requests.map((_) => _.payload)))
+  makeWithSchema(requests => send(requests.map(_ => _.payload)))
 
 /** @internal */
 export const makeSingleWithSchema = <R>(
@@ -99,11 +101,11 @@ export const makeSingleWithSchema = <R>(
     request: resolver.RpcRequest,
   ) => Effect.Effect<R, RpcTransportError, unknown>,
 ): resolver.RpcResolver<R> =>
-  Resolver.fromFunctionEffect<R, resolver.RpcRequest>((request) =>
+  Resolver.fromFunctionEffect<R, resolver.RpcRequest>(request =>
     pipe(
       send(request),
       Effect.flatMap(decodeResponse),
-      Effect.flatMap((response) =>
+      Effect.flatMap(response =>
         response._tag === "Success"
           ? Effect.succeed(response.value)
           : Effect.fail(response.error),
@@ -117,4 +119,4 @@ export const makeSingle = <R>(
     request: resolver.RpcRequest.Payload,
   ) => Effect.Effect<R, RpcTransportError, unknown>,
 ): resolver.RpcResolver<R> =>
-  makeSingleWithSchema((request) => send(request.payload))
+  makeSingleWithSchema(request => send(request.payload))

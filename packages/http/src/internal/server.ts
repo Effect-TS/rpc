@@ -12,6 +12,6 @@ export function make<R extends RpcRouter.Base>(
   router: R,
 ): server.RpcHttpHandler<R> {
   const handler = Server.handler(router)
-  return (request) =>
+  return request =>
     Effect.provideService(handler(request.body), HttpRequest, request) as any
 }

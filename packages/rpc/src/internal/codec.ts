@@ -9,7 +9,7 @@ import * as Schema from "@effect/schema/Schema"
 export const decode = <I, A>(schema: Schema.Schema<I, A>) => {
   const decode = Schema.parseEither(schema)
   return (input: unknown): Either.Either<RpcDecodeFailure, A> =>
-    Either.mapLeft(decode(input), (error) =>
+    Either.mapLeft(decode(input), error =>
       RpcDecodeFailure({ errors: error.errors }),
     )
 }
@@ -18,7 +18,7 @@ export const decode = <I, A>(schema: Schema.Schema<I, A>) => {
 export const decodeEffect = <I, A>(schema: Schema.Schema<I, A>) => {
   const decode = Schema.parse(schema)
   return (input: unknown): Effect.Effect<never, RpcDecodeFailure, A> =>
-    Effect.mapError(decode(input), (error) =>
+    Effect.mapError(decode(input), error =>
       RpcDecodeFailure({ errors: error.errors }),
     )
 }
@@ -37,7 +37,7 @@ export const encode: <I, A>(
   return (input: A, options?: ParseOptions | undefined) =>
     pipe(
       encode(input, options),
-      Either.mapLeft((error) => RpcEncodeFailure({ errors: error.errors })),
+      Either.mapLeft(error => RpcEncodeFailure({ errors: error.errors })),
     )
 }
 
@@ -53,7 +53,7 @@ export const encodeEffect: <I, A>(
   const encode = Schema.encode(schema)
 
   return (input: A, options?: ParseOptions | undefined) =>
-    Effect.mapError(encode(input, options), (error) =>
+    Effect.mapError(encode(input, options), error =>
       RpcEncodeFailure({ errors: error.errors }),
     )
 }

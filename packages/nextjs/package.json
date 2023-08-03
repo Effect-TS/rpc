@@ -53,7 +53,7 @@
   },
   "devDependencies": {
     "@effect/schema": "^0.32.0",
-    "next": "^13.4.6"
+    "next": "^13.4.12"
   },
   "config": {
     "side": [],

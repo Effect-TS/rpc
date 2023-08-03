@@ -18,9 +18,9 @@ const schema = RS.make({
 })
 
 const router = Router.make(schema, {
-  greet: (name) => Effect.succeed(`Hello, ${name}!`),
+  greet: name => Effect.succeed(`Hello, ${name}!`),
 
-  headers: Effect.map(_.HttpRequest, (request) =>
+  headers: Effect.map(_.HttpRequest, request =>
     Object.fromEntries(request.headers),
   ),
 })

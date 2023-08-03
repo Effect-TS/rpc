@@ -69,9 +69,9 @@ export const withConstructorSelf = <I, A>(
  * @since 1.0.0
  */
 export const withConstructorTagged: {
-  <A extends { readonly _tag: string }>(tag: A["_tag"]): <I>(
-    self: Schema.Schema<I, A>,
-  ) => SchemaC<I, A, Omit<A, "_tag">>
+  <A extends { readonly _tag: string }>(
+    tag: A["_tag"],
+  ): <I>(self: Schema.Schema<I, A>) => SchemaC<I, A, Omit<A, "_tag">>
 
   <I, A extends { readonly _tag: string }>(
     self: Schema.Schema<I, A>,
@@ -85,11 +85,11 @@ export const withConstructorTagged: {
   ): SchemaC<I, A, Omit<A, "_tag">> =>
     withConstructor(
       self,
-      (input) =>
+      input =>
         ({
           _tag: tag,
           ...input,
-        } as A),
+        }) as A,
     ),
 )
 
@@ -98,9 +98,9 @@ export const withConstructorTagged: {
  * @since 1.0.0
  */
 export const withConstructorDataTagged: {
-  <A extends { readonly _tag: string }>(tag: A["_tag"]): <I>(
-    self: Schema.Schema<I, A>,
-  ) => SchemaC<I, Data.Data<A>, Omit<A, "_tag">>
+  <A extends { readonly _tag: string }>(
+    tag: A["_tag"],
+  ): <I>(self: Schema.Schema<I, A>) => SchemaC<I, Data.Data<A>, Omit<A, "_tag">>
 
   <I extends Record<string, any>, A extends { readonly _tag: string }>(
     self: Schema.Schema<I, A>,

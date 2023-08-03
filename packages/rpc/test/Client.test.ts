@@ -75,33 +75,28 @@ const schema = RS.make({
   posts,
 })
 
-
 const router = Router.make(
   schema,
   {
-    greet: (name) => Effect.succeed(`Hello, ${name}!`),
-    fail: (message) => Effect.fail({ _tag: "SomeError", message }),
+    greet: name => Effect.succeed(`Hello, ${name}!`),
+    fail: message => Effect.fail({ _tag: "SomeError", message }),
     failNoInput: Effect.fail({ _tag: "SomeError", message: "fail" } as const),
-    encodeInput: (date) => Effect.succeed(date),
-    currentSpanName:
-      Effect.flatMap(
-        Effect.currentSpan,
-        (maybeSpan) =>
-          Effect.match(maybeSpan,
-            {
-              onFailure: () => "",
-              onSuccess: (_) =>
-                `${Option.getOrElse(
-                  Option.map(_.parent, (_) => 
-                    _._tag === "Span" ? _.name 
-                    // @ts-expect-error
-                    : _.name),
-                  () => "",
-                )} > ${_.name}`,
-            })),
-    getCount: (_) => Effect.flatMap(Counter, (_) => _.get),
+    encodeInput: date => Effect.succeed(date),
+    currentSpanName: Effect.flatMap(Effect.currentSpan, maybeSpan =>
+      Effect.match(maybeSpan, {
+        onFailure: () => "",
+        onSuccess: _ =>
+          `${Option.getOrElse(
+            Option.map(_.parent, _ =>
+              _._tag === "Span" ? _.name : "ExternalSpan",
+            ),
+            () => "",
+          )} > ${_.name}`,
+      }),
+    ),
+    getCount: _ => Effect.flatMap(Counter, _ => _.get),
     posts: Router.make(posts, {
-      create: (post) =>
+      create: post =>
         Effect.succeed({
           id: 1,
           body: post.body,
@@ -148,10 +143,10 @@ describe("Client", () => {
 
   it("tracing", async () => {
     expect(await Effect.runPromise(client.currentSpanName)).toEqual(
-      "RpcClient.currentSpanName > CustomServer.currentSpanName",
+      "ExternalSpan > CustomServer.currentSpanName",
     )
     expect(await Effect.runPromise(clientWithPrefix.currentSpanName)).toEqual(
-      "CustomClient.currentSpanName > CustomServer.currentSpanName",
+      "ExternalSpan > CustomServer.currentSpanName",
     )
   })
 

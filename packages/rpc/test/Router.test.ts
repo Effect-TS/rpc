@@ -43,7 +43,7 @@ const schema = RS.withServiceError(
 const router = _.make(schema, {
   getCount: Effect.map(
     Counter,
-    (counter) => [counter.count(), counter.count()] as const,
+    counter => [counter.count(), counter.count()] as const,
   ),
 
   posts: _.make(posts, {

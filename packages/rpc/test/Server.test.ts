@@ -57,9 +57,9 @@ const schema = RS.make({
 })
 
 const router = Router.make(schema, {
-  greet: (name) => Effect.succeed(`Hello, ${name}!`),
+  greet: name => Effect.succeed(`Hello, ${name}!`),
 
-  fail: (_) =>
+  fail: _ =>
     Effect.fail({
       _tag: "SomeError",
       message: "fail",
@@ -70,9 +70,9 @@ const router = Router.make(schema, {
     message: "fail",
   } as const),
 
-  encodeInput: (date) => Effect.succeed(date),
+  encodeInput: date => Effect.succeed(date),
 
-  encodeDate: (dateString) =>
+  encodeDate: dateString =>
     Effect.try({
       try: () => new Date(dateString),
       catch: () => ({
@@ -81,10 +81,10 @@ const router = Router.make(schema, {
       }),
     }),
 
-  refined: (n) => Effect.succeed(n),
+  refined: n => Effect.succeed(n),
 
   posts: Router.make(posts, {
-    create: (post) =>
+    create: post =>
       Effect.succeed({
         id: 1,
         body: post.body,

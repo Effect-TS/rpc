@@ -12,11 +12,9 @@ import type { RpcHandlers, RpcRouter } from "@effect/rpc/Router"
  * @since 1.0.0
  */
 export interface RpcWorkerHandler<R extends RpcRouter.Base> {
-  (message: MessageEvent<any>): Effect<
-    Exclude<RpcHandlers.Services<R["handlers"]>, Span>,
-    never,
-    void
-  >
+  (
+    message: MessageEvent<any>,
+  ): Effect<Exclude<RpcHandlers.Services<R["handlers"]>, Span>, never, void>
 }
 
 /**
@@ -47,12 +45,14 @@ export const make: <Router extends RpcRouter.Base>(
  * @since 1.0.0
  */
 export const makeHandler: {
-  <R extends RpcRouter.WithSetup>(router: R): Effect<
+  <R extends RpcRouter.WithSetup>(
+    router: R,
+  ): Effect<
     Scope,
     never,
     (port: typeof globalThis | MessagePort) => RpcWorkerHandler<R>
   >
-  <R extends RpcRouter.WithoutSetup>(router: R): (
-    port: typeof globalThis | MessagePort,
-  ) => RpcWorkerHandler<R>
+  <R extends RpcRouter.WithoutSetup>(
+    router: R,
+  ): (port: typeof globalThis | MessagePort) => RpcWorkerHandler<R>
 } = internal.makeHandler as any

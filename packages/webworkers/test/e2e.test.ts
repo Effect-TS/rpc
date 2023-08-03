@@ -1,3 +1,5 @@
+import "@vitest/web-worker"
+
 import * as Chunk from "@effect/data/Chunk"
 import * as Cause from "@effect/io/Cause"
 import * as Duration from "@effect/data/Duration"
@@ -8,33 +10,35 @@ import * as Pool from "@effect/io/Pool"
 import * as Client from "@effect/rpc-webworkers/Client"
 import * as Resolver from "@effect/rpc-webworkers/Resolver"
 import { RpcWorkerResolverLive } from "@effect/rpc-webworkers/internal/resolver"
-import "@vitest/web-worker"
 import { describe, expect, it } from "vitest"
 import { schema, schemaWithSetup } from "./e2e/schema"
 
 // TODO: test more than one worker
-const PoolLive = Resolver.makePoolLayer((spawn) =>
+const PoolLive = Resolver.makePoolLayer(spawn =>
   Pool.make({
-      acquire:
-        spawn(() => new Worker(new URL("./e2e/worker.ts", import.meta.url))),
-      size: 1
-    },
-  ),
+    acquire: spawn(
+      () => new Worker(new URL("./e2e/worker.ts", import.meta.url)),
+    ),
+    size: 1,
+  }),
 )
 const ResolverLive = Layer.provide(PoolLive, RpcWorkerResolverLive)
 
-const SetupPoolLive = Resolver.makePoolLayer((spawn) =>
+const SetupPoolLive = Resolver.makePoolLayer(spawn =>
   Pool.make({
-    acquire: spawn(() => new Worker(new URL("./e2e/worker-setup.ts", import.meta.url))),
+    acquire: spawn(
+      () => new Worker(new URL("./e2e/worker-setup.ts", import.meta.url)),
+    ),
     size: 1,
   }),
 )
 const SetupResolverLive = Layer.provide(SetupPoolLive, RpcWorkerResolverLive)
 
-const SharedPoolLive = Resolver.makePoolLayer((spawn) =>
+const SharedPoolLive = Resolver.makePoolLayer(spawn =>
   Pool.make({
-    acquire:
-      spawn(() => new SharedWorker(new URL("./e2e/worker.ts", import.meta.url))),
+    acquire: spawn(
+      () => new SharedWorker(new URL("./e2e/worker.ts", import.meta.url)),
+    ),
     size: 1,
   }),
 )
@@ -46,7 +50,7 @@ describe("e2e", () => {
   it("Worker", () =>
     pipe(
       client.getBinary(new Uint8Array([1, 2, 3])),
-      Effect.tap((_) =>
+      Effect.tap(_ =>
         Effect.sync(() => expect(_).toEqual(new Uint8Array([1, 2, 3]))),
       ),
       Effect.provideLayer(ResolverLive),
@@ -56,7 +60,7 @@ describe("e2e", () => {
   it("SharedWorker", () =>
     pipe(
       client.getBinary(new Uint8Array([1, 2, 3])),
-      Effect.tap((_) =>
+      Effect.tap(_ =>
         Effect.sync(() => expect(_).toEqual(new Uint8Array([1, 2, 3]))),
       ),
       Effect.provideLayer(SharedResolverLive),
@@ -69,8 +73,9 @@ describe("e2e", () => {
         Chunk.map(Chunk.range(1, 100), () =>
           client.getBinary(new Uint8Array([1, 2, 3])),
         ),
-        { concurrency: 'unbounded' }),
-      Effect.tap((_) => Effect.sync(() => expect(_.length).toEqual(100))),
+        { concurrency: "unbounded" },
+      ),
+      Effect.tap(_ => Effect.sync(() => expect(_.length).toEqual(100))),
       Effect.provideLayer(ResolverLive),
       Effect.runPromise,
     ))
@@ -79,7 +84,10 @@ describe("e2e", () => {
     expect(() =>
       pipe(
         client.delayed("foo"),
-        Effect.timeoutFailCause({ onTimeout: () => Cause.die("boom"), duration: Duration.millis(100) },),
+        Effect.timeoutFailCause({
+          onTimeout: () => Cause.die("boom"),
+          duration: Duration.millis(100),
+        }),
         Effect.provideLayer(ResolverLive),
         Effect.runPromise,
       ),
@@ -88,8 +96,8 @@ describe("e2e", () => {
 
   it("setup", async () => {
     const channel = new MessageChannel()
-    const closedPromise = new Promise<string>((resolve) => {
-      channel.port1.onmessage = (e) => {
+    const closedPromise = new Promise<string>(resolve => {
+      channel.port1.onmessage = e => {
         resolve(e.data)
       }
     })
