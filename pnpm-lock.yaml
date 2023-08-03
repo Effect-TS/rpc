@@ -35,6 +35,9 @@ importers:
       '@effect/docgen':
         specifier: ^0.1.2
         version: 0.1.2(@types/node@20.4.6)(typescript@5.1.6)
+      '@effect/eslint-plugin':
+        specifier: ^0.1.1
+        version: 0.1.1
       '@effect/language-service':
         specifier: 0.0.19
         version: 0.0.19
@@ -44,9 +47,6 @@ importers:
       '@types/node':
         specifier: ^20.4.6
         version: 20.4.6
-      '@types/prettier':
-        specifier: ^3.0.0
-        version: 3.0.0
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.2.1
         version: 6.2.1(@typescript-eslint/parser@6.2.1)(eslint@8.46.0)(typescript@5.1.6)
@@ -731,6 +731,14 @@ packages:
       node-source-walk: 5.0.2
     dev: true
 
+  /@dprint/formatter@0.2.0:
+    resolution: {integrity: sha512-E1q1JaOPeEUBhG//IUayqJQvNpqprZ0OCF8B/bIhUqSsMIp0Y74PgF8JPvDCrOdq43qiGUYAavVO8iCBHOoU/A==}
+    dev: true
+
+  /@dprint/typescript@0.85.1:
+    resolution: {integrity: sha512-rPwwm/RrFIolz6xHa8Kzpshuwpe+xu/XcEw9iUmRF2tnyIwxxaW7XoFKaQ+GfPju81cKpH4vJeq7/2IizKvyjg==}
+    dev: true
+
   /@effect-ts/build-utils@0.40.7(@effect-ts/core@0.60.5)(cpx@1.5.0)(picocolors@1.0.0):
     resolution: {integrity: sha512-shABJprKL9xm5asIeHCuBP4V1FlqoO1TCc5yeiTSxx6VmLbRnNE2GEO7nY+GYF1Fzc0U6hT7h8pVKXm20S0Y/A==}
     hasBin: true
@@ -786,6 +794,14 @@ packages:
       - '@swc/core'
       - '@swc/wasm'
       - '@types/node'
+    dev: true
+
+  /@effect/eslint-plugin@0.1.1:
+    resolution: {integrity: sha512-761HD39IetN931m4ejl4l/S/nSPb1E7H41gkRgXtsxsKZZ4LM7WxhUh1F62T0u3e6GVTHjQK8OPFDzdeCCBkqw==}
+    dependencies:
+      '@dprint/formatter': 0.2.0
+      '@dprint/typescript': 0.85.1
+      diff: 5.1.0
     dev: true
 
   /@effect/io@0.37.1:
@@ -1411,13 +1427,6 @@ packages:
 
   /@types/normalize-package-data@2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
-    dev: true
-
-  /@types/prettier@3.0.0:
-    resolution: {integrity: sha512-mFMBfMOz8QxhYVbuINtswBp9VL2b4Y0QqYHwqLz3YbgtfAcat2Dl6Y1o4e22S/OVE6Ebl9m7wWiMT2lSbAs1wA==}
-    deprecated: This is a stub types definition. prettier provides its own type definitions, so you do not need this installed.
-    dependencies:
-      prettier: 3.0.0
     dev: true
 
   /@types/semver@7.5.0:
@@ -2914,6 +2923,11 @@ packages:
 
   /diff@4.0.2:
     resolution: {integrity: sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==}
+    engines: {node: '>=0.3.1'}
+    dev: true
+
+  /diff@5.1.0:
+    resolution: {integrity: sha512-D+mk+qE8VC/PAUrlAU34N+VfXev0ghe5ywmpqrawphmVZc1bEfn56uo9qpyGp1p4xpzOHkSW4ztBd6L7Xx4ACw==}
     engines: {node: '>=0.3.1'}
     dev: true
 

@@ -4,20 +4,16 @@ import * as Deferred from "@effect/io/Deferred"
 import * as Effect from "@effect/io/Effect"
 import * as Exit from "@effect/io/Exit"
 import * as Queue from "@effect/io/Queue"
-import type {
-  WebWorker,
-  WebWorkerOptions,
-  WebWorkerQueue,
-} from "@effect/rpc-webworkers/Resolver"
+import type { WebWorker, WebWorkerOptions, WebWorkerQueue } from "@effect/rpc-webworkers/Resolver"
 
 /** @internal */
 export const defaultQueue = <E, I, O>() =>
   Effect.map(
     Queue.unbounded<readonly [I, Deferred.Deferred<E, O>]>(),
     (queue): WebWorkerQueue<E, I, O> => ({
-      offer: _ => Queue.offer(queue, _),
-      take: Queue.take(queue),
-    }),
+      offer: (_) => Queue.offer(queue, _),
+      take: Queue.take(queue)
+    })
   )
 
 /** @internal */
@@ -28,10 +24,10 @@ export const make = <E, I, O>(
     onError,
     payload,
     permits,
-    transferables,
-  }: WebWorkerOptions<E, I, O>,
+    transferables
+  }: WebWorkerOptions<E, I, O>
 ): Effect.Effect<never, never, WebWorker<E, I, O>> =>
-  Effect.gen(function* ($) {
+  Effect.gen(function*($) {
     let idCounter = 0
 
     const semaphore = yield* $(Effect.makeSemaphore(permits))
@@ -41,9 +37,9 @@ export const make = <E, I, O>(
     const handleExit = (exit: Exit.Exit<E, O>) =>
       Effect.zipRight(
         Effect.forEach(requestMap.values(), Deferred.complete(exit), {
-          discard: true,
+          discard: true
         }),
-        Effect.sync(() => requestMap.clear()),
+        Effect.sync(() => requestMap.clear())
       )
 
     const handleMessage = (event: MessageEvent<readonly [number, O]>) =>
@@ -64,7 +60,7 @@ export const make = <E, I, O>(
             requestMap.set(id, deferred)
             worker.postMessage([id, payload(request)], transferables(request))
             return [id, deferred] as const
-          }),
+          })
         ),
         Effect.tap(([id, deferred]) =>
           Effect.fork(
@@ -72,33 +68,29 @@ export const make = <E, I, O>(
               Deferred.await(deferred),
               Effect.zipRight(
                 semaphore.release(1),
-                Effect.sync(() => requestMap.delete(id)),
-              ),
-            ),
-          ),
+                Effect.sync(() => requestMap.delete(id))
+              )
+            )
+          )
         ),
-        Effect.onExit(exit =>
-          Exit.isFailure(exit) ? semaphore.release(1) : Effect.unit,
-        ),
-        Effect.forever,
+        Effect.onExit((exit) => Exit.isFailure(exit) ? semaphore.release(1) : Effect.unit),
+        Effect.forever
       )
 
     const send = (request: I) =>
       Effect.acquireUseRelease(
         Deferred.make<E, O>(),
-        deferred =>
+        (deferred) =>
           Effect.zipRight(
             outbound.offer([request, deferred]),
-            Deferred.await(deferred),
+            Deferred.await(deferred)
           ),
-        deferred =>
-          Effect.flatMap(Deferred.isDone(deferred), done =>
-            done ? Effect.unit : Deferred.interrupt(deferred),
-          ),
+        (deferred) =>
+          Effect.flatMap(Deferred.isDone(deferred), (done) => done ? Effect.unit : Deferred.interrupt(deferred))
       )
 
     const run = Effect.acquireUseRelease(
-      Effect.map(Effect.sync(evaluate), worker => {
+      Effect.map(Effect.sync(evaluate), (worker) => {
         if ("port" in worker) {
           const port = worker.port
           port.start()
@@ -111,23 +103,23 @@ export const make = <E, I, O>(
           Effect.async<never, E, never>((resume, signal) => {
             port.addEventListener(
               "message",
-              event => Effect.runFork(handleMessage(event as MessageEvent)),
-              { signal },
+              (event) => Effect.runFork(handleMessage(event as MessageEvent)),
+              { signal }
             )
             worker.addEventListener(
               "error",
-              event => resume(Effect.fail(onError(event as ErrorEvent))),
-              { signal },
+              (event) => resume(Effect.fail(onError(event as ErrorEvent))),
+              { signal }
             )
           }),
           postMessages(port),
-          { concurrent: true },
+          { concurrent: true }
         ),
       ([, port], exit) =>
         Effect.zipRight(
           handleExit(exit),
-          Effect.sync(() => port.postMessage("close")),
-        ),
+          Effect.sync(() => port.postMessage("close"))
+        )
     )
 
     return { run, send } as const

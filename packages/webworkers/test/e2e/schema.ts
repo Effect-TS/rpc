@@ -1,22 +1,22 @@
+import { Tag } from "@effect/data/Context"
 import * as Schema from "@effect/rpc-webworkers/Schema"
 import * as S from "@effect/schema/Schema"
-import { Tag } from "@effect/data/Context"
 
 export const schema = Schema.make({
   currentDate: {
-    output: S.DateFromSelf,
+    output: S.DateFromSelf
   },
   getBinary: {
-    input: Schema.transferable(S.instanceOf(Uint8Array), _ => [_.buffer]),
-    output: Schema.transferable(S.instanceOf(Uint8Array), _ => [_.buffer]),
+    input: Schema.transferable(S.instanceOf(Uint8Array), (_) => [_.buffer]),
+    output: Schema.transferable(S.instanceOf(Uint8Array), (_) => [_.buffer])
   },
   delayed: {
     input: S.string,
-    output: S.string,
+    output: S.string
   },
   crash: {
-    output: S.string,
-  },
+    output: S.string
+  }
 })
 
 export interface Name {
@@ -27,11 +27,11 @@ export const Name = Tag<Name>()
 
 export const schemaWithSetup = Schema.make({
   __setup: {
-    input: Schema.transferable(S.instanceOf(MessagePort), _ => [_]),
-    output: Schema.context<Name>(),
+    input: Schema.transferable(S.instanceOf(MessagePort), (_) => [_]),
+    output: Schema.context<Name>()
   },
 
   getName: {
-    output: S.string,
-  },
+    output: S.string
+  }
 })

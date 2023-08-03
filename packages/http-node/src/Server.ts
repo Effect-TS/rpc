@@ -16,7 +16,7 @@ export {
    * @category tags
    * @since 1.0.0
    */
-  HttpRequest,
+  HttpRequest
 } from "@effect/rpc-http/Server"
 
 /**
@@ -26,7 +26,7 @@ export {
 export interface RpcNodeHttpHandler<R extends RpcRouter.Base> {
   (
     request: IncomingMessage,
-    response: ServerResponse,
+    response: ServerResponse
   ): Effect.Effect<
     Exclude<RpcHandlers.Services<R["handlers"]>, HttpRequest | Span>,
     never,
@@ -39,55 +39,54 @@ export interface RpcNodeHttpHandler<R extends RpcRouter.Base> {
  * @since 1.0.0
  */
 export function make<R extends RpcRouter.Base>(
-  router: R,
+  router: R
 ): RpcNodeHttpHandler<R> {
   const handler = Server.make(router) as unknown as RpcServer
 
   return function handleRequestResponse(
     request: IncomingMessage,
-    response: ServerResponse,
+    response: ServerResponse
   ) {
     return pipe(
       bodyToString(request),
       Effect.flatMap(parseJson),
-      Effect.flatMap(body =>
+      Effect.flatMap((body) =>
         handler({
           url: request.url!,
           headers: new Headers(request.headers as any),
-          body,
-        }),
+          body
+        })
       ),
-      Effect.tap(responses =>
+      Effect.tap((responses) =>
         Effect.sync(() => {
           response.writeHead(200, {
-            "Content-Type": "application/json; charset=utf-8",
+            "Content-Type": "application/json; charset=utf-8"
           })
           response.end(JSON.stringify(responses))
-        }),
+        })
       ),
-      Effect.catchAllCause(cause =>
+      Effect.catchAllCause((cause) =>
         Effect.flatMap(Effect.logError(cause), () =>
           Effect.sync(() => {
             response.writeHead(500)
             response.end()
-          }),
-        ),
-      ),
+          }))
+      )
     )
   } as any
 }
 
 const bodyToString = (stream: Readable) =>
-  Effect.async<never, Error, string>(resume => {
+  Effect.async<never, Error, string>((resume) => {
     let data = ""
     stream.setEncoding("utf8")
-    stream.on("data", chunk => {
+    stream.on("data", (chunk) => {
       data += chunk
     })
     stream.once("end", () => {
       resume(Effect.succeed(data))
     })
-    stream.once("error", error => {
+    stream.once("error", (error) => {
       resume(Effect.fail(error))
     })
   })
@@ -95,5 +94,5 @@ const bodyToString = (stream: Readable) =>
 const parseJson = (body: string) =>
   Effect.try({
     try: () => JSON.parse(body) as unknown,
-    catch: error => new Error(`Failed to parse JSON: ${error}`),
+    catch: (error) => new Error(`Failed to parse JSON: ${error}`)
   })
