@@ -13,7 +13,7 @@ import type { RpcHandlers, RpcRouter } from "@effect/rpc/Router"
  */
 export interface RpcWorkerHandler<R extends RpcRouter.Base> {
   (
-    message: MessageEvent<any>,
+    message: MessageEvent<any>
   ): Effect<Exclude<RpcHandlers.Services<R["handlers"]>, Span>, never, void>
 }
 
@@ -21,15 +21,14 @@ export interface RpcWorkerHandler<R extends RpcRouter.Base> {
  * @category models
  * @since 1.0.0
  */
-export type RpcWorker<R extends RpcRouter.Base> = R extends RpcRouter.WithSetup
-  ? Effect<
-      Exclude<
-        RpcHandlers.Services<R["handlers"]>,
-        Span | RpcRouter.SetupServices<R>
-      >,
-      never,
-      void
-    >
+export type RpcWorker<R extends RpcRouter.Base> = R extends RpcRouter.WithSetup ? Effect<
+    Exclude<
+      RpcHandlers.Services<R["handlers"]>,
+      Span | RpcRouter.SetupServices<R>
+    >,
+    never,
+    void
+  >
   : Effect<Exclude<RpcHandlers.Services<R["handlers"]>, Span>, never, void>
 
 /**
@@ -37,7 +36,7 @@ export type RpcWorker<R extends RpcRouter.Base> = R extends RpcRouter.WithSetup
  * @since 1.0.0
  */
 export const make: <Router extends RpcRouter.Base>(
-  router: Router,
+  router: Router
 ) => RpcWorker<Router> = internal.make as any
 
 /**
@@ -46,13 +45,13 @@ export const make: <Router extends RpcRouter.Base>(
  */
 export const makeHandler: {
   <R extends RpcRouter.WithSetup>(
-    router: R,
+    router: R
   ): Effect<
     Scope,
     never,
     (port: typeof globalThis | MessagePort) => RpcWorkerHandler<R>
   >
   <R extends RpcRouter.WithoutSetup>(
-    router: R,
+    router: R
   ): (port: typeof globalThis | MessagePort) => RpcWorkerHandler<R>
 } = internal.makeHandler as any

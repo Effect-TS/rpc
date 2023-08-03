@@ -34,7 +34,7 @@
     "@effect-ts/core": "^0.60.5",
     "@effect/babel-plugin": "^0.2.0",
     "@effect/docgen": "^0.1.2",
-    "@effect/eslint-plugin": "^0.1.1",
+    "@effect/eslint-plugin": "^0.1.2",
     "@effect/language-service": "0.0.19",
     "@rollup/pluginutils": "^5.0.2",
     "@types/node": "^20.4.6",

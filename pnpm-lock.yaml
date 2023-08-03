@@ -36,8 +36,8 @@ importers:
         specifier: ^0.1.2
         version: 0.1.2(@types/node@20.4.6)(typescript@5.1.6)
       '@effect/eslint-plugin':
-        specifier: ^0.1.1
-        version: 0.1.1
+        specifier: ^0.1.2
+        version: 0.1.2
       '@effect/language-service':
         specifier: 0.0.19
         version: 0.0.19
@@ -796,8 +796,8 @@ packages:
       - '@types/node'
     dev: true
 
-  /@effect/eslint-plugin@0.1.1:
-    resolution: {integrity: sha512-761HD39IetN931m4ejl4l/S/nSPb1E7H41gkRgXtsxsKZZ4LM7WxhUh1F62T0u3e6GVTHjQK8OPFDzdeCCBkqw==}
+  /@effect/eslint-plugin@0.1.2:
+    resolution: {integrity: sha512-spBoeM9kF0rTM1JP8dfaubVUqUrkfijIUKqE6bh4gDw9qMYweT1HV9iXLzF5Dsj589wwVfk6sx5uqO09C4+w2w==}
     dependencies:
       '@dprint/formatter': 0.2.0
       '@dprint/typescript': 0.85.1
