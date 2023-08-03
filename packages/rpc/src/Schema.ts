@@ -5,7 +5,7 @@ import type { Context } from "@effect/data/Context"
 import type { RpcRequest } from "@effect/rpc/Resolver"
 import * as internal from "@effect/rpc/internal/schema"
 import * as Schema from "@effect/schema/Schema"
-import { Json } from "@effect/rpc/internal/schema"
+import type { Json } from "@effect/rpc/internal/schema"
 
 /**
  * @since 1.0.0
