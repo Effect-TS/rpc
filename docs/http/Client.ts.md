@@ -14,6 +14,8 @@ Added in v1.0.0
 
 - [constructors](#constructors)
   - [make](#make)
+- [exports](#exports)
+  - [From "@effect/rpc/Client"](#from-effectrpcclient)
 
 ---
 
@@ -28,6 +30,20 @@ export declare const make: <S extends RpcService.DefinitionWithoutSetup>(
   schemas: S,
   options: Client.RpcClientOptions & Resolver.FetchResolverOptions
 ) => Client.RpcClient<S, never>
+```
+
+Added in v1.0.0
+
+# exports
+
+## From "@effect/rpc/Client"
+
+Re-exports all named exports from the "@effect/rpc/Client" module.
+
+**Signature**
+
+```ts
+export * from '@effect/rpc/Client'
 ```
 
 Added in v1.0.0

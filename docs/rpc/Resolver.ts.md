@@ -23,6 +23,15 @@ Added in v1.0.0
   - [RpcResponse (type alias)](#rpcresponse-type-alias)
 - [tags](#tags)
   - [RpcResolver](#rpcresolver)
+- [utils](#utils)
+  - [RpcRequest (namespace)](#rpcrequest-namespace)
+    - [NoInput (interface)](#noinput-interface)
+    - [Payload (interface)](#payload-interface)
+    - [Tracing (interface)](#tracing-interface)
+    - [WithInput (interface)](#withinput-interface)
+  - [RpcResponse (namespace)](#rpcresponse-namespace)
+    - [Error (interface)](#error-interface)
+    - [Success (interface)](#success-interface)
 
 ---
 
@@ -120,6 +129,94 @@ Added in v1.0.0
 
 ```ts
 export declare const RpcResolver: Tag<RpcResolver<never>, RpcResolver<never>>
+```
+
+Added in v1.0.0
+
+# utils
+
+## RpcRequest (namespace)
+
+Added in v1.0.0
+
+### NoInput (interface)
+
+**Signature**
+
+```ts
+export interface NoInput<M extends string> extends Tracing {
+  readonly _tag: M
+}
+```
+
+Added in v1.0.0
+
+### Payload (interface)
+
+**Signature**
+
+```ts
+export interface Payload extends Tracing {
+  readonly _tag: string
+  readonly input?: unknown
+}
+```
+
+Added in v1.0.0
+
+### Tracing (interface)
+
+**Signature**
+
+```ts
+export interface Tracing {
+  readonly spanName: string
+  readonly traceId: string
+  readonly spanId: string
+}
+```
+
+Added in v1.0.0
+
+### WithInput (interface)
+
+**Signature**
+
+```ts
+export interface WithInput<M extends string, I> extends Tracing {
+  readonly _tag: M
+  readonly input: I
+}
+```
+
+Added in v1.0.0
+
+## RpcResponse (namespace)
+
+Added in v1.0.0
+
+### Error (interface)
+
+**Signature**
+
+```ts
+export interface Error {
+  readonly _tag: 'Error'
+  error: RpcError
+}
+```
+
+Added in v1.0.0
+
+### Success (interface)
+
+**Signature**
+
+```ts
+export interface Success {
+  readonly _tag: 'Success'
+  value: unknown
+}
 ```
 
 Added in v1.0.0
