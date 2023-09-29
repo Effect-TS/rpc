@@ -190,18 +190,15 @@ importers:
 
   packages/webworkers-example:
     dependencies:
-      '@effect/data':
-        specifier: ^0.18.7
-        version: 0.18.7
-      '@effect/io':
-        specifier: ^0.41.1
-        version: 0.41.1(@effect/data@0.18.7)
       '@effect/rpc-webworkers':
         specifier: workspace:^
         version: link:../webworkers
       '@effect/schema':
         specifier: ^0.39.0
         version: 0.39.0(effect@2.0.0-next.37)
+      effect:
+        specifier: 2.0.0-next.37
+        version: 2.0.0-next.37
     devDependencies:
       typescript:
         specifier: ^5.2.2
@@ -779,10 +776,6 @@ packages:
     hasBin: true
     dev: true
 
-  /@effect/data@0.18.7:
-    resolution: {integrity: sha512-r7C9VjavmG85wb5BOvcbbKGioPJCoBAFsJVOUNWlxZBRIU+l68ENpsyzCkWsU7dP4teAztjBZ89O3hVhBX0Huw==}
-    dev: false
-
   /@effect/docgen@0.1.8(@types/node@20.7.1)(typescript@5.2.2):
     resolution: {integrity: sha512-o3iLXvbkkxEuRUnJ6hJDEXHfeDfA86iVkQm/s8heWQQgD7UBZ7TTWkDIobFaXRKU8qKoCKPSgmLlSq0F3IsBgw==}
     engines: {node: '>=16.17.1'}
@@ -813,14 +806,6 @@ packages:
       '@dprint/typescript': 0.85.1
       diff: 5.1.0
     dev: true
-
-  /@effect/io@0.41.1(@effect/data@0.18.7):
-    resolution: {integrity: sha512-gJ9fdN7GKkC1sryroy/bsFYugVFyjY2mhY/hwVQwLHxYluje0b5tRr7kpUnbG0ntSvuPS0JVe1604ppGUmym0g==}
-    peerDependencies:
-      '@effect/data': ^0.18.5
-    dependencies:
-      '@effect/data': 0.18.7
-    dev: false
 
   /@effect/language-service@0.0.21:
     resolution: {integrity: sha512-e8vfKbjnbYiyneBincEFS0tzXluopGK77OkVFbPRtUbNDS5tJfb+jiwOQEiqASDsadcZmd+9J9+Q6v/z7GuN2g==}
