@@ -22,24 +22,24 @@ Added in v1.0.0
 
 ## From "@effect/rpc-http/Resolver"
 
-Re-exports all named exports from the "@effect/rpc-http/Resolver" module.
+Re-exports all named exports from the "@effect/rpc-http/Resolver" module as "resolver".
 
 **Signature**
 
 ```ts
-export * from '@effect/rpc-http/Resolver'
+export * as resolver from '@effect/rpc-http/Resolver'
 ```
 
 Added in v1.0.0
 
 ## From "@effect/rpc-http/Server"
 
-Re-exports all named exports from the "@effect/rpc-http/Server" module.
+Re-exports all named exports from the "@effect/rpc-http/Server" module as "server".
 
 **Signature**
 
 ```ts
-export * from '@effect/rpc-http/Server'
+export * as server from '@effect/rpc-http/Server'
 ```
 
 Added in v1.0.0
