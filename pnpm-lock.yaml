@@ -136,7 +136,7 @@ importers:
         specifier: workspace:^
         version: link:../http
       effect:
-        specifier: 2.0.0-next.37
+        specifier: 2.0.0-next.38
         version: 2.0.0-next.38
     devDependencies:
       '@effect/schema':
