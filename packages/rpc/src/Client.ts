@@ -1,12 +1,12 @@
 /**
  * @since 1.0.0
  */
+import type { Effect } from "effect/Effect"
 import type { RpcError } from "./Error"
 import * as internal from "./internal/client"
 import type { RpcResolver } from "./Resolver"
 import type { RpcSchema, RpcService } from "./Schema"
 import type { UndecodedRpcResponse } from "./Server"
-import type { Effect } from "effect/Effect"
 
 /**
  * Represents an RPC method signature.

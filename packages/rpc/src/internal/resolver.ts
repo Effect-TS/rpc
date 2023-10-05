@@ -1,6 +1,3 @@
-import type { RpcError, RpcTransportError } from "../Error"
-import { decodeEffect } from "./codec"
-import type * as resolver from "../Resolver"
 import * as Schema from "@effect/schema/Schema"
 import * as Effect from "effect/Effect"
 import * as Equal from "effect/Equal"
@@ -9,6 +6,9 @@ import { pipe } from "effect/Function"
 import * as Hash from "effect/Hash"
 import * as Request from "effect/Request"
 import * as Resolver from "effect/RequestResolver"
+import type { RpcError, RpcTransportError } from "../Error"
+import type * as resolver from "../Resolver"
+import { decodeEffect } from "./codec"
 
 const requestProto: Request.Request<any, any> = {
   [Request.RequestTypeId]: {

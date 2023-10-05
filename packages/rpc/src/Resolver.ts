@@ -1,13 +1,13 @@
 /**
  * @since 1.0.0
  */
-import type { RpcError, RpcTransportError } from "./Error"
-import * as internal from "./internal/resolver"
-import type { RpcSchema } from "./Schema"
 import { Tag } from "effect/Context"
 import type * as Effect from "effect/Effect"
 import type * as Request from "effect/Request"
 import type * as Resolver from "effect/RequestResolver"
+import type { RpcError, RpcTransportError } from "./Error"
+import * as internal from "./internal/resolver"
+import type { RpcSchema } from "./Schema"
 
 /**
  * @category models
