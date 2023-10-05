@@ -1,7 +1,7 @@
 /**
  * @since 1.0.0
  */
-import * as internal from "@effect/rpc-http/internal/server"
+import * as internal from "./internal/server"
 import type { RpcResponse } from "@effect/rpc/Resolver"
 import type { RpcHandlers, RpcRouter } from "@effect/rpc/Router"
 import type { Tag } from "effect/Context"

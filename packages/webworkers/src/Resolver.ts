@@ -1,8 +1,8 @@
 /**
  * @since 1.0.0
  */
-import * as internal from "@effect/rpc-webworkers/internal/resolver"
-import * as worker from "@effect/rpc-webworkers/internal/worker"
+import * as internal from "./internal/resolver"
+import * as worker from "./internal/worker"
 import type { RpcTransportError } from "@effect/rpc/Error"
 import type * as Resolver from "@effect/rpc/Resolver"
 import type { Tag } from "effect/Context"

@@ -1,4 +1,4 @@
-import type { WebWorker, WebWorkerOptions, WebWorkerQueue } from "@effect/rpc-webworkers/Resolver"
+import type { WebWorker, WebWorkerOptions, WebWorkerQueue } from "../Resolver"
 import * as Deferred from "effect/Deferred"
 import * as Effect from "effect/Effect"
 import * as Exit from "effect/Exit"

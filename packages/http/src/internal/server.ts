@@ -1,4 +1,4 @@
-import type * as server from "@effect/rpc-http/Server"
+import type * as server from "../Server"
 import type { RpcRouter } from "@effect/rpc/Router"
 import * as Server from "@effect/rpc/Server"
 import { Tag } from "effect/Context"

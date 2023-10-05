@@ -1,11 +1,11 @@
 /**
  * @since 1.0.0
  */
-import type { RpcError } from "@effect/rpc/Error"
-import * as internal from "@effect/rpc/internal/client"
-import type { RpcResolver } from "@effect/rpc/Resolver"
-import type { RpcSchema, RpcService } from "@effect/rpc/Schema"
-import type { UndecodedRpcResponse } from "@effect/rpc/Server"
+import type { RpcError } from "./Error"
+import * as internal from "./internal/client"
+import type { RpcResolver } from "./Resolver"
+import type { RpcSchema, RpcService } from "./Schema"
+import type { UndecodedRpcResponse } from "./Server"
 import type { Effect } from "effect/Effect"
 
 /**

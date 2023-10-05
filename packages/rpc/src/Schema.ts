@@ -1,9 +1,9 @@
 /**
  * @since 1.0.0
  */
-import * as internal from "@effect/rpc/internal/schema"
-import type { Json } from "@effect/rpc/internal/schema"
-import type { RpcRequest } from "@effect/rpc/Resolver"
+import * as internal from "./internal/schema"
+import type { Json } from "./internal/schema"
+import type { RpcRequest } from "./Resolver"
 import * as Schema from "@effect/schema/Schema"
 import type { Context } from "effect/Context"
 

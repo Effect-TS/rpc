@@ -1,9 +1,9 @@
 /**
  * @since 1.0.0
  */
-import * as internal from "@effect/rpc/internal/router"
-import type { RpcSchema, RpcService } from "@effect/rpc/Schema"
-import type { RpcUndecodedClient } from "@effect/rpc/Server"
+import * as internal from "./internal/router"
+import type { RpcSchema, RpcService } from "./Schema"
+import type { RpcUndecodedClient } from "./Server"
 import type { Context, Tag } from "effect/Context"
 import type { Effect } from "effect/Effect"
 import type { LazyArg } from "effect/Function"

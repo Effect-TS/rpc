@@ -1,0 +1,18 @@
+coverage/
+*.tsbuildinfo
+node_modules/
+.ultra.cache.json
+.DS_Store
+tmp/
+build/
+dist/
+.direnv/
+
+# files
+/dist
+/internal
+/Client
+/Resolver
+/Router
+/Schema
+/Server

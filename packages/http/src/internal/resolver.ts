@@ -1,4 +1,4 @@
-import type * as resolver from "@effect/rpc-http/Resolver"
+import type * as resolver from "../Resolver"
 import { RpcTransportError } from "@effect/rpc/Error"
 import * as Resolver from "@effect/rpc/Resolver"
 import { withConstructorTagged, withTo } from "@effect/rpc/SchemaC"

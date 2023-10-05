@@ -1,6 +1,6 @@
 ---
 title: SchemaC.ts
-nav_order: 5
+nav_order: 6
 parent: "@effect/rpc-http-node"
 ---
 

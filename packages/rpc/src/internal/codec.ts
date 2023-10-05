@@ -1,4 +1,4 @@
-import { RpcDecodeFailure, RpcEncodeFailure } from "@effect/rpc/Error"
+import { RpcDecodeFailure, RpcEncodeFailure } from "../Error"
 import type { ParseOptions } from "@effect/schema/AST"
 import * as Schema from "@effect/schema/Schema"
 import * as Effect from "effect/Effect"
