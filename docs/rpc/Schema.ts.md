@@ -15,7 +15,6 @@ Added in v1.0.0
 - [combinators](#combinators)
   - [withServiceError](#withserviceerror)
 - [constructors](#constructors)
-  - [context](#context)
   - [make](#make)
   - [makeRequestUnion](#makerequestunion)
   - [makeWith](#makewith)
@@ -28,8 +27,10 @@ Added in v1.0.0
     - [Base (interface)](#base-interface)
     - [IO (interface)](#io-interface)
     - [NoError (interface)](#noerror-interface)
+    - [NoErrorNoOutput (interface)](#noerrornooutput-interface)
     - [NoInput (interface)](#noinput-interface)
     - [NoInputNoError (interface)](#noinputnoerror-interface)
+    - [NoOutput (interface)](#nooutput-interface)
     - [Any (type alias)](#any-type-alias)
     - [Error (type alias)](#error-type-alias)
     - [Input (type alias)](#input-type-alias)
@@ -44,7 +45,6 @@ Added in v1.0.0
     - [Methods (type alias)](#methods-type-alias)
     - [SetupError (type alias)](#setuperror-type-alias)
     - [SetupInput (type alias)](#setupinput-type-alias)
-    - [SetupOutput (type alias)](#setupoutput-type-alias)
     - [Simplify (type alias)](#simplify-type-alias)
     - [Validate (type alias)](#validate-type-alias)
     - [WithId (type alias)](#withid-type-alias)
@@ -78,16 +78,6 @@ export declare const withServiceError: {
 Added in v1.0.0
 
 # constructors
-
-## context
-
-**Signature**
-
-```ts
-export declare const context: <R>() => Schema.Schema<Context<R>, Context<R>>
-```
-
-Added in v1.0.0
 
 ## make
 
@@ -202,7 +192,7 @@ Added in v1.0.0
 ```ts
 export interface Base {
   readonly input?: Schema.Schema<any>
-  readonly output: Schema.Schema<any>
+  readonly output?: Schema.Schema<any>
   readonly error: Schema.Schema<any>
 }
 ```
@@ -236,6 +226,18 @@ export interface NoError<II, I, IO, O> {
 
 Added in v1.0.0
 
+### NoErrorNoOutput (interface)
+
+**Signature**
+
+```ts
+export interface NoErrorNoOutput<II, I> {
+  input: Schema.Schema<II, I>
+}
+```
+
+Added in v1.0.0
+
 ### NoInput (interface)
 
 **Signature**
@@ -261,6 +263,19 @@ export interface NoInputNoError<IO, O> {
 
 Added in v1.0.0
 
+### NoOutput (interface)
+
+**Signature**
+
+```ts
+export interface NoOutput<IE, E, II, I> {
+  input: Schema.Schema<II, I>
+  error: Schema.Schema<IE, E>
+}
+```
+
+Added in v1.0.0
+
 ### Any (type alias)
 
 **Signature**
@@ -271,6 +286,8 @@ export type Any =
   | NoError<any, any, any, any>
   | NoInput<any, any, any, any>
   | NoInputNoError<any, any>
+  | NoOutput<any, any, any, any>
+  | NoErrorNoOutput<any, any>
 ```
 
 Added in v1.0.0
@@ -280,7 +297,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type Error<S extends RpcSchema.Any> = S extends {
+export type Error<S> = S extends {
   readonly error: Schema.Schema<infer _I, infer A>
 }
   ? A
@@ -294,7 +311,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type Input<S extends RpcSchema.Any> = S extends {
+export type Input<S> = S extends {
   readonly input: Schema.Schema<infer _I, infer A>
 }
   ? A
@@ -308,7 +325,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type Output<S extends RpcSchema.Any> = S extends {
+export type Output<S> = S extends {
   readonly output: Schema.Schema<infer _I, infer A>
 }
   ? A
@@ -327,9 +344,7 @@ Added in v1.0.0
 
 ```ts
 export interface Definition extends Record<string, RpcSchema.Any | WithId<any, any, any>> {
-  __setup?:
-    | RpcSchema.IO<any, any, any, any, Context<any>, Context<any>>
-    | RpcSchema.NoError<any, any, Context<any>, Context<any>>
+  __setup?: RpcSchema.NoErrorNoOutput<any, any> | RpcSchema.NoOutput<any, any, any, any>
 }
 ```
 
@@ -420,16 +435,6 @@ Added in v1.0.0
 
 ```ts
 export type SetupInput<S extends DefinitionWithSetup> = RpcSchema.Input<S['__setup']>
-```
-
-Added in v1.0.0
-
-### SetupOutput (type alias)
-
-**Signature**
-
-```ts
-export type SetupOutput<S extends DefinitionWithSetup> = RpcSchema.Output<S['__setup']>
 ```
 
 Added in v1.0.0
