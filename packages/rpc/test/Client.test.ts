@@ -72,7 +72,12 @@ const schema = RS.make({
     output: S.number
   },
 
-  posts
+  posts,
+
+  unhandledException: {
+    input: S.string,
+    output: S.number
+  },
 })
 
 const router = Router.make(
@@ -100,7 +105,12 @@ const router = Router.make(
           id: 1,
           body: post.body
         })
-    })
+    }),
+    unhandledException:(_)=> {
+      // these appear to cause equivalent behavior:
+      throw new Error("HEY")
+      // return Effect.die(new Error("HEY"))
+    }
   },
   { spanPrefix: "CustomServer" }
 )
@@ -167,5 +177,9 @@ describe("Client", () => {
     expect(Effect.runSync(getA)).toEqual(0)
     expect(Effect.runSync(client.getCount("b"))).toEqual(1)
     expect(Effect.runSync(client.getCount("a"))).toEqual(2)
+  })
+
+  it("uncaught exception - should not cause infinite loop", async () => {
+    expect(await Effect.runPromise(client.unhandledException("a"))).toEqual(0)
   })
 })
