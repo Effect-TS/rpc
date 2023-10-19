@@ -4,7 +4,6 @@
 import * as Schema from "@effect/schema/Schema"
 import * as internal from "./internal/schema"
 import type { Json } from "./internal/schema"
-import type { DrainOuterGeneric } from "./internal/types"
 import type { RpcRequest } from "./Resolver"
 
 /**
@@ -221,7 +220,10 @@ export namespace RpcService {
    * @category utils
    * @since 1.0.0
    */
-  export type Methods<S extends DefinitionWithId, P extends string = ``> = Extract<keyof S, string> extends infer M
+  export type Methods<
+    S extends DefinitionWithId,
+    P extends string = ``
+  > = Extract<keyof S, string> extends infer M
     ? M extends Extract<keyof S, string> ? S[M] extends DefinitionWithId ? Methods<S[M], `${P}${M}.`>
       : `${P}${M}`
     : never
@@ -235,28 +237,26 @@ export namespace RpcService {
     VL extends string,
     V,
     S extends RpcService.Definition
-  > = DrainOuterGeneric<
-    {
-      readonly [K in keyof S]: K extends "__setup" ? S[K]
-        : S[K] extends DefinitionWithId ? Validate<VL, V, S[K]>
-        : S[K] extends RpcSchema.IO<
-          infer IE,
-          infer _E,
-          infer II,
-          infer _I,
-          infer IO,
-          infer _O
-        > ? [IE | II | IO] extends [V] ? S[K]
-          : `schema input does not extend ${VL}`
-        : S[K] extends RpcSchema.NoError<infer II, infer _I, infer IO, infer _O> ? [II | IO] extends [V] ? S[K]
-          : `schema input does not extend ${VL}`
-        : S[K] extends RpcSchema.NoInput<infer IE, infer _E, infer IO, infer _O> ? [IE | IO] extends [V] ? S[K]
-          : `schema input does not extend ${VL}`
-        : S[K] extends RpcSchema.NoInputNoError<infer IO, infer _O> ? [IO] extends [V] ? S[K]
-          : `schema input does not extend ${VL}`
-        : S[K]
-    }
-  >
+  > = {
+    readonly [K in keyof S]: K extends "__setup" ? S[K]
+      : S[K] extends DefinitionWithId ? Validate<VL, V, S[K]>
+      : S[K] extends RpcSchema.IO<
+        infer IE,
+        infer _E,
+        infer II,
+        infer _I,
+        infer IO,
+        infer _O
+      > ? [IE | II | IO] extends [V] ? S[K]
+        : `schema input does not extend ${VL}`
+      : S[K] extends RpcSchema.NoError<infer II, infer _I, infer IO, infer _O> ? [II | IO] extends [V] ? S[K]
+        : `schema input does not extend ${VL}`
+      : S[K] extends RpcSchema.NoInput<infer IE, infer _E, infer IO, infer _O> ? [IE | IO] extends [V] ? S[K]
+        : `schema input does not extend ${VL}`
+      : S[K] extends RpcSchema.NoInputNoError<infer IO, infer _O> ? [IO] extends [V] ? S[K]
+        : `schema input does not extend ${VL}`
+      : S[K]
+  }
 
   /**
    * @category utils
@@ -329,7 +329,10 @@ export namespace RpcRequestSchema {
    * @category utils
    * @since 1.0.0
    */
-  export type From<S extends RpcService.Definition, P extends string = ""> = Extract<keyof S, string> extends infer K
+  export type From<
+    S extends RpcService.Definition,
+    P extends string = ""
+  > = Extract<keyof S, string> extends infer K
     ? K extends Extract<keyof S, string> ? S[K] extends RpcService.DefinitionWithId ? From<S[K], `${P}${K}.`>
       : S[K] extends RpcSchema.IO<
         infer _IE,
@@ -360,7 +363,10 @@ export namespace RpcRequestSchema {
    * @category utils
    * @since 1.0.0
    */
-  export type To<S extends RpcService.Definition, P extends string = ""> = Extract<keyof S, string> extends infer K
+  export type To<
+    S extends RpcService.Definition,
+    P extends string = ""
+  > = Extract<keyof S, string> extends infer K
     ? K extends Extract<keyof S, string> ? S[K] extends RpcService.DefinitionWithId ? To<S[K], `${P}${K}.`>
       : S[K] extends RpcSchema.IO<
         infer _IE,

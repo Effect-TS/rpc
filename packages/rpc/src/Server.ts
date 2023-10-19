@@ -7,7 +7,6 @@ import type { Scope } from "effect/Scope"
 import type { Span } from "effect/Tracer"
 import type { RpcDecodeFailure, RpcEncodeFailure } from "./Error"
 import * as internal from "./internal/server"
-import type { DrainOuterGeneric } from "./internal/types"
 import type { RpcResponse } from "./Resolver"
 import type { RpcHandler, RpcHandlers, RpcRouter } from "./Router"
 import type { RpcRequestSchema, RpcSchema, RpcService } from "./Schema"
@@ -132,26 +131,24 @@ export interface UndecodedRpcResponse<M, O> {
  * @category models
  * @since 1.0.0
  */
-export type RpcUndecodedClient<H extends RpcHandlers, P extends string = ""> = DrainOuterGeneric<
-  {
-    readonly [K in Extract<keyof H, string>]: H[K] extends {
-      readonly handlers: RpcHandlers
-    } ? RpcUndecodedClient<H[K]["handlers"], `${P}${K}.`>
-      : H[K] extends RpcHandler.IO<infer R, infer E, infer I, infer O> ? (
-          input: I
-        ) => Effect<
-          Exclude<R, Span>,
-          E | RpcEncodeFailure | RpcDecodeFailure,
-          UndecodedRpcResponse<`${P}${K}`, O>
-        >
-      : H[K] extends Effect<infer R, infer E, infer O> ? Effect<
-          Exclude<R, Span>,
-          E | RpcEncodeFailure | RpcDecodeFailure,
-          UndecodedRpcResponse<`${P}${K}`, O>
-        >
-      : never
-  }
->
+export type RpcUndecodedClient<H extends RpcHandlers, P extends string = ""> = {
+  readonly [K in Extract<keyof H, string>]: H[K] extends {
+    readonly handlers: RpcHandlers
+  } ? RpcUndecodedClient<H[K]["handlers"], `${P}${K}.`>
+    : H[K] extends RpcHandler.IO<infer R, infer E, infer I, infer O> ? (
+        input: I
+      ) => Effect<
+        Exclude<R, Span>,
+        E | RpcEncodeFailure | RpcDecodeFailure,
+        UndecodedRpcResponse<`${P}${K}`, O>
+      >
+    : H[K] extends Effect<infer R, infer E, infer O> ? Effect<
+        Exclude<R, Span>,
+        E | RpcEncodeFailure | RpcDecodeFailure,
+        UndecodedRpcResponse<`${P}${K}`, O>
+      >
+    : never
+}
 
 /**
  * @category constructors

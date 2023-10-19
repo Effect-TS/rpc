@@ -4,7 +4,6 @@
 import type { Effect } from "effect/Effect"
 import type { RpcError } from "./Error"
 import * as internal from "./internal/client"
-import type { DrainOuterGeneric } from "./internal/types"
 import type { RpcResolver } from "./Resolver"
 import type { RpcSchema, RpcService } from "./Schema"
 import type { UndecodedRpcResponse } from "./Server"
@@ -23,25 +22,23 @@ export type Rpc<C extends RpcSchema.Any, R, SE> = C extends RpcSchema.IO<
   infer O
 > ? (input: I) => Effect<R, RpcError | SE | E, O>
   : C extends RpcSchema.NoError<infer _II, infer I, infer _IO, infer O> ? (input: I) => Effect<R, RpcError | SE, O>
-  : C extends RpcSchema.NoOutput<infer _IE, infer E, infer _II, infer I> ?
-    (input: I) => Effect<R, RpcError | SE | E, void>
+  : C extends RpcSchema.NoOutput<infer _IE, infer E, infer _II, infer I>
+    ? (input: I) => Effect<R, RpcError | SE | E, void>
   : C extends RpcSchema.NoErrorNoOutput<infer _II, infer I> ? (input: I) => Effect<R, RpcError | SE, void>
   : C extends RpcSchema.NoInput<infer _IE, infer E, infer _IO, infer O> ? Effect<R, RpcError | SE | E, O>
   : C extends RpcSchema.NoInputNoError<infer _IO, infer O> ? Effect<R, RpcError | SE, O>
   : never
 
-type RpcClientRpcs<S extends RpcService.DefinitionWithId, R, SE = never> = DrainOuterGeneric<
-  {
-    readonly [
-      K in Exclude<
-        keyof S,
-        "__setup"
-      >
-    ]: S[K] extends RpcService.DefinitionWithId ? RpcClientRpcs<S[K], R, SE | RpcService.Errors<S>>
-      : S[K] extends RpcSchema.Any ? Rpc<S[K], R, SE | RpcService.Errors<S>>
-      : never
-  }
->
+type RpcClientRpcs<S extends RpcService.DefinitionWithId, R, SE = never> = {
+  readonly [
+    K in Exclude<
+      keyof S,
+      "__setup"
+    >
+  ]: S[K] extends RpcService.DefinitionWithId ? RpcClientRpcs<S[K], R, SE | RpcService.Errors<S>>
+    : S[K] extends RpcSchema.Any ? Rpc<S[K], R, SE | RpcService.Errors<S>>
+    : never
+}
 
 /**
  * Represents an RPC client
