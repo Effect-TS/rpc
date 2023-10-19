@@ -253,7 +253,7 @@ export const router = <
 
 /** @internal */
 export const handler: {
-  <R extends RpcRouter.WithSetup>(
+  <const R extends RpcRouter.WithSetup>(
     router: R
   ): Effect.Effect<
     Scope,
@@ -294,7 +294,7 @@ export const handler: {
 }
 
 /** @internal */
-export const handlerRaw = <R extends RpcRouter.Base>(router: R) => {
+export const handlerRaw = <const R extends RpcRouter.Base>(router: R) => {
   const handlerMap = schemaHandlersMap(router.handlers)
   const inputEncoders = inputEncodeMap(router.schema)
 
@@ -319,8 +319,8 @@ export const handlerRaw = <R extends RpcRouter.Base>(router: R) => {
 
 /** @internal */
 export const makeUndecodedClient = <
-  S extends RpcService.DefinitionWithId,
-  H extends RpcHandlers.FromService<S>
+  const S extends RpcService.DefinitionWithId,
+  const H extends RpcHandlers.FromService<S>
 >(
   schemas: S,
   handlers: H,

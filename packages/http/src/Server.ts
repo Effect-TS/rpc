@@ -42,4 +42,4 @@ export interface RpcHttpHandler<R extends RpcRouter.Base> {
  * @category constructors
  * @since 1.0.0
  */
-export const make: <R extends RpcRouter.Base>(router: R) => RpcHttpHandler<R> = internal.make as any
+export const make: <R extends RpcRouter.Base>(router: R) => RpcHttpHandler<R> = internal.make

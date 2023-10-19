@@ -9,8 +9,8 @@ import { makeUndecodedClient } from "./server"
 
 /** @internal */
 export const make = <
-  S extends RpcService.DefinitionWithId,
-  H extends RpcHandlers.FromService<S>
+  const S extends RpcService.DefinitionWithId,
+  const H extends RpcHandlers.FromService<S>
 >(
   schema: S,
   handlers: H,
@@ -48,7 +48,7 @@ const provideHandlerEffect = (
 /** @internal */
 export const provideServiceEffect: {
   <
-    Router extends RpcRouter.Base,
+    const Router extends RpcRouter.Base,
     T extends Tag<any, any>,
     R,
     E extends RpcService.Errors<Router["schema"]>
@@ -57,7 +57,7 @@ export const provideServiceEffect: {
     effect: Effect.Effect<R, E, Tag.Service<T>>
   ): (self: Router) => RpcRouter.Provide<Router, Tag.Identifier<T>, R, E>
   <
-    Router extends RpcRouter.Base,
+    const Router extends RpcRouter.Base,
     T extends Tag<any, any>,
     R,
     E extends RpcService.Errors<Router["schema"]>
@@ -91,10 +91,10 @@ export const provideServiceSync: {
   <T extends Tag<any, any>>(
     tag: T,
     service: LazyArg<Tag.Service<T>>
-  ): <Router extends RpcRouter.Base>(
+  ): <const Router extends RpcRouter.Base>(
     self: Router
   ) => RpcRouter.Provide<Router, Tag.Identifier<T>, never, never>
-  <Router extends RpcRouter.Base, T extends Tag<any, any>>(
+  <const Router extends RpcRouter.Base, T extends Tag<any, any>>(
     self: Router,
     tag: T,
     service: LazyArg<Tag.Service<T>>
@@ -113,10 +113,10 @@ export const provideService: {
   <T extends Tag<any, any>>(
     tag: T,
     service: Tag.Service<T>
-  ): <Router extends RpcRouter.Base>(
+  ): <const Router extends RpcRouter.Base>(
     self: Router
   ) => RpcRouter.Provide<Router, Tag.Identifier<T>, never, never>
-  <Router extends RpcRouter.Base, T extends Tag<any, any>>(
+  <const Router extends RpcRouter.Base, T extends Tag<any, any>>(
     self: Router,
     tag: T,
     service: Tag.Service<T>
@@ -129,4 +129,29 @@ export const provideService: {
     service: Tag.Service<T>
   ): RpcRouter.Provide<Router, Tag.Identifier<T>, never, never> =>
     provideServiceEffect(self, tag, Effect.succeed(service))
+)
+
+/** @internal */
+export const provideLayer: {
+  <R, E, A>(
+    layer: Layer.Layer<R, E, A>
+  ): <const Router extends RpcRouter.Base>(
+    self: Router
+  ) => RpcRouter.ProvideLayer<Router, R, E, A>
+  <const Router extends RpcRouter.Base, R, E, A>(
+    self: Router,
+    layer: Layer.Layer<R, E, A>
+  ): RpcRouter.ProvideLayer<Router, R, E, A>
+} = dual(
+  2,
+  <const Router extends RpcRouter.Base, R, E, A>(
+    self: Router,
+    layer: Layer.Layer<R, E, A>
+  ): RpcRouter.ProvideLayer<Router, R, E, A> =>
+    self.layer ?
+      {
+        ...self,
+        layer: Layer.merge(self.layer, layer)
+      } as any :
+      { ...self, layer }
 )

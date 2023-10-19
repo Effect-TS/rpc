@@ -4,10 +4,10 @@
 import type { Effect } from "effect/Effect"
 import type { RpcError } from "./Error"
 import * as internal from "./internal/client"
+import type { DrainOuterGeneric } from "./internal/types"
 import type { RpcResolver } from "./Resolver"
 import type { RpcSchema, RpcService } from "./Schema"
 import type { UndecodedRpcResponse } from "./Server"
-
 /**
  * Represents an RPC method signature.
  *
@@ -30,16 +30,18 @@ export type Rpc<C extends RpcSchema.Any, R, SE> = C extends RpcSchema.IO<
   : C extends RpcSchema.NoInputNoError<infer _IO, infer O> ? Effect<R, RpcError | SE, O>
   : never
 
-type RpcClientRpcs<S extends RpcService.DefinitionWithId, R, SE = never> = {
-  readonly [
-    K in Exclude<
-      keyof S,
-      "__setup"
-    >
-  ]: S[K] extends RpcService.DefinitionWithId ? RpcClientRpcs<S[K], R, SE | RpcService.Errors<S>>
-    : S[K] extends RpcSchema.Any ? Rpc<S[K], R, SE | RpcService.Errors<S>>
-    : never
-}
+type RpcClientRpcs<S extends RpcService.DefinitionWithId, R, SE = never> = DrainOuterGeneric<
+  {
+    readonly [
+      K in Exclude<
+        keyof S,
+        "__setup"
+      >
+    ]: S[K] extends RpcService.DefinitionWithId ? RpcClientRpcs<S[K], R, SE | RpcService.Errors<S>>
+      : S[K] extends RpcSchema.Any ? Rpc<S[K], R, SE | RpcService.Errors<S>>
+      : never
+  }
+>
 
 /**
  * Represents an RPC client
@@ -53,8 +55,8 @@ export type RpcClient<S extends RpcService.DefinitionWithId, R> =
     R
   >
   & {
-    _schemas: S
-    _unsafeDecode: <
+    readonly _schemas: S
+    readonly _unsafeDecode: <
       M extends RpcService.Methods<S>,
       O extends UndecodedRpcResponse<M, any>
     >(
@@ -62,6 +64,7 @@ export type RpcClient<S extends RpcService.DefinitionWithId, R> =
       output: O
     ) => O extends UndecodedRpcResponse<M, infer O> ? O : never
   }
+
 /**
  * @category models
  * @since 1.0.0
@@ -77,7 +80,7 @@ export interface RpcClientOptions {
  * @since 1.0.0
  */
 export const make: {
-  <S extends RpcService.DefinitionWithSetup>(
+  <const S extends RpcService.DefinitionWithSetup>(
     schemas: S,
     init: RpcSchema.Input<S["__setup"]>,
     options?: RpcClientOptions
@@ -86,7 +89,7 @@ export const make: {
     RpcError | RpcSchema.Error<S["__setup"]>,
     RpcClient<S, RpcResolver<never>>
   >
-  <S extends RpcService.DefinitionWithoutSetup>(
+  <const S extends RpcService.DefinitionWithoutSetup>(
     schemas: S,
     options?: RpcClientOptions
   ): RpcClient<S, RpcResolver<never>>
@@ -100,7 +103,7 @@ export const make: {
  */
 export const makeWithResolver: {
   <
-    S extends RpcService.DefinitionWithSetup,
+    const S extends RpcService.DefinitionWithSetup,
     Resolver extends
       | RpcResolver<never>
       | Effect<any, never, RpcResolver<never>>
@@ -119,7 +122,7 @@ export const makeWithResolver: {
     >
   >
   <
-    S extends RpcService.DefinitionWithoutSetup,
+    const S extends RpcService.DefinitionWithoutSetup,
     Resolver extends
       | RpcResolver<never>
       | Effect<any, never, RpcResolver<never>>

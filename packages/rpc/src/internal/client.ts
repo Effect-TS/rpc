@@ -11,7 +11,7 @@ import * as codec from "./codec"
 import * as resolverInternal from "./resolver"
 import * as schemaInternal from "./schema"
 
-const unsafeDecode = <S extends RpcService.DefinitionWithId>(schemas: S) => {
+const unsafeDecode = <const S extends RpcService.DefinitionWithId>(schemas: S) => {
   const map = schemaInternal.methodClientCodecsEither(schemas)
 
   return (method: RpcService.Methods<S>, output: unknown) => {
@@ -25,7 +25,7 @@ const unsafeDecode = <S extends RpcService.DefinitionWithId>(schemas: S) => {
   }
 }
 
-const makeRecursive = <S extends RpcService.DefinitionWithId>(
+const makeRecursive = <const S extends RpcService.DefinitionWithId>(
   schemas: S,
   transport: RpcResolver<never>,
   options: client.RpcClientOptions,
@@ -63,7 +63,7 @@ const makeRecursive = <S extends RpcService.DefinitionWithId>(
 /** @internal */
 export const makeWithResolver: {
   <
-    S extends RpcService.DefinitionWithSetup,
+    const S extends RpcService.DefinitionWithSetup,
     Resolver extends
       | RpcResolver<never>
       | Effect.Effect<any, never, RpcResolver<never>>
@@ -82,7 +82,7 @@ export const makeWithResolver: {
     >
   >
   <
-    S extends RpcService.DefinitionWithoutSetup,
+    const S extends RpcService.DefinitionWithoutSetup,
     Resolver extends
       | RpcResolver<never>
       | Effect.Effect<any, never, RpcResolver<never>>
@@ -118,7 +118,7 @@ export const makeWithResolver: {
 
 /** @internal */
 export const make: {
-  <S extends RpcService.DefinitionWithSetup>(
+  <const S extends RpcService.DefinitionWithSetup>(
     schemas: S,
     init: RpcService.SetupInput<S>,
     options?: client.RpcClientOptions
@@ -127,7 +127,7 @@ export const make: {
     RpcService.SetupError<S> | RpcError,
     client.RpcClient<S, RpcResolver<never>>
   >
-  <S extends RpcService.DefinitionWithoutSetup>(
+  <const S extends RpcService.DefinitionWithoutSetup>(
     schemas: S,
     options?: client.RpcClientOptions
   ): client.RpcClient<S, RpcResolver<never>>
@@ -137,7 +137,7 @@ export const make: {
   options?: client.RpcClientOptions
 ) => makeWithResolver(schemas, RpcResolver, initOrOptions, options) as any
 
-const makeRpc = <S extends RpcSchema.Any>(
+const makeRpc = <const S extends RpcSchema.Any>(
   resolver: RpcResolver<never>,
   serviceErrors: ReadonlyArray<Schema.Schema<any>>,
   schema: S,
