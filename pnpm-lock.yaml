@@ -122,11 +122,11 @@ importers:
         version: link:../rpc
     devDependencies:
       "@effect/schema":
-        specifier: ^0.46.0
-        version: 0.46.0(effect@2.0.0-next.51)(fast-check@3.13.2)
+        specifier: ^0.46.1
+        version: 0.46.1(effect@2.0.0-next.52)(fast-check@3.13.2)
       effect:
-        specifier: 2.0.0-next.51
-        version: 2.0.0-next.51
+        specifier: 2.0.0-next.52
+        version: 2.0.0-next.52
 
   packages/http-node:
     dependencies:
@@ -137,12 +137,12 @@ importers:
         specifier: workspace:^
         version: link:../http
       effect:
-        specifier: 2.0.0-next.51
-        version: 2.0.0-next.51
+        specifier: 2.0.0-next.52
+        version: 2.0.0-next.52
     devDependencies:
       "@effect/schema":
-        specifier: ^0.46.0
-        version: 0.46.0(effect@2.0.0-next.51)(fast-check@3.13.2)
+        specifier: ^0.46.1
+        version: 0.46.1(effect@2.0.0-next.52)(fast-check@3.13.2)
 
   packages/nextjs:
     dependencies:
@@ -154,23 +154,23 @@ importers:
         version: link:../http
     devDependencies:
       "@effect/schema":
-        specifier: ^0.46.0
-        version: 0.46.0(effect@2.0.0-next.51)(fast-check@3.13.2)
+        specifier: ^0.46.1
+        version: 0.46.1(effect@2.0.0-next.52)(fast-check@3.13.2)
       effect:
-        specifier: 2.0.0-next.51
-        version: 2.0.0-next.51
+        specifier: 2.0.0-next.52
+        version: 2.0.0-next.52
       next:
         specifier: ^13.5.6
-        version: 13.5.6(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
+        version: 13.5.6(react-dom@18.2.0)(react@18.2.0)
 
   packages/rpc:
     devDependencies:
       "@effect/schema":
-        specifier: ^0.46.0
-        version: 0.46.0(effect@2.0.0-next.51)(fast-check@3.13.2)
+        specifier: ^0.46.1
+        version: 0.46.1(effect@2.0.0-next.52)(fast-check@3.13.2)
       effect:
-        specifier: 2.0.0-next.51
-        version: 2.0.0-next.51
+        specifier: 2.0.0-next.52
+        version: 2.0.0-next.52
 
   packages/webworkers:
     dependencies:
@@ -179,11 +179,11 @@ importers:
         version: link:../rpc
     devDependencies:
       "@effect/schema":
-        specifier: ^0.46.0
-        version: 0.46.0(effect@2.0.0-next.51)(fast-check@3.13.2)
+        specifier: ^0.46.1
+        version: 0.46.1(effect@2.0.0-next.52)(fast-check@3.13.2)
       effect:
-        specifier: 2.0.0-next.51
-        version: 2.0.0-next.51
+        specifier: 2.0.0-next.52
+        version: 2.0.0-next.52
 
 packages:
   /@aashutoshrathi/word-wrap@1.2.6:
@@ -1040,16 +1040,16 @@ packages:
       }
     dev: true
 
-  /@effect/schema@0.46.0(effect@2.0.0-next.51)(fast-check@3.13.2):
+  /@effect/schema@0.46.1(effect@2.0.0-next.52)(fast-check@3.13.2):
     resolution:
       {
-        integrity: sha512-CrdKErEVy9Hp/p4q94yfmT7oK2hIht2LQzwWKMJQtRxh7IDvjw8ZO5rqqRiqdRLJ52iL+ryCr9JUnO+hJrA8DQ==,
+        integrity: sha512-+uaJy6vn2wd5cuYzeCZ68EMPcwNran5/JPL0+MUlRL8x23Bp15YCiT9oqOPH+Bo9+JPVuS7BOPQD3tj/MNLzWQ==,
       }
     peerDependencies:
-      effect: 2.0.0-next.51
+      effect: 2.0.0-next.52
       fast-check: ^3.13.2
     dependencies:
-      effect: 2.0.0-next.51
+      effect: 2.0.0-next.52
       fast-check: 3.13.2
     dev: true
 
@@ -3815,10 +3815,10 @@ packages:
       }
     dev: true
 
-  /effect@2.0.0-next.51:
+  /effect@2.0.0-next.52:
     resolution:
       {
-        integrity: sha512-FUqLrZI8GK+6f6bTKD9qlW1iG0DKKDXG1vzsDfl5LhTe1dCur/UD1nj/HI/OjC0/8zwy+K/ZxTBYxj999/CUEg==,
+        integrity: sha512-6VmmfS6xyOZsJRT0hcEsMx03HxXSeG/VmcniDvVw0nzBudlu+4qUvj8GBGYVFVgJfKcISSRey0tzfO9HXIzApg==,
       }
 
   /electron-to-chromium@1.4.556:
@@ -6601,7 +6601,7 @@ packages:
       }
     dev: true
 
-  /next@13.5.6(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0):
+  /next@13.5.6(react-dom@18.2.0)(react@18.2.0):
     resolution:
       {
         integrity: sha512-Y2wTcTbO4WwEsVb4A8VSnOsG1I9ok+h74q0ZdxkwM3EODqrs4pasq7O0iUxbcS9VtWMicG7f3+HAj0r1+NtKSw==,
@@ -6626,7 +6626,7 @@ packages:
       postcss: 8.4.31
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      styled-jsx: 5.1.1(@babel/core@7.23.2)(react@18.2.0)
+      styled-jsx: 5.1.1(react@18.2.0)
       watchpack: 2.4.0
     optionalDependencies:
       "@next/swc-darwin-arm64": 13.5.6
@@ -8284,7 +8284,7 @@ packages:
       acorn: 8.10.0
     dev: true
 
-  /styled-jsx@5.1.1(@babel/core@7.23.2)(react@18.2.0):
+  /styled-jsx@5.1.1(react@18.2.0):
     resolution:
       {
         integrity: sha512-pW7uC1l4mBZ8ugbiZrcIsiIvVx1UmTfw7UkC3Um2tmfUq9Bhk8IiyEIPl6F8agHgjzku6j0xQEZbfA5uSgSaCw==,
@@ -8300,7 +8300,6 @@ packages:
       babel-plugin-macros:
         optional: true
     dependencies:
-      "@babel/core": 7.23.2
       client-only: 0.0.1
       react: 18.2.0
     dev: true
