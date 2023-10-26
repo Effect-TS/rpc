@@ -10,12 +10,6 @@ describe("Schema", () => {
           input: S.string,
           output: S.string,
           error: S.never
-        },
-        streamer: {
-          stream: true,
-          input: S.string,
-          output: S.string,
-          error: S.never
         }
       })
 
@@ -23,12 +17,6 @@ describe("Schema", () => {
         readonly input: S.Schema<string, string>
         readonly output: S.Schema<string, string>
         readonly error: S.Schema<never, never>
-      }>()
-      expectTypeOf(schema.streamer).toEqualTypeOf<{
-        readonly input: S.Schema<string, string>
-        readonly output: S.Schema<string, string>
-        readonly error: S.Schema<never, never>
-        readonly stream: true
       }>()
     })
 

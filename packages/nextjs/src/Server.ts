@@ -62,5 +62,5 @@ export function make<R extends RpcRouter.Base>(router: R): RpcNextjsHandler<R> {
           }))
       )
     )
-  } as any
+  }
 }

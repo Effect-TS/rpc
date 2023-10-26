@@ -102,18 +102,21 @@ export const methodClientCodecsEither = methodSchemaTransform((schema) => ({
 }))
 
 /** @internal */
-export const inputEncodeMap = <S extends schema.RpcService.DefinitionWithId>(
+export const rawClientCodecs = <S extends schema.RpcService.DefinitionWithId>(
   schemas: S,
   prefix = ""
 ): Record<
   string,
-  (input: unknown) => Effect.Effect<never, RpcEncodeFailure, unknown>
+  {
+    readonly input: (input: unknown) => Effect.Effect<never, RpcEncodeFailure, unknown>
+    readonly output: (output: unknown) => Effect.Effect<never, RpcEncodeFailure, unknown>
+  }
 > =>
   Object.entries(schemas).reduce((acc, [method, schema]) => {
     if (RpcServiceId in schema) {
       return {
         ...acc,
-        ...inputEncodeMap(schema, `${prefix}${method}.`)
+        ...rawClientCodecs(schema, `${prefix}${method}.`)
       }
     } else if (!("input" in schema)) {
       return acc
@@ -121,7 +124,10 @@ export const inputEncodeMap = <S extends schema.RpcService.DefinitionWithId>(
 
     return {
       ...acc,
-      [`${prefix}${method}`]: Codec.encode(Schema.to(schema.input))
+      [`${prefix}${method}`]: {
+        input: Codec.encode(Schema.to(schema.input)),
+        output: Codec.encode(Schema.to(schema.output))
+      }
     }
   }, {})
 

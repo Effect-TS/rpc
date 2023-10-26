@@ -17,7 +17,7 @@ import type { RpcHandler, RpcHandlers, RpcRouter } from "../Router"
 import type { RpcRequestSchema, RpcSchema, RpcService } from "../Schema"
 import type { RpcUndecodedClient } from "../Server"
 import * as codec from "./codec"
-import { inputEncodeMap, methodCodecs, methodSchemas } from "./schema"
+import { methodCodecs, methodSchemas, rawClientCodecs } from "./schema"
 
 const schemaHandlersMap = <H extends RpcHandlers>(
   handlers: H,
@@ -296,7 +296,7 @@ export const handler: {
 /** @internal */
 export const handlerRaw = <const R extends RpcRouter.Base>(router: R) => {
   const handlerMap = schemaHandlersMap(router.handlers)
-  const inputEncoders = inputEncodeMap(router.schema)
+  const encoders = rawClientCodecs(router.schema)
 
   return <Req extends RpcRequestSchema.To<R["schema"]>>(
     request: Req
@@ -304,15 +304,17 @@ export const handlerRaw = <const R extends RpcRouter.Base>(router: R) => {
     : never =>
   {
     const handler = handlerMap[(request as RpcRequest.Payload)._tag]
+    const codecs = encoders[(request as RpcRequest.Payload)._tag]
     if (Effect.isEffect(handler)) {
       return handler as any
     }
 
     return Effect.flatMap(
-      inputEncoders[(request as RpcRequest.Payload)._tag](
-        (request as RpcRequest.Payload).input
+      Effect.flatMap(
+        codecs.input((request as RpcRequest.Payload).input),
+        handler as any
       ),
-      handler as any
+      codecs.output
     ) as any
   }
 }
