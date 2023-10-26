@@ -130,28 +130,3 @@ export const provideService: {
   ): RpcRouter.Provide<Router, Tag.Identifier<T>, never, never> =>
     provideServiceEffect(self, tag, Effect.succeed(service))
 )
-
-/** @internal */
-export const provideLayer: {
-  <R, E, A>(
-    layer: Layer.Layer<R, E, A>
-  ): <const Router extends RpcRouter.Base>(
-    self: Router
-  ) => RpcRouter.ProvideLayer<Router, R, E, A>
-  <const Router extends RpcRouter.Base, R, E, A>(
-    self: Router,
-    layer: Layer.Layer<R, E, A>
-  ): RpcRouter.ProvideLayer<Router, R, E, A>
-} = dual(
-  2,
-  <const Router extends RpcRouter.Base, R, E, A>(
-    self: Router,
-    layer: Layer.Layer<R, E, A>
-  ): RpcRouter.ProvideLayer<Router, R, E, A> =>
-    self.layer ?
-      {
-        ...self,
-        layer: Layer.merge(self.layer, layer)
-      } as any :
-      { ...self, layer }
-)

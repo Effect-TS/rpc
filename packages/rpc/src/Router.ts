@@ -169,15 +169,11 @@ export namespace RpcHandlers {
  */
 export interface RpcRouter<
   S extends RpcService.DefinitionWithId,
-  H extends RpcHandlers,
-  LR = never,
-  LE = never,
-  LA = never
+  H extends RpcHandlers
 > extends RpcRouter.Base {
   readonly handlers: H
   readonly schema: S
   readonly undecoded: RpcUndecodedClient<H>
-  readonly layer?: Layer<LR, LE, LA>
 }
 
 /**
@@ -193,7 +189,6 @@ export namespace RpcRouter {
     readonly schema: RpcService.DefinitionWithId
     readonly undecoded: any
     readonly options: Options
-    readonly layer?: Layer<any, any, any> | Layer<never, never, never>
   }
 
   /**
@@ -225,39 +220,6 @@ export namespace RpcRouter {
   }
 
   /**
-   * @category router models
-   * @since 1.0.0
-   */
-  export type LayerR<Router extends Base> = Router["layer"] extends Layer<
-    infer R,
-    infer _E,
-    infer _A
-  > ? R
-    : never
-
-  /**
-   * @category router models
-   * @since 1.0.0
-   */
-  export type LayerE<Router extends Base> = Router["layer"] extends Layer<
-    infer _R,
-    infer E,
-    infer _A
-  > ? E
-    : never
-
-  /**
-   * @category router models
-   * @since 1.0.0
-   */
-  export type LayerA<Router extends Base> = Router["layer"] extends Layer<
-    infer _R,
-    infer _E,
-    infer A
-  > ? A
-    : never
-
-  /**
    * @category router utils
    * @since 1.0.0
    */
@@ -284,22 +246,7 @@ export namespace RpcRouter {
           infer O
         > ? RpcHandler.NoInput<Exclude<R, XR> | PR, E | PE, O>
         : never
-    },
-    LayerR<Router>,
-    LayerE<Router>,
-    LayerA<Router>
-  >
-
-  /**
-   * @category router utils
-   * @since 1.0.0
-   */
-  export type ProvideLayer<Router extends Base, R, E, A> = RpcRouter<
-    Router["schema"],
-    Router["handlers"],
-    LayerR<Router> | R,
-    LayerE<Router> | E,
-    LayerA<Router> | A
+    }
   >
 
   /**
@@ -396,19 +343,3 @@ export const provideServiceSync: {
     service: LazyArg<Tag.Service<T>>
   ): RpcRouter.Provide<Router, Tag.Identifier<T>, never, never>
 } = internal.provideServiceSync
-
-/**
- * @category router combinators
- * @since 1.0.0
- */
-export const provideLayer: {
-  <R, E, A>(
-    layer: Layer<R, E, A>
-  ): <const Router extends RpcRouter.Base>(
-    self: Router
-  ) => RpcRouter.ProvideLayer<Router, R, E, A>
-  <const Router extends RpcRouter.Base, R, E, A>(
-    self: Router,
-    layer: Layer<R, E, A>
-  ): RpcRouter.ProvideLayer<Router, R, E, A>
-} = internal.provideLayer
