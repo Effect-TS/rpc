@@ -12,7 +12,7 @@ export function make(
 ): Resolver.RpcResolver<never> {
   return Resolver.make((requests) =>
     pipe(
-      client(ClientRequest.post("/", { body: Body.unsafeJson(requests) })),
+      client(ClientRequest.post("", { body: Body.unsafeJson(requests) })),
       Effect.flatMap((response) => response.json),
       Effect.mapError((error) => RpcTransportError({ error }))
     )

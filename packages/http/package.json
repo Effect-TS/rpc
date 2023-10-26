@@ -13,7 +13,7 @@
   },
   "homepage": "https://github.com/effect-ts/rpc",
   "scripts": {
-    "example": "ts-node --project tsconfig.examples.json",
+    "example": "node -r ts-node/register",
     "lint": "eslint src/**/*.ts test/**/*.ts",
     "tc": "tsc --noEmit",
     "test": "vitest",

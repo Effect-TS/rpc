@@ -15,7 +15,7 @@ const client = Client.make(
 // Use the client
 pipe(
   client.getUserIds,
-  Effect.flatMap((ids) => Effect.forEach(ids, client.getUser, { concurrency: "unbounded" })),
+  Effect.flatMap((ids) => Effect.forEach(ids, client.getUser, { batching: true })),
   Effect.tap((users) =>
     Effect.sync(() => {
       console.log(users)
