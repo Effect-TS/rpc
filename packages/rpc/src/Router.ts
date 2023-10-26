@@ -102,13 +102,14 @@ export namespace RpcHandlers {
    * @category handlers utils
    * @since 1.0.0
    */
-  export type FromService<S extends RpcService.DefinitionWithId> = {
+  export type FromService<S extends RpcService.DefinitionWithId, Depth extends ReadonlyArray<number> = []> = {
     readonly [
       K in Extract<
         keyof S,
         string
       >
-    ]: S[K] extends RpcService.DefinitionWithId ? { readonly handlers: FromService<S[K]> }
+    ]: S[K] extends RpcService.DefinitionWithId ?
+      Depth["length"] extends 3 ? never : { readonly handlers: FromService<S[K], [0, ...Depth]> }
       : K extends "__setup" ? RpcHandler.FromSetupSchema<S[K]>
       : S[K] extends RpcSchema.Any ? RpcHandler.FromSchema<S[K]>
       : never
@@ -118,8 +119,10 @@ export namespace RpcHandlers {
    * @category handlers utils
    * @since 1.0.0
    */
-  export type Services<H extends RpcHandlers> = keyof H extends infer M
-    ? M extends keyof H ? H[M] extends { readonly handlers: RpcHandlers } ? Services<H[M]["handlers"]>
+  export type Services<H extends RpcHandlers, Depth extends ReadonlyArray<number> = []> = keyof H extends infer M
+    ? M extends keyof H ?
+      H[M] extends { readonly handlers: RpcHandlers } ?
+        Depth["length"] extends 3 ? never : Services<H[M]["handlers"], [0, ...Depth]>
       : H[M] extends RpcHandler<infer R, infer _E, infer _I, infer _O> ? R
       : never
     : never
@@ -129,8 +132,10 @@ export namespace RpcHandlers {
    * @category handlers utils
    * @since 1.0.0
    */
-  export type Error<H extends RpcHandlers> = keyof H extends infer M
-    ? M extends keyof H ? H[M] extends { readonly handlers: RpcHandlers } ? Services<H[M]["handlers"]>
+  export type Errors<H extends RpcHandlers, Depth extends ReadonlyArray<number> = []> = keyof H extends infer M
+    ? M extends keyof H ?
+      H[M] extends { readonly handlers: RpcHandlers } ?
+        Depth["length"] extends 3 ? never : Errors<H[M]["handlers"], [0, ...Depth]>
       : H[M] extends RpcHandler<infer _R, infer E, infer _I, infer _O> ? E
       : never
     : never
@@ -144,10 +149,12 @@ export namespace RpcHandlers {
     H extends RpcHandlers,
     XR,
     E2,
-    P extends string = ""
+    P extends string = "",
+    Depth extends ReadonlyArray<number> = []
   > = Extract<keyof H, string> extends infer K
     ? K extends Extract<keyof H, string>
-      ? H[K] extends { readonly handlers: RpcHandlers } ? Map<H[K]["handlers"], XR, E2, `${P}${K}.`>
+      ? H[K] extends { readonly handlers: RpcHandlers } ?
+        Depth["length"] extends 3 ? never : Map<H[K]["handlers"], XR, E2, `${P}${K}.`, [0, ...Depth]>
       : H[K] extends RpcHandler.IO<infer R, infer E, infer _I, infer O>
         ? [`${P}${K}`, Effect<Exclude<R, XR>, E | E2, O>]
       : H[K] extends Effect<infer R, infer E, infer O> ? [`${P}${K}`, Effect<Exclude<R, XR>, E | E2, O>]
@@ -254,11 +261,11 @@ export namespace RpcRouter {
    * @category router utils
    * @since 1.0.0
    */
-  export type Provide<Router extends Base, XR, PR, PE> = RpcRouter<
+  export type Provide<Router extends Base, XR, PR, PE, Depth extends ReadonlyArray<number> = []> = RpcRouter<
     Router["schema"],
     {
       readonly [M in keyof Router["handlers"]]: Router["handlers"][M] extends Base
-        ? Provide<Router["handlers"][M], XR, PR, PE>
+        ? Depth["length"] extends 3 ? never : Provide<Router["handlers"][M], XR, PR, PE, [0, ...Depth]>
         : Router["handlers"][M] extends RpcHandler.IO<
           infer R,
           infer E,

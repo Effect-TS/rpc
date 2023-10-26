@@ -222,9 +222,11 @@ export namespace RpcService {
    */
   export type Methods<
     S extends DefinitionWithId,
-    P extends string = ``
+    P extends string = ``,
+    Depth extends ReadonlyArray<number> = []
   > = Extract<keyof S, string> extends infer M
-    ? M extends Extract<keyof S, string> ? S[M] extends DefinitionWithId ? Methods<S[M], `${P}${M}.`>
+    ? M extends Extract<keyof S, string> ?
+      S[M] extends DefinitionWithId ? Depth["length"] extends 3 ? never : Methods<S[M], `${P}${M}.`, [0, ...Depth]>
       : `${P}${M}`
     : never
     : never
@@ -236,10 +238,11 @@ export namespace RpcService {
   export type Validate<
     VL extends string,
     V,
-    S extends RpcService.Definition
+    S extends RpcService.Definition,
+    Depth extends ReadonlyArray<number> = []
   > = {
     readonly [K in keyof S]: K extends "__setup" ? S[K]
-      : S[K] extends DefinitionWithId ? Validate<VL, V, S[K]>
+      : S[K] extends DefinitionWithId ? Depth["length"] extends 3 ? never : Validate<VL, V, S[K], [0, ...Depth]>
       : S[K] extends RpcSchema.IO<
         infer IE,
         infer _E,
@@ -331,9 +334,12 @@ export namespace RpcRequestSchema {
    */
   export type From<
     S extends RpcService.Definition,
-    P extends string = ""
+    P extends string = "",
+    Depth extends ReadonlyArray<number> = []
   > = Extract<keyof S, string> extends infer K
-    ? K extends Extract<keyof S, string> ? S[K] extends RpcService.DefinitionWithId ? From<S[K], `${P}${K}.`>
+    ? K extends Extract<keyof S, string> ?
+      S[K] extends RpcService.DefinitionWithId ?
+        Depth["length"] extends 3 ? never : From<S[K], `${P}${K}.`, [0, ...Depth]>
       : S[K] extends RpcSchema.IO<
         infer _IE,
         infer _E,
@@ -365,9 +371,12 @@ export namespace RpcRequestSchema {
    */
   export type To<
     S extends RpcService.Definition,
-    P extends string = ""
+    P extends string = "",
+    Depth extends ReadonlyArray<number> = []
   > = Extract<keyof S, string> extends infer K
-    ? K extends Extract<keyof S, string> ? S[K] extends RpcService.DefinitionWithId ? To<S[K], `${P}${K}.`>
+    ? K extends Extract<keyof S, string> ?
+      S[K] extends RpcService.DefinitionWithId ?
+        Depth["length"] extends 3 ? never : To<S[K], `${P}${K}.`, [0, ...Depth]>
       : S[K] extends RpcSchema.IO<
         infer _IE,
         infer _E,

@@ -41,7 +41,7 @@ export const handler: {
     never,
     ReadonlyArray<RpcResponse>
   >
-} = internal.handler as any
+} = internal.handler
 
 /**
  * @category constructors
@@ -131,24 +131,25 @@ export interface UndecodedRpcResponse<M, O> {
  * @category models
  * @since 1.0.0
  */
-export type RpcUndecodedClient<H extends RpcHandlers, P extends string = ""> = {
-  readonly [K in Extract<keyof H, string>]: H[K] extends {
-    readonly handlers: RpcHandlers
-  } ? RpcUndecodedClient<H[K]["handlers"], `${P}${K}.`>
-    : H[K] extends RpcHandler.IO<infer R, infer E, infer I, infer O> ? (
-        input: I
-      ) => Effect<
-        Exclude<R, Span>,
-        E | RpcEncodeFailure | RpcDecodeFailure,
-        UndecodedRpcResponse<`${P}${K}`, O>
-      >
-    : H[K] extends Effect<infer R, infer E, infer O> ? Effect<
-        Exclude<R, Span>,
-        E | RpcEncodeFailure | RpcDecodeFailure,
-        UndecodedRpcResponse<`${P}${K}`, O>
-      >
-    : never
-}
+export type RpcUndecodedClient<H extends RpcHandlers, P extends string = "", Depth extends ReadonlyArray<number> = []> =
+  {
+    readonly [K in Extract<keyof H, string>]: H[K] extends {
+      readonly handlers: RpcHandlers
+    } ? Depth["length"] extends 3 ? never : RpcUndecodedClient<H[K]["handlers"], `${P}${K}.`, [0, ...Depth]>
+      : H[K] extends RpcHandler.IO<infer R, infer E, infer I, infer O> ? (
+          input: I
+        ) => Effect<
+          Exclude<R, Span>,
+          E | RpcEncodeFailure | RpcDecodeFailure,
+          UndecodedRpcResponse<`${P}${K}`, O>
+        >
+      : H[K] extends Effect<infer R, infer E, infer O> ? Effect<
+          Exclude<R, Span>,
+          E | RpcEncodeFailure | RpcDecodeFailure,
+          UndecodedRpcResponse<`${P}${K}`, O>
+        >
+      : never
+  }
 
 /**
  * @category constructors

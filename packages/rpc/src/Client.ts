@@ -29,13 +29,14 @@ export type Rpc<C extends RpcSchema.Any, R, SE> = C extends RpcSchema.IO<
   : C extends RpcSchema.NoInputNoError<infer _IO, infer O> ? Effect<R, RpcError | SE, O>
   : never
 
-type RpcClientRpcs<S extends RpcService.DefinitionWithId, R, SE = never> = {
+type RpcClientRpcs<S extends RpcService.DefinitionWithId, R, SE = never, Depth extends ReadonlyArray<number> = []> = {
   readonly [
     K in Exclude<
       keyof S,
       "__setup"
     >
-  ]: S[K] extends RpcService.DefinitionWithId ? RpcClientRpcs<S[K], R, SE | RpcService.Errors<S>>
+  ]: S[K] extends RpcService.DefinitionWithId ?
+    Depth["length"] extends 3 ? never : RpcClientRpcs<S[K], R, SE | RpcService.Errors<S>, [0, ...Depth]>
     : S[K] extends RpcSchema.Any ? Rpc<S[K], R, SE | RpcService.Errors<S>>
     : never
 }
