@@ -45,7 +45,7 @@ export const handleSingle: {
     ) => Effect.Effect<
       Exclude<
         RpcHandlers.Services<R["handlers"]>,
-        RpcRouter.SetupServices<R> | Tracer.Span
+        RpcRouter.SetupServices<R>
       >,
       never,
       RpcResponse
@@ -56,7 +56,7 @@ export const handleSingle: {
   ): (
     request: unknown
   ) => Effect.Effect<
-    Exclude<RpcHandlers.Services<R["handlers"]>, Tracer.Span> | Scope,
+    RpcHandlers.Services<R["handlers"]> | Scope,
     never,
     RpcResponse
   >
@@ -194,7 +194,7 @@ export const handleSingleWithSchema: {
     ) => Effect.Effect<
       Exclude<
         RpcHandlers.Services<R["handlers"]>,
-        RpcRouter.SetupServices<R> | Tracer.Span
+        RpcRouter.SetupServices<R>
       >,
       never,
       readonly [RpcResponse, Option.Option<RpcSchema.Base>]
@@ -205,7 +205,7 @@ export const handleSingleWithSchema: {
   ): (
     request: unknown
   ) => Effect.Effect<
-    Exclude<RpcHandlers.Services<R["handlers"]>, Tracer.Span>,
+    RpcHandlers.Services<R["handlers"]>,
     never,
     readonly [RpcResponse, Option.Option<RpcSchema.Base>]
   >
@@ -263,7 +263,7 @@ export const handler: {
     ) => Effect.Effect<
       Exclude<
         RpcHandlers.Services<R["handlers"]>,
-        RpcRouter.SetupServices<R> | Tracer.Span
+        RpcRouter.SetupServices<R>
       >,
       never,
       ReadonlyArray<RpcResponse>
@@ -274,7 +274,7 @@ export const handler: {
   ): (
     request: unknown
   ) => Effect.Effect<
-    Exclude<RpcHandlers.Services<R["handlers"]>, Tracer.Span>,
+    RpcHandlers.Services<R["handlers"]>,
     never,
     ReadonlyArray<RpcResponse>
   >
@@ -300,7 +300,7 @@ export const handlerRaw = <const R extends RpcRouter.Base>(router: R) => {
 
   return <Req extends RpcRequestSchema.To<R["schema"]>>(
     request: Req
-  ): Req extends { _tag: infer M } ? RpcHandler.FromMethod<R["handlers"], M, Tracer.Span, RpcEncodeFailure>
+  ): Req extends { _tag: infer M } ? RpcHandler.FromMethod<R["handlers"], M, never, RpcEncodeFailure>
     : never =>
   {
     const handler = handlerMap[(request as RpcRequest.Payload)._tag]

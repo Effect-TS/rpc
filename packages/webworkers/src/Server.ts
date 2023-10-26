@@ -4,7 +4,6 @@
 import type { RpcHandlers, RpcRouter } from "@effect/rpc/Router"
 import type { Effect } from "effect/Effect"
 import type { Scope } from "effect/Scope"
-import type { Span } from "effect/Tracer"
 import * as internal from "./internal/server"
 
 /**
@@ -14,7 +13,7 @@ import * as internal from "./internal/server"
 export interface RpcWorkerHandler<R extends RpcRouter.Base> {
   (
     message: MessageEvent<any>
-  ): Effect<Exclude<RpcHandlers.Services<R["handlers"]>, Span>, never, void>
+  ): Effect<Exclude<RpcHandlers.Services<R["handlers"]>, never>, never, void>
 }
 
 /**
@@ -24,12 +23,12 @@ export interface RpcWorkerHandler<R extends RpcRouter.Base> {
 export type RpcWorker<R extends RpcRouter.Base> = R extends RpcRouter.WithSetup ? Effect<
     Exclude<
       RpcHandlers.Services<R["handlers"]>,
-      Span | RpcRouter.SetupServices<R>
+      RpcRouter.SetupServices<R>
     >,
     never,
     void
   >
-  : Effect<Exclude<RpcHandlers.Services<R["handlers"]>, Span>, never, void>
+  : Effect<RpcHandlers.Services<R["handlers"]>, never, void>
 
 /**
  * @category constructors

@@ -21,7 +21,7 @@ export type RpcHandler<R, E, I, O> =
 /**
  * @since 1.0.0
  */
-export namespace RpcHandler {
+export declare namespace RpcHandler {
   /**
    * @category handler models
    * @since 1.0.0
@@ -97,7 +97,7 @@ export interface RpcHandlers extends Record<string, RpcHandler.Any | { readonly 
 /**
  * @since 1.0.0
  */
-export namespace RpcHandlers {
+export declare namespace RpcHandlers {
   /**
    * @category handlers utils
    * @since 1.0.0
@@ -179,7 +179,7 @@ export interface RpcRouter<
 /**
  * @since 1.0.0
  */
-export namespace RpcRouter {
+export declare namespace RpcRouter {
   /**
    * @category router models
    * @since 1.0.0
@@ -267,6 +267,18 @@ export namespace RpcRouter {
     > ? O extends Context<infer Env> ? Env
       : never
     : never
+
+  /**
+   * @category router utils
+   * @since 1.0.0
+   */
+  export type Services<R extends Base> = RpcHandlers.Services<R["handlers"]>
+
+  /**
+   * @category router utils
+   * @since 1.0.0
+   */
+  export type Errors<R extends Base> = RpcHandlers.Errors<R["handlers"]>
 }
 
 /**

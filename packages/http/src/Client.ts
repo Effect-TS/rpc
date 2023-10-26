@@ -1,6 +1,7 @@
 /**
  * @since 1.0.0
  */
+import type * as HttpClient from "@effect/platform/Http/Client"
 import * as Client from "@effect/rpc/Client"
 import type { RpcService } from "@effect/rpc/Schema"
 import * as Resolver from "./Resolver"
@@ -16,10 +17,11 @@ export * from "@effect/rpc/Client"
  */
 export const make = <S extends RpcService.DefinitionWithoutSetup>(
   schemas: S,
-  options: Client.RpcClientOptions & Resolver.FetchResolverOptions
+  client: HttpClient.Client.Default,
+  options?: Client.RpcClientOptions
 ): Client.RpcClient<S, never> =>
   Client.makeWithResolver(
     schemas,
-    Resolver.make(options),
+    Resolver.make(client),
     options
   )
