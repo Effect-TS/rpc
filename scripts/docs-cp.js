@@ -41,8 +41,8 @@ nav_order: ${order}
 }
 
 packages().forEach((pkg, i) => {
-  Fs.rmSync(Path.join("docs", pkg), { recursive: true })
-  Fs.mkdirSync(Path.join("docs", pkg), { recursive: true })
+  Fs.rmSync(Path.join("docs", pkg), { recursive: true, force: true })
+  Fs.mkdirSync(Path.join("docs", pkg), { recursive: true, force: true })
   copyFiles(pkg)
   generateIndex(pkg, i + 2)
 })

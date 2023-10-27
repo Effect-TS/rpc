@@ -14,11 +14,6 @@ Added in v1.0.0
 
 - [constructors](#constructors)
   - [make](#make)
-- [errors](#errors)
-  - [RpcFetchError](#rpcfetcherror)
-  - [RpcFetchError (interface)](#rpcfetcherror-interface)
-- [models](#models)
-  - [FetchResolverOptions (interface)](#fetchresolveroptions-interface)
 
 ---
 
@@ -29,52 +24,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const make: (options: FetchResolverOptions) => RpcResolver<never>
-```
-
-Added in v1.0.0
-
-# errors
-
-## RpcFetchError
-
-**Signature**
-
-```ts
-export declare const RpcFetchError: SchemaC<
-  RpcFetchError,
-  RpcFetchError,
-  { readonly reason: 'FetchError' | 'JsonDecodeError'; readonly error: unknown }
->
-```
-
-Added in v1.0.0
-
-## RpcFetchError (interface)
-
-**Signature**
-
-```ts
-export interface RpcFetchError {
-  readonly _tag: 'RpcFetchError'
-  readonly reason: 'FetchError' | 'JsonDecodeError'
-  readonly error: unknown
-}
-```
-
-Added in v1.0.0
-
-# models
-
-## FetchResolverOptions (interface)
-
-**Signature**
-
-```ts
-export interface FetchResolverOptions {
-  readonly url: string
-  readonly init?: Omit<RequestInit, 'signal' | 'body' | 'method'>
-}
+export declare const make: (client: Client.Client.Default) => RpcResolver<never>
 ```
 
 Added in v1.0.0

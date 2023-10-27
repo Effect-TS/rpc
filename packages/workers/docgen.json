@@ -1,0 +1,28 @@
+{
+  "exclude": ["src/internal/**/*.ts"],
+  "theme": "mikearnaldi/just-the-docs",
+  "parseCompilerOptions": {
+    "noEmit": true,
+    "strict": true,
+    "target": "es2015",
+    "lib": ["es2015"],
+    "paths": {
+      "@effect/rpc": ["../rpc/src/index.ts"],
+      "@effect/rpc/*": ["../rpc/src/*"],
+      "@effect/rpc-workers": ["./src/index.ts"],
+      "@effect/rpc-workers/*": ["./src/*"]
+    }
+  },
+  "examplesCompilerOptions": {
+    "noEmit": true,
+    "strict": true,
+    "target": "es2015",
+    "lib": ["es2015"],
+    "paths": {
+      "@effect/rpc": ["../rpc/src/index.ts"],
+      "@effect/rpc/*": ["../rpc/src/*"],
+      "@effect/rpc-workers": ["./src/index.ts"],
+      "@effect/rpc-workers/*": ["./src/*"]
+    }
+  }
+}

@@ -17,7 +17,7 @@ Added in v1.0.0
 - [models](#models)
   - [RpcNextjsHandler (interface)](#rpcnextjshandler-interface)
 - [tags](#tags)
-  - [HttpRequest](#httprequest)
+  - [ApiRequest](#apirequest)
 
 ---
 
@@ -42,7 +42,7 @@ Added in v1.0.0
 ```ts
 export interface RpcNextjsHandler<R extends RpcRouter.Base> {
   (request: NextApiRequest, response: NextApiResponse): Effect.Effect<
-    Exclude<RpcHandlers.Services<R['handlers']>, HttpRequest | Span>,
+    Exclude<RpcHandlers.Services<R['handlers']>, NextApiRequest>,
     never,
     void
   >
@@ -53,12 +53,12 @@ Added in v1.0.0
 
 # tags
 
-## HttpRequest
+## ApiRequest
 
 **Signature**
 
 ```ts
-export declare const HttpRequest: Tag<HttpRequest, HttpRequest>
+export declare const ApiRequest: Context.Tag<NextApiRequest, NextApiRequest>
 ```
 
 Added in v1.0.0

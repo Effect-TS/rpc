@@ -27,7 +27,7 @@ Added in v1.0.0
 
 ## From "@effect/rpc/Client"
 
-Re-exports all named exports from the "@effect/rpc/Client" module as "Client".
+Re-exports all named exports from the "@effect/rpc/Client" module as `Client`.
 
 **Signature**
 
@@ -39,7 +39,7 @@ Added in v1.0.0
 
 ## From "@effect/rpc/Error"
 
-Re-exports all named exports from the "@effect/rpc/Error" module as "Error".
+Re-exports all named exports from the "@effect/rpc/Error" module as `Error`.
 
 **Signature**
 
@@ -51,7 +51,7 @@ Added in v1.0.0
 
 ## From "@effect/rpc/Resolver"
 
-Re-exports all named exports from the "@effect/rpc/Resolver" module as "Resolver".
+Re-exports all named exports from the "@effect/rpc/Resolver" module as `Resolver`.
 
 **Signature**
 
@@ -63,7 +63,7 @@ Added in v1.0.0
 
 ## From "@effect/rpc/Router"
 
-Re-exports all named exports from the "@effect/rpc/Router" module as "Router".
+Re-exports all named exports from the "@effect/rpc/Router" module as `Router`.
 
 **Signature**
 
@@ -75,7 +75,7 @@ Added in v1.0.0
 
 ## From "@effect/rpc/Schema"
 
-Re-exports all named exports from the "@effect/rpc/Schema" module as "Schema".
+Re-exports all named exports from the "@effect/rpc/Schema" module as `Schema`.
 
 **Signature**
 
@@ -87,7 +87,7 @@ Added in v1.0.0
 
 ## From "@effect/rpc/SchemaC"
 
-Re-exports all named exports from the "@effect/rpc/SchemaC" module as "SchemaC".
+Re-exports all named exports from the "@effect/rpc/SchemaC" module as `SchemaC`.
 
 **Signature**
 
@@ -99,7 +99,7 @@ Added in v1.0.0
 
 ## From "@effect/rpc/Server"
 
-Re-exports all named exports from the "@effect/rpc/Server" module as "Server".
+Re-exports all named exports from the "@effect/rpc/Server" module as `Server`.
 
 **Signature**
 

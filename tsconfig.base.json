@@ -10,7 +10,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "preserveSymlinks": true,
-    "moduleResolution": "Bundler",
+    "moduleResolution": "NodeNext",
     "lib": ["ES2021", "DOM", "DOM.Iterable"],
     "sourceMap": true,
     "declarationMap": true,
@@ -30,7 +30,7 @@
     "noUncheckedIndexedAccess": false,
     "strictNullChecks": true,
     "target": "ES2021",
-    "module": "ESNext",
+    "module": "NodeNext",
     "incremental": true,
     "removeComments": false,
     "baseUrl": ".",
@@ -54,11 +54,9 @@
       "@effect/rpc-nextjs/examples/*": ["./packages/nextjs/examples/*.ts"],
       "@effect/rpc-nextjs/*": ["./packages/nextjs/src/*.ts"],
 
-      "@effect/rpc-webworkers/test/*": ["./packages/webworkers/test/*.ts"],
-      "@effect/rpc-webworkers/examples/*": [
-        "./packages/webworkers/examples/*.ts"
-      ],
-      "@effect/rpc-webworkers/*": ["./packages/webworkers/src/*.ts"]
+      "@effect/rpc-workers/test/*": ["./packages/workers/test/*.ts"],
+      "@effect/rpc-workers/examples/*": ["./packages/workers/examples/*.ts"],
+      "@effect/rpc-workers/*": ["./packages/workers/src/*.ts"]
     },
     "types": ["vitest/globals", "node"],
     "plugins": [{ "name": "@effect/language-service" }]

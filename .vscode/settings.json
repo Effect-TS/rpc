@@ -22,11 +22,7 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
-  "eslint.validate": [
-    "markdown",
-    "javascript",
-    "typescript"
-  ],
+  "eslint.validate": ["markdown", "javascript", "typescript"],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
@@ -50,14 +46,14 @@
   "files.insertFinalNewline": true,
   "nixEnvSelector.suggestion": false,
   "files.exclude": {
-    "packages/webworkers/dist": true,
-    "packages/webworkers/internal": true,
-    "packages/webworkers/Client": true,
-    "packages/webworkers/Resolver": true,
-    "packages/webworkers/Router": true,
-    "packages/webworkers/Schema": true,
-    "packages/webworkers/SchemaC": true,
-    "packages/webworkers/Server": true,
+    "packages/workers/dist": true,
+    "packages/workers/internal": true,
+    "packages/workers/Client": true,
+    "packages/workers/Resolver": true,
+    "packages/workers/Router": true,
+    "packages/workers/Schema": true,
+    "packages/workers/SchemaC": true,
+    "packages/workers/Server": true,
     "packages/rpc/dist": true,
     "packages/rpc/internal": true,
     "packages/rpc/Client": true,

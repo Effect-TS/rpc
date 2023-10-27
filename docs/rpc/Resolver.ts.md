@@ -21,8 +21,6 @@ Added in v1.0.0
   - [RpcRequest (interface)](#rpcrequest-interface)
   - [RpcResolver (interface)](#rpcresolver-interface)
   - [RpcResponse (type alias)](#rpcresponse-type-alias)
-- [tags](#tags)
-  - [RpcResolver](#rpcresolver)
 - [utils](#utils)
   - [RpcRequest (namespace)](#rpcrequest-namespace)
     - [NoInput (interface)](#noinput-interface)
@@ -121,18 +119,6 @@ export type RpcResponse = RpcResponse.Error | RpcResponse.Success
 
 Added in v1.0.0
 
-# tags
-
-## RpcResolver
-
-**Signature**
-
-```ts
-export declare const RpcResolver: Tag<RpcResolver<never>, RpcResolver<never>>
-```
-
-Added in v1.0.0
-
 # utils
 
 ## RpcRequest (namespace)
@@ -173,6 +159,7 @@ export interface Tracing {
   readonly spanName: string
   readonly traceId: string
   readonly spanId: string
+  readonly sampled: boolean
 }
 ```
 
