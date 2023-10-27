@@ -12,12 +12,19 @@ Added in v1.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
+- [annotations](#annotations)
+  - [hash](#hash)
+  - [withCustomHash](#withcustomhash)
+  - [withHashString](#withhashstring)
 - [combinators](#combinators)
   - [withServiceError](#withserviceerror)
 - [constructors](#constructors)
   - [make](#make)
   - [makeRequestUnion](#makerequestunion)
   - [makeWith](#makewith)
+- [type ids](#type-ids)
+  - [HashAnnotationId](#hashannotationid)
+  - [HashAnnotationId (type alias)](#hashannotationid-type-alias)
 - [utils](#utils)
   - [RpcRequestSchema (namespace)](#rpcrequestschema-namespace)
     - [From (type alias)](#from-type-alias)
@@ -54,6 +61,44 @@ Added in v1.0.0
   - [RpcServiceId (type alias)](#rpcserviceid-type-alias)
 
 ---
+
+# annotations
+
+## hash
+
+**Signature**
+
+```ts
+export declare const hash: <I, A>(self: Schema.Schema<I, A>, value: A) => number
+```
+
+Added in v1.0.0
+
+## withCustomHash
+
+**Signature**
+
+```ts
+export declare const withCustomHash: {
+  <A>(f: (a: A) => number): <I>(self: Schema.Schema<I, A>) => Schema.Schema<I, A>
+  <I, A>(self: Schema.Schema<I, A>, f: (a: A) => number): Schema.Schema<I, A>
+}
+```
+
+Added in v1.0.0
+
+## withHashString
+
+**Signature**
+
+```ts
+export declare const withHashString: {
+  <A>(f: (a: A) => string): <I>(self: Schema.Schema<I, A>) => Schema.Schema<I, A>
+  <I, A>(self: Schema.Schema<I, A>, f: (a: A) => string): Schema.Schema<I, A>
+}
+```
+
+Added in v1.0.0
 
 # combinators
 
@@ -113,6 +158,28 @@ Added in v1.0.0
 export declare const makeWith: <VL extends string, V>() => <const S extends RpcService.Definition>(
   schema: S
 ) => RpcService.Simplify<RpcService.Validate<VL, V, S, []>, never, never>
+```
+
+Added in v1.0.0
+
+# type ids
+
+## HashAnnotationId
+
+**Signature**
+
+```ts
+export declare const HashAnnotationId: typeof HashAnnotationId
+```
+
+Added in v1.0.0
+
+## HashAnnotationId (type alias)
+
+**Signature**
+
+```ts
+export type HashAnnotationId = typeof HashAnnotationId
 ```
 
 Added in v1.0.0

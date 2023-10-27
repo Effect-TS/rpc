@@ -432,3 +432,39 @@ export const makeRequestUnion = <S extends RpcService.Definition>(
           : Schema.struct({ _tag: Schema.literal(tag) })
     )
   )
+
+/**
+ * @category type ids
+ * @since 1.0.0
+ */
+export const HashAnnotationId: unique symbol = internal.HashAnnotationId
+
+/**
+ * @category type ids
+ * @since 1.0.0
+ */
+export type HashAnnotationId = typeof HashAnnotationId
+
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+export const withCustomHash: {
+  <A>(f: (a: A) => number): <I>(self: Schema.Schema<I, A>) => Schema.Schema<I, A>
+  <I, A>(self: Schema.Schema<I, A>, f: (a: A) => number): Schema.Schema<I, A>
+} = internal.withHash
+
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+export const withHashString: {
+  <A>(f: (a: A) => string): <I>(self: Schema.Schema<I, A>) => Schema.Schema<I, A>
+  <I, A>(self: Schema.Schema<I, A>, f: (a: A) => string): Schema.Schema<I, A>
+} = internal.withHashString
+
+/**
+ * @category annotations
+ * @since 1.0.0
+ */
+export const hash: <I, A>(self: Schema.Schema<I, A>, value: A) => number = internal.hash

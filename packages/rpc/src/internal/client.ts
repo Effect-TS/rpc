@@ -6,7 +6,7 @@ import type * as client from "../Client"
 import { RpcError } from "../Error"
 import type { RpcResolver } from "../Resolver"
 import type { RpcSchema, RpcService } from "../Schema"
-import { RpcServiceErrorId, RpcServiceId } from "../Schema"
+import { hash as schemaHash, RpcServiceErrorId, RpcServiceId } from "../Schema"
 import * as codec from "./codec"
 import * as resolverInternal from "./resolver"
 import * as schemaInternal from "./schema"
@@ -135,7 +135,8 @@ const makeRpc = <const S extends RpcSchema.Any>(
     const encodeInput = codec.encode(schema.input as Schema.Schema<any>)
 
     return ((input: any) => {
-      const hash = resolverInternal.requestHash(method, input, spanPrefix)
+      const inputHash = schemaHash(schema.input, input)
+      const hash = resolverInternal.requestHash(method, inputHash, spanPrefix)
       return Effect.useSpan(`${spanPrefix}.${method}`, (span) =>
         pipe(
           encodeInput(input),
@@ -162,7 +163,7 @@ const makeRpc = <const S extends RpcSchema.Any>(
     }) as any
   }
 
-  const hash = resolverInternal.requestHash(method, undefined, spanPrefix)
+  const hash = resolverInternal.requestHash(method, 0, spanPrefix)
 
   return Effect.useSpan(`${spanPrefix}.${method}`, (span) =>
     pipe(

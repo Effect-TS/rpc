@@ -1,6 +1,9 @@
+import * as AST from "@effect/schema/AST"
 import * as Schema from "@effect/schema/Schema"
 import type * as Effect from "effect/Effect"
-import { dual, identity } from "effect/Function"
+import { dual, identity, pipe } from "effect/Function"
+import * as Hash from "effect/Hash"
+import * as Option from "effect/Option"
 import type { RpcEncodeFailure } from "../Error"
 import type * as schema from "../Schema"
 import * as Codec from "./codec"
@@ -167,3 +170,43 @@ export const withServiceError: {
     ])
   })
 )
+
+/** @internal */
+export const HashAnnotationId: schema.HashAnnotationId = Symbol.for(
+  "@effect/rpc/Schema/HashAnnotation"
+) as schema.HashAnnotationId
+
+/** @internal */
+export const withHash: {
+  <A>(f: (a: A) => number): <I>(self: Schema.Schema<I, A>) => Schema.Schema<I, A>
+  <I, A>(
+    self: Schema.Schema<I, A>,
+    f: (a: A) => number
+  ): Schema.Schema<I, A>
+} = dual(
+  2,
+  <I, A>(self: Schema.Schema<I, A>, f: (a: A) => number) => Schema.annotations({ [HashAnnotationId]: f })(self)
+)
+
+/** @internal */
+export const withHashString: {
+  <A>(f: (a: A) => string): <I>(self: Schema.Schema<I, A>) => Schema.Schema<I, A>
+  <I, A>(
+    self: Schema.Schema<I, A>,
+    f: (a: A) => string
+  ): Schema.Schema<I, A>
+} = dual(
+  2,
+  <I, A>(self: Schema.Schema<I, A>, f: (a: A) => string) => withHash(self, (_) => Hash.string(f(_)))
+)
+
+/** @internal */
+export const hash = <I, A>(
+  self: Schema.Schema<I, A>,
+  value: A
+): number =>
+  pipe(
+    AST.getAnnotation<(a: A) => number>(HashAnnotationId)(self.ast),
+    Option.map((f) => f(value)),
+    Option.getOrElse(() => Hash.hash(value))
+  )
