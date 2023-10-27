@@ -449,7 +449,7 @@ export type HashAnnotationId = typeof HashAnnotationId
  * @category annotations
  * @since 1.0.0
  */
-export const withCustomHash: {
+export const withHash: {
   <A>(f: (a: A) => number): <I>(self: Schema.Schema<I, A>) => Schema.Schema<I, A>
   <I, A>(self: Schema.Schema<I, A>, f: (a: A) => number): Schema.Schema<I, A>
 } = internal.withHash

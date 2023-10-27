@@ -14,7 +14,7 @@ Added in v1.0.0
 
 - [annotations](#annotations)
   - [hash](#hash)
-  - [withCustomHash](#withcustomhash)
+  - [withHash](#withhash)
   - [withHashString](#withhashstring)
 - [combinators](#combinators)
   - [withServiceError](#withserviceerror)
@@ -74,12 +74,12 @@ export declare const hash: <I, A>(self: Schema.Schema<I, A>, value: A) => number
 
 Added in v1.0.0
 
-## withCustomHash
+## withHash
 
 **Signature**
 
 ```ts
-export declare const withCustomHash: {
+export declare const withHash: {
   <A>(f: (a: A) => number): <I>(self: Schema.Schema<I, A>) => Schema.Schema<I, A>
   <I, A>(self: Schema.Schema<I, A>, f: (a: A) => number): Schema.Schema<I, A>
 }
