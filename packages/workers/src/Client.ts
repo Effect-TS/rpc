@@ -7,6 +7,9 @@ import type { RpcSchema, RpcService } from "@effect/rpc/Schema"
 import type * as Effect from "effect/Effect"
 import * as Resolver from "./Resolver"
 
+/**
+ * @since 1.0.0
+ */
 export * from "@effect/rpc/Client"
 
 /**

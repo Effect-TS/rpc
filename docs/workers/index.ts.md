@@ -26,72 +26,72 @@ Added in v1.0.0
 
 ## From "@effect/rpc-workers/Client"
 
-Re-exports all named exports from the "@effect/rpc-workers/Client" module as "Client".
+Re-exports all named exports from the "@effect/rpc-workers/Client" module as `Client`.
 
 **Signature**
 
 ```ts
-export * as Client from "@effect/rpc-workers/Client"
+export * as Client from '@effect/rpc-workers/Client'
 ```
 
 Added in v1.0.0
 
 ## From "@effect/rpc-workers/Resolver"
 
-Re-exports all named exports from the "@effect/rpc-workers/Resolver" module as "Resolver".
+Re-exports all named exports from the "@effect/rpc-workers/Resolver" module as `Resolver`.
 
 **Signature**
 
 ```ts
-export * as Resolver from "@effect/rpc-workers/Resolver"
+export * as Resolver from '@effect/rpc-workers/Resolver'
 ```
 
 Added in v1.0.0
 
 ## From "@effect/rpc-workers/Router"
 
-Re-exports all named exports from the "@effect/rpc-workers/Router" module as "Router".
+Re-exports all named exports from the "@effect/rpc-workers/Router" module as `Router`.
 
 **Signature**
 
 ```ts
-export * as Router from "@effect/rpc-workers/Router"
+export * as Router from '@effect/rpc-workers/Router'
 ```
 
 Added in v1.0.0
 
 ## From "@effect/rpc-workers/Schema"
 
-Re-exports all named exports from the "@effect/rpc-workers/Schema" module as "Schema".
+Re-exports all named exports from the "@effect/rpc-workers/Schema" module as `Schema`.
 
 **Signature**
 
 ```ts
-export * as Schema from "@effect/rpc-workers/Schema"
+export * as Schema from '@effect/rpc-workers/Schema'
 ```
 
 Added in v1.0.0
 
 ## From "@effect/rpc-workers/SchemaC"
 
-Re-exports all named exports from the "@effect/rpc-workers/SchemaC" module as "SchemaC".
+Re-exports all named exports from the "@effect/rpc-workers/SchemaC" module as `SchemaC`.
 
 **Signature**
 
 ```ts
-export * as SchemaC from "@effect/rpc-workers/SchemaC"
+export * as SchemaC from '@effect/rpc-workers/SchemaC'
 ```
 
 Added in v1.0.0
 
 ## From "@effect/rpc-workers/Server"
 
-Re-exports all named exports from the "@effect/rpc-workers/Server" module as "Server".
+Re-exports all named exports from the "@effect/rpc-workers/Server" module as `Server`.
 
 **Signature**
 
 ```ts
-export * as Server from "@effect/rpc-workers/Server"
+export * as Server from '@effect/rpc-workers/Server'
 ```
 
 Added in v1.0.0

@@ -47,13 +47,8 @@ Added in v1.0.0
 
 ```ts
 export declare const transferable: {
-  <I>(
-    f: (a: I) => ReadonlyArray<Transferable>,
-  ): <A>(self: S.Schema<I, A>) => S.Schema<I, A>
-  <I, A>(
-    self: S.Schema<I, A>,
-    f: (a: I) => ReadonlyArray<Transferable>,
-  ): S.Schema<I, A>
+  <I>(f: (a: I) => ReadonlyArray<Transferable>): <A>(self: S.Schema<I, A>) => S.Schema<I, A>
+  <I, A>(self: S.Schema<I, A>, f: (a: I) => ReadonlyArray<Transferable>): S.Schema<I, A>
 }
 ```
 
@@ -67,12 +62,8 @@ Added in v1.0.0
 
 ```ts
 export declare const make: <S>(
-  schema: S,
-) => Schema.RpcService.Simplify<
-  Schema.RpcService.Validate<"WebWorkerType", any, S>,
-  never,
-  never
->
+  schema: S
+) => Schema.RpcService.Simplify<Schema.RpcService.Validate<'WebWorkerType', any, S, []>, never, never>
 ```
 
 Added in v1.0.0

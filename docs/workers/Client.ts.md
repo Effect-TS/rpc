@@ -1,7 +1,7 @@
 ---
 title: Client.ts
 nav_order: 1
-parent: "@effect/rpc-http"
+parent: "@effect/rpc-workers"
 ---
 
 ## Client overview
@@ -14,6 +14,7 @@ Added in v1.0.0
 
 - [constructors](#constructors)
   - [make](#make)
+  - [makeFromPool](#makefrompool)
 - [exports](#exports)
   - [From "@effect/rpc/Client"](#from-effectrpcclient)
 
@@ -30,12 +31,32 @@ export declare const make: {
   <const S extends RpcService.DefinitionWithSetup>(
     schemas: S,
     init: RpcSchema.Input<S['__setup']>,
-    client: HttpClient.Client.Default,
+    options?: Client.RpcClientOptions
+  ): Effect.Effect<never, RpcError | RpcSchema.Error<S['__setup']>, Client.RpcClient<S, Resolver.RpcWorkerPool>>
+  <const S extends RpcService.DefinitionWithoutSetup>(schemas: S, options?: Client.RpcClientOptions): Client.RpcClient<
+    S,
+    Resolver.RpcWorkerPool
+  >
+}
+```
+
+Added in v1.0.0
+
+## makeFromPool
+
+**Signature**
+
+```ts
+export declare const makeFromPool: {
+  <const S extends RpcService.DefinitionWithSetup>(
+    schemas: S,
+    pool: Resolver.RpcWorkerPool,
+    init: RpcSchema.Input<S['__setup']>,
     options?: Client.RpcClientOptions
   ): Effect.Effect<never, RpcError | RpcSchema.Error<S['__setup']>, Client.RpcClient<S, never>>
   <const S extends RpcService.DefinitionWithoutSetup>(
     schemas: S,
-    client: HttpClient.Client.Default,
+    pool: Resolver.RpcWorkerPool,
     options?: Client.RpcClientOptions
   ): Client.RpcClient<S, never>
 }
