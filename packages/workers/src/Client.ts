@@ -33,13 +33,22 @@ export const make: {
     S,
     Resolver.RpcWorkerPool
   >
-} = (<S extends RpcService.DefinitionWithoutSetup>(
+} = (<S extends RpcService.DefinitionWithSetup>(
   schemas: S,
+  init: RpcSchema.Input<S["__setup"]>,
   options?: Client.RpcClientOptions
-): Client.RpcClient<S, Resolver.RpcWorkerPool> =>
+): Effect.Effect<
+  never,
+  RpcError | RpcSchema.Error<S["__setup"]>,
+  Client.RpcClient<
+    S,
+    Resolver.RpcWorkerPool
+  >
+> =>
   Client.make(
     schemas,
     Resolver.makeFromContext,
+    init,
     options
   )) as any
 
@@ -69,13 +78,22 @@ export const makeFromPool: {
     S,
     never
   >
-} = (<S extends RpcService.DefinitionWithoutSetup>(
+} = (<S extends RpcService.DefinitionWithSetup>(
   schemas: S,
   pool: Resolver.RpcWorkerPool,
+  init: RpcSchema.Input<S["__setup"]>,
   options?: Client.RpcClientOptions
-): Client.RpcClient<S, never> =>
+): Effect.Effect<
+  never,
+  RpcError | RpcSchema.Error<S["__setup"]>,
+  Client.RpcClient<
+    S,
+    Resolver.RpcWorkerPool
+  >
+> =>
   Client.make(
     schemas,
     Resolver.make(pool),
+    init,
     options
   )) as any

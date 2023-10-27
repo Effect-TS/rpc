@@ -21,6 +21,7 @@ export const make: {
   <const S extends RpcService.DefinitionWithSetup>(
     schemas: S,
     init: RpcSchema.Input<S["__setup"]>,
+    client: HttpClient.Client.Default,
     options?: Client.RpcClientOptions
   ): Effect.Effect<
     never,
@@ -32,18 +33,28 @@ export const make: {
   >
   <const S extends RpcService.DefinitionWithoutSetup>(
     schemas: S,
+    client: HttpClient.Client.Default,
     options?: Client.RpcClientOptions
   ): Client.RpcClient<
     S,
     never
   >
-} = (<S extends RpcService.DefinitionWithoutSetup>(
+} = (<S extends RpcService.DefinitionWithSetup>(
   schemas: S,
   client: HttpClient.Client.Default,
+  init: RpcSchema.Input<S["__setup"]>,
   options?: Client.RpcClientOptions
-): Client.RpcClient<S, never> =>
+): Effect.Effect<
+  never,
+  RpcError | RpcSchema.Error<S["__setup"]>,
+  Client.RpcClient<
+    S,
+    never
+  >
+> =>
   Client.make(
     schemas,
     Resolver.make(client),
+    init,
     options
   )) as any
