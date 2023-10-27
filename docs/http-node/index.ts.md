@@ -26,7 +26,7 @@ Added in v1.0.0
 
 ## From "@effect/rpc-http-node/Client"
 
-Re-exports all named exports from the "@effect/rpc-http-node/Client" module as "Client".
+Re-exports all named exports from the "@effect/rpc-http-node/Client" module as `Client`.
 
 **Signature**
 
@@ -38,7 +38,7 @@ Added in v1.0.0
 
 ## From "@effect/rpc-http-node/Resolver"
 
-Re-exports all named exports from the "@effect/rpc-http-node/Resolver" module as "Resolver".
+Re-exports all named exports from the "@effect/rpc-http-node/Resolver" module as `Resolver`.
 
 **Signature**
 
@@ -50,7 +50,7 @@ Added in v1.0.0
 
 ## From "@effect/rpc-http-node/Router"
 
-Re-exports all named exports from the "@effect/rpc-http-node/Router" module as "Router".
+Re-exports all named exports from the "@effect/rpc-http-node/Router" module as `Router`.
 
 **Signature**
 
@@ -62,7 +62,7 @@ Added in v1.0.0
 
 ## From "@effect/rpc-http-node/Schema"
 
-Re-exports all named exports from the "@effect/rpc-http-node/Schema" module as "Schema".
+Re-exports all named exports from the "@effect/rpc-http-node/Schema" module as `Schema`.
 
 **Signature**
 
@@ -74,7 +74,7 @@ Added in v1.0.0
 
 ## From "@effect/rpc-http-node/SchemaC"
 
-Re-exports all named exports from the "@effect/rpc-http-node/SchemaC" module as "SchemaC".
+Re-exports all named exports from the "@effect/rpc-http-node/SchemaC" module as `SchemaC`.
 
 **Signature**
 
@@ -86,7 +86,7 @@ Added in v1.0.0
 
 ## From "@effect/rpc-http-node/Server"
 
-Re-exports all named exports from the "@effect/rpc-http-node/Server" module as "Server".
+Re-exports all named exports from the "@effect/rpc-http-node/Server" module as `Server`.
 
 **Signature**
 

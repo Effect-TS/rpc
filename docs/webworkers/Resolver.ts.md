@@ -1,7 +1,7 @@
 ---
 title: Resolver.ts
 nav_order: 3
-parent: "@effect/rpc-webworkers"
+parent: "@effect/rpc-workers"
 ---
 
 ## Resolver overview
@@ -38,7 +38,11 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const make: Effect.Effect<RpcWorkerPool, never, Resolver.RpcResolver<never>>
+export declare const make: Effect.Effect<
+  RpcWorkerPool,
+  never,
+  Resolver.RpcResolver<never>
+>
 ```
 
 Added in v1.0.0
@@ -52,9 +56,9 @@ export declare const makePool: <R, E>(
   create: (
     spawn: (
       evaluate: (id: number) => Worker | SharedWorker,
-      permits?: number
-    ) => Effect.Effect<Scope, never, RpcWebWorker>
-  ) => Effect.Effect<R, E, RpcWorkerPool>
+      permits?: number,
+    ) => Effect.Effect<Scope, never, RpcWebWorker>,
+  ) => Effect.Effect<R, E, RpcWorkerPool>,
 ) => Effect.Effect<R, E, RpcWorkerPool>
 ```
 
@@ -69,9 +73,9 @@ export declare const makePoolLayer: <R, E>(
   create: (
     spawn: (
       evaluate: (id: number) => Worker | SharedWorker,
-      permits?: number
-    ) => Effect.Effect<Scope, never, RpcWebWorker>
-  ) => Effect.Effect<R, E, RpcWorkerPool>
+      permits?: number,
+    ) => Effect.Effect<Scope, never, RpcWebWorker>,
+  ) => Effect.Effect<R, E, RpcWorkerPool>,
 ) => Layer.Layer<Exclude<R, Scope>, E, RpcWorkerPool>
 ```
 
@@ -84,7 +88,7 @@ Added in v1.0.0
 ```ts
 export declare const makeWorker: <E, I, O>(
   evaluate: LazyArg<Worker | SharedWorker>,
-  options: WebWorkerOptions<E, I, O>
+  options: WebWorkerOptions<E, I, O>,
 ) => Effect.Effect<never, never, WebWorker<E, I, O>>
 ```
 
@@ -97,7 +101,12 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface RpcWebWorker extends WebWorker<RpcTransportError, Resolver.RpcRequest, Resolver.RpcResponse> {}
+export interface RpcWebWorker
+  extends WebWorker<
+    RpcTransportError,
+    Resolver.RpcRequest,
+    Resolver.RpcResponse
+  > {}
 ```
 
 Added in v1.0.0
@@ -137,9 +146,15 @@ Added in v1.0.0
 
 ```ts
 export interface WebWorkerQueue<E, I, O> {
-  readonly offer: (item: readonly [request: I, deferred: Deferred<E, O>]) => Effect.Effect<never, never, void>
+  readonly offer: (
+    item: readonly [request: I, deferred: Deferred<E, O>],
+  ) => Effect.Effect<never, never, void>
 
-  readonly take: Effect.Effect<never, never, readonly [request: I, deferred: Deferred<E, O>]>
+  readonly take: Effect.Effect<
+    never,
+    never,
+    readonly [request: I, deferred: Deferred<E, O>]
+  >
 }
 ```
 
@@ -182,7 +197,12 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface RpcWorkerQueue extends WebWorkerQueue<RpcTransportError, Resolver.RpcRequest, Resolver.RpcResponse> {}
+export interface RpcWorkerQueue
+  extends WebWorkerQueue<
+    RpcTransportError,
+    Resolver.RpcRequest,
+    Resolver.RpcResponse
+  > {}
 ```
 
 Added in v1.0.0
@@ -192,7 +212,11 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const RpcWorkerResolverLive: Layer.Layer<RpcWorkerPool, never, Resolver.RpcResolver<never>>
+export declare const RpcWorkerResolverLive: Layer.Layer<
+  RpcWorkerPool,
+  never,
+  Resolver.RpcResolver<never>
+>
 ```
 
 Added in v1.0.0

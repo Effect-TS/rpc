@@ -1,7 +1,7 @@
 ---
 title: Router.ts
 nav_order: 4
-parent: "@effect/rpc-webworkers"
+parent: "@effect/rpc-workers"
 ---
 
 ## Router overview
@@ -26,7 +26,7 @@ Re-exports all named exports from the "@effect/rpc/Router" module.
 **Signature**
 
 ```ts
-export * from '@effect/rpc/Router'
+export * from "@effect/rpc/Router"
 ```
 
 Added in v1.0.0

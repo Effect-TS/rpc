@@ -4,7 +4,7 @@ import * as Either from "effect/Either"
 import { pipe } from "effect/Function"
 import type * as client from "../Client"
 import { RpcError } from "../Error"
-import { RpcResolver } from "../Resolver"
+import type { RpcResolver } from "../Resolver"
 import type { RpcSchema, RpcService } from "../Schema"
 import { RpcServiceErrorId, RpcServiceId } from "../Schema"
 import * as codec from "./codec"
@@ -61,7 +61,7 @@ const makeRecursive = <const S extends RpcService.DefinitionWithId>(
 }
 
 /** @internal */
-export const makeWithResolver: {
+export const make: {
   <
     const S extends RpcService.DefinitionWithSetup,
     Resolver extends
@@ -115,27 +115,6 @@ export const makeWithResolver: {
 
   return client as any
 }
-
-/** @internal */
-export const make: {
-  <const S extends RpcService.DefinitionWithSetup>(
-    schemas: S,
-    init: RpcService.SetupInput<S>,
-    options?: client.RpcClientOptions
-  ): Effect.Effect<
-    never,
-    RpcService.SetupError<S> | RpcError,
-    client.RpcClient<S, RpcResolver<never>>
-  >
-  <const S extends RpcService.DefinitionWithoutSetup>(
-    schemas: S,
-    options?: client.RpcClientOptions
-  ): client.RpcClient<S, RpcResolver<never>>
-} = (
-  schemas: any,
-  initOrOptions?: unknown,
-  options?: client.RpcClientOptions
-) => makeWithResolver(schemas, RpcResolver, initOrOptions, options) as any
 
 const makeRpc = <const S extends RpcSchema.Any>(
   resolver: RpcResolver<never>,

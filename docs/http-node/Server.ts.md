@@ -17,7 +17,7 @@ Added in v1.0.0
 - [models](#models)
   - [RpcNodeHttpHandler (interface)](#rpcnodehttphandler-interface)
 - [tags](#tags)
-  - [HttpRequest](#httprequest)
+  - [IncomingMessage](#incomingmessage)
 
 ---
 
@@ -41,8 +41,8 @@ Added in v1.0.0
 
 ```ts
 export interface RpcNodeHttpHandler<R extends RpcRouter.Base> {
-  (request: IncomingMessage, response: ServerResponse): Effect.Effect<
-    Exclude<RpcHandlers.Services<R['handlers']>, HttpRequest | Span>,
+  (request: Http.IncomingMessage, response: Http.ServerResponse): Effect.Effect<
+    Exclude<RpcHandlers.Services<R['handlers']>, Http.IncomingMessage>,
     never,
     void
   >
@@ -53,12 +53,12 @@ Added in v1.0.0
 
 # tags
 
-## HttpRequest
+## IncomingMessage
 
 **Signature**
 
 ```ts
-export declare const HttpRequest: Tag<HttpRequest, HttpRequest>
+export declare const IncomingMessage: Context.Tag<Http.IncomingMessage, Http.IncomingMessage>
 ```
 
 Added in v1.0.0

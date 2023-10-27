@@ -1,7 +1,7 @@
 ---
 title: Server.ts
 nav_order: 7
-parent: "@effect/rpc-webworkers"
+parent: "@effect/rpc-workers"
 ---
 
 ## Server overview
@@ -28,7 +28,9 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const make: <Router extends RpcRouter.Base>(router: Router) => RpcWorker<Router>
+export declare const make: <Router extends RpcRouter.Base>(
+  router: Router,
+) => RpcWorker<Router>
 ```
 
 Added in v1.0.0
@@ -39,12 +41,16 @@ Added in v1.0.0
 
 ```ts
 export declare const makeHandler: {
-  <R extends RpcRouter.WithSetup>(router: R): Effect<
+  <R extends RpcRouter.WithSetup>(
+    router: R,
+  ): Effect<
     Scope,
     never,
     (port: typeof globalThis | MessagePort) => RpcWorkerHandler<R>
   >
-  <R extends RpcRouter.WithoutSetup>(router: R): (port: typeof globalThis | MessagePort) => RpcWorkerHandler<R>
+  <R extends RpcRouter.WithoutSetup>(
+    router: R,
+  ): (port: typeof globalThis | MessagePort) => RpcWorkerHandler<R>
 }
 ```
 
@@ -58,8 +64,15 @@ Added in v1.0.0
 
 ```ts
 export type RpcWorker<R extends RpcRouter.Base> = R extends RpcRouter.WithSetup
-  ? Effect<Exclude<RpcHandlers.Services<R['handlers']>, Span | RpcRouter.SetupServices<R>>, never, void>
-  : Effect<Exclude<RpcHandlers.Services<R['handlers']>, Span>, never, void>
+  ? Effect<
+      Exclude<
+        RpcHandlers.Services<R["handlers"]>,
+        Span | RpcRouter.SetupServices<R>
+      >,
+      never,
+      void
+    >
+  : Effect<Exclude<RpcHandlers.Services<R["handlers"]>, Span>, never, void>
 ```
 
 Added in v1.0.0
@@ -70,7 +83,9 @@ Added in v1.0.0
 
 ```ts
 export interface RpcWorkerHandler<R extends RpcRouter.Base> {
-  (message: MessageEvent<any>): Effect<Exclude<RpcHandlers.Services<R['handlers']>, Span>, never, void>
+  (
+    message: MessageEvent<any>,
+  ): Effect<Exclude<RpcHandlers.Services<R["handlers"]>, Span>, never, void>
 }
 ```
 

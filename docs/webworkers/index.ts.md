@@ -1,7 +1,7 @@
 ---
 title: index.ts
 nav_order: 2
-parent: "@effect/rpc-webworkers"
+parent: "@effect/rpc-workers"
 ---
 
 ## index overview
@@ -13,85 +13,85 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [exports](#exports)
-  - [From "@effect/rpc-webworkers/Client"](#from-effectrpc-webworkersclient)
-  - [From "@effect/rpc-webworkers/Resolver"](#from-effectrpc-webworkersresolver)
-  - [From "@effect/rpc-webworkers/Router"](#from-effectrpc-webworkersrouter)
-  - [From "@effect/rpc-webworkers/Schema"](#from-effectrpc-webworkersschema)
-  - [From "@effect/rpc-webworkers/SchemaC"](#from-effectrpc-webworkersschemac)
-  - [From "@effect/rpc-webworkers/Server"](#from-effectrpc-webworkersserver)
+  - [From "@effect/rpc-workers/Client"](#from-effectrpc-workersclient)
+  - [From "@effect/rpc-workers/Resolver"](#from-effectrpc-workersresolver)
+  - [From "@effect/rpc-workers/Router"](#from-effectrpc-workersrouter)
+  - [From "@effect/rpc-workers/Schema"](#from-effectrpc-workersschema)
+  - [From "@effect/rpc-workers/SchemaC"](#from-effectrpc-workersschemac)
+  - [From "@effect/rpc-workers/Server"](#from-effectrpc-workersserver)
 
 ---
 
 # exports
 
-## From "@effect/rpc-webworkers/Client"
+## From "@effect/rpc-workers/Client"
 
-Re-exports all named exports from the "@effect/rpc-webworkers/Client" module as "Client".
+Re-exports all named exports from the "@effect/rpc-workers/Client" module as "Client".
 
 **Signature**
 
 ```ts
-export * as Client from '@effect/rpc-webworkers/Client'
+export * as Client from "@effect/rpc-workers/Client"
 ```
 
 Added in v1.0.0
 
-## From "@effect/rpc-webworkers/Resolver"
+## From "@effect/rpc-workers/Resolver"
 
-Re-exports all named exports from the "@effect/rpc-webworkers/Resolver" module as "Resolver".
+Re-exports all named exports from the "@effect/rpc-workers/Resolver" module as "Resolver".
 
 **Signature**
 
 ```ts
-export * as Resolver from '@effect/rpc-webworkers/Resolver'
+export * as Resolver from "@effect/rpc-workers/Resolver"
 ```
 
 Added in v1.0.0
 
-## From "@effect/rpc-webworkers/Router"
+## From "@effect/rpc-workers/Router"
 
-Re-exports all named exports from the "@effect/rpc-webworkers/Router" module as "Router".
+Re-exports all named exports from the "@effect/rpc-workers/Router" module as "Router".
 
 **Signature**
 
 ```ts
-export * as Router from '@effect/rpc-webworkers/Router'
+export * as Router from "@effect/rpc-workers/Router"
 ```
 
 Added in v1.0.0
 
-## From "@effect/rpc-webworkers/Schema"
+## From "@effect/rpc-workers/Schema"
 
-Re-exports all named exports from the "@effect/rpc-webworkers/Schema" module as "Schema".
+Re-exports all named exports from the "@effect/rpc-workers/Schema" module as "Schema".
 
 **Signature**
 
 ```ts
-export * as Schema from '@effect/rpc-webworkers/Schema'
+export * as Schema from "@effect/rpc-workers/Schema"
 ```
 
 Added in v1.0.0
 
-## From "@effect/rpc-webworkers/SchemaC"
+## From "@effect/rpc-workers/SchemaC"
 
-Re-exports all named exports from the "@effect/rpc-webworkers/SchemaC" module as "SchemaC".
+Re-exports all named exports from the "@effect/rpc-workers/SchemaC" module as "SchemaC".
 
 **Signature**
 
 ```ts
-export * as SchemaC from '@effect/rpc-webworkers/SchemaC'
+export * as SchemaC from "@effect/rpc-workers/SchemaC"
 ```
 
 Added in v1.0.0
 
-## From "@effect/rpc-webworkers/Server"
+## From "@effect/rpc-workers/Server"
 
-Re-exports all named exports from the "@effect/rpc-webworkers/Server" module as "Server".
+Re-exports all named exports from the "@effect/rpc-workers/Server" module as "Server".
 
 **Signature**
 
 ```ts
-export * as Server from '@effect/rpc-webworkers/Server'
+export * as Server from "@effect/rpc-workers/Server"
 ```
 
 Added in v1.0.0

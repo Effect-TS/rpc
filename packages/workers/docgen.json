@@ -9,8 +9,8 @@
     "paths": {
       "@effect/rpc": ["../rpc/src/index.ts"],
       "@effect/rpc/*": ["../rpc/src/*"],
-      "@effect/rpc-webworkers": ["./src/index.ts"],
-      "@effect/rpc-webworkers/*": ["./src/*"]
+      "@effect/rpc-workers": ["./src/index.ts"],
+      "@effect/rpc-workers/*": ["./src/*"]
     }
   },
   "examplesCompilerOptions": {
@@ -21,8 +21,8 @@
     "paths": {
       "@effect/rpc": ["../rpc/src/index.ts"],
       "@effect/rpc/*": ["../rpc/src/*"],
-      "@effect/rpc-webworkers": ["./src/index.ts"],
-      "@effect/rpc-webworkers/*": ["./src/*"]
+      "@effect/rpc-workers": ["./src/index.ts"],
+      "@effect/rpc-workers/*": ["./src/*"]
     }
   }
 }

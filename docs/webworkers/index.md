@@ -1,6 +1,6 @@
 ---
-title: "@effect/rpc-webworkers"
+title: "@effect/rpc-workers"
 has_children: true
-permalink: /docs/webworkers
+permalink: /docs/workers
 nav_order: 6
 ---

@@ -36,16 +36,16 @@ Added in v1.0.0
 
 ```ts
 export declare const handleSingle: {
-  <R extends RpcRouter.WithSetup>(router: R): Effect<
+  <const R extends RpcRouter.WithSetup>(router: R): Effect<
     Scope,
     never,
     (
       request: unknown
-    ) => Effect<Exclude<RpcHandlers.Services<R['handlers']>, Span | RpcRouter.SetupServices<R>>, never, RpcResponse>
+    ) => Effect<Exclude<RpcHandlers.Services<R['handlers'], []>, RpcRouter.SetupServices<R>>, never, RpcResponse>
   >
   <R extends RpcRouter.WithoutSetup>(router: R): (
     request: unknown
-  ) => Effect<Exclude<RpcHandlers.Services<R['handlers']>, Span>, never, RpcResponse>
+  ) => Effect<RpcHandlers.Services<R['handlers'], []>, never, RpcResponse>
 }
 ```
 
@@ -57,20 +57,20 @@ Added in v1.0.0
 
 ```ts
 export declare const handleSingleWithSchema: {
-  <R extends RpcRouter.WithSetup>(router: R): Effect<
+  <const R extends RpcRouter.WithSetup>(router: R): Effect<
     Scope,
     never,
     (
       request: unknown
     ) => Effect<
-      Exclude<RpcHandlers.Services<R['handlers']>, Span | RpcRouter.SetupServices<R>>,
+      Exclude<RpcHandlers.Services<R['handlers'], []>, RpcRouter.SetupServices<R>>,
       never,
       readonly [RpcResponse, Option<RpcSchema.Base>]
     >
   >
   <R extends RpcRouter.WithoutSetup>(router: R): (
     request: unknown
-  ) => Effect<Exclude<RpcHandlers.Services<R['handlers']>, Span>, never, readonly [RpcResponse, Option<RpcSchema.Base>]>
+  ) => Effect<RpcHandlers.Services<R['handlers'], []>, never, readonly [RpcResponse, Option<RpcSchema.Base>]>
 }
 ```
 
@@ -82,20 +82,20 @@ Added in v1.0.0
 
 ```ts
 export declare const handler: {
-  <R extends RpcRouter.WithSetup>(router: R): Effect<
+  <const R extends RpcRouter.WithSetup>(router: R): Effect<
     Scope,
     never,
     (
       request: unknown
     ) => Effect<
-      Exclude<RpcHandlers.Services<R['handlers']>, Span | RpcRouter.SetupServices<R>>,
+      Exclude<RpcHandlers.Services<R['handlers'], []>, RpcRouter.SetupServices<R>>,
       never,
       readonly RpcResponse[]
     >
   >
-  <R extends RpcRouter.WithoutSetup>(router: R): (
+  <const R extends RpcRouter.WithoutSetup>(router: R): (
     request: unknown
-  ) => Effect<Exclude<RpcHandlers.Services<R['handlers']>, Span>, never, readonly RpcResponse[]>
+  ) => Effect<RpcHandlers.Services<R['handlers'], []>, never, readonly RpcResponse[]>
 }
 ```
 
@@ -106,11 +106,11 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const handlerRaw: <R extends RpcRouter.Base>(
+export declare const handlerRaw: <const R extends RpcRouter.Base>(
   router: R
-) => <Req extends RpcRequestSchema.To<R['schema'], ''>>(
+) => <Req extends RpcRequestSchema.To<R['schema'], '', []>>(
   request: Req
-) => Req extends { _tag: infer M } ? RpcHandler.FromMethod<R['handlers'], M, Span, RpcEncodeFailure> : never
+) => Req extends { _tag: infer M } ? RpcHandler.FromMethod<R['handlers'], M, never, RpcEncodeFailure> : never
 ```
 
 Added in v1.0.0
@@ -120,11 +120,14 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const makeUndecodedClient: <S extends RpcService.DefinitionWithId, H extends RpcHandlers.FromService<S>>(
+export declare const makeUndecodedClient: <
+  const S extends RpcService.DefinitionWithId,
+  const H extends RpcHandlers.FromService<S, []>
+>(
   schemas: S,
   handlers: H,
   options: RpcRouter.Options
-) => RpcUndecodedClient<H, ''>
+) => RpcUndecodedClient<H, '', []>
 ```
 
 Added in v1.0.0
@@ -136,17 +139,21 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type RpcUndecodedClient<H extends RpcHandlers, P extends string = ''> = {
+export type RpcUndecodedClient<
+  H extends RpcHandlers,
+  P extends string = '',
+  Depth extends ReadonlyArray<number> = []
+> = {
   readonly [K in Extract<keyof H, string>]: H[K] extends {
-    handlers: RpcHandlers
+    readonly handlers: RpcHandlers
   }
-    ? RpcUndecodedClient<H[K]['handlers'], `${P}${K}.`>
+    ? Depth['length'] extends 3
+      ? never
+      : RpcUndecodedClient<H[K]['handlers'], `${P}${K}.`, [0, ...Depth]>
     : H[K] extends RpcHandler.IO<infer R, infer E, infer I, infer O>
-    ? (
-        input: I
-      ) => Effect<Exclude<R, Span>, E | RpcEncodeFailure | RpcDecodeFailure, UndecodedRpcResponse<`${P}${K}`, O>>
+    ? (input: I) => Effect<R, E | RpcEncodeFailure | RpcDecodeFailure, UndecodedRpcResponse<`${P}${K}`, O>>
     : H[K] extends Effect<infer R, infer E, infer O>
-    ? Effect<Exclude<R, Span>, E | RpcEncodeFailure | RpcDecodeFailure, UndecodedRpcResponse<`${P}${K}`, O>>
+    ? Effect<R, E | RpcEncodeFailure | RpcDecodeFailure, UndecodedRpcResponse<`${P}${K}`, O>>
     : never
 }
 ```

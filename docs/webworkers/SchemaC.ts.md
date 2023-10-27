@@ -1,7 +1,7 @@
 ---
 title: SchemaC.ts
 nav_order: 6
-parent: "@effect/rpc-webworkers"
+parent: "@effect/rpc-workers"
 ---
 
 ## SchemaC overview
@@ -26,7 +26,7 @@ Re-exports all named exports from the "@effect/rpc/SchemaC" module.
 **Signature**
 
 ```ts
-export * from '@effect/rpc/SchemaC'
+export * from "@effect/rpc/SchemaC"
 ```
 
 Added in v1.0.0

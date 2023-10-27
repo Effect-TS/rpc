@@ -34,7 +34,7 @@ Added in v1.0.0
     - [IOLayer (type alias)](#iolayer-type-alias)
     - [NoInput (type alias)](#noinput-type-alias)
   - [RpcHandlers (namespace)](#rpchandlers-namespace)
-    - [Error (type alias)](#error-type-alias)
+    - [Errors (type alias)](#errors-type-alias)
     - [FromService (type alias)](#fromservice-type-alias)
     - [Map (type alias)](#map-type-alias)
     - [Services (type alias)](#services-type-alias)
@@ -43,7 +43,9 @@ Added in v1.0.0
     - [Options (interface)](#options-interface)
     - [WithSetup (interface)](#withsetup-interface)
     - [WithoutSetup (interface)](#withoutsetup-interface)
+    - [Errors (type alias)](#errors-type-alias-1)
     - [Provide (type alias)](#provide-type-alias)
+    - [Services (type alias)](#services-type-alias-1)
     - [SetupServices (type alias)](#setupservices-type-alias)
 
 ---
@@ -70,7 +72,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface RpcHandlers extends Record<string, RpcHandler.Any | { handlers: RpcHandlers }> {}
+export interface RpcHandlers extends Record<string, RpcHandler.Any | { readonly handlers: RpcHandlers }> {}
 ```
 
 Added in v1.0.0
@@ -83,14 +85,14 @@ Added in v1.0.0
 
 ```ts
 export declare const provideService: {
-  <T extends Tag<any, any>>(tag: T, service: Tag.Service<T>): <Router extends RpcRouter.Base>(
+  <T extends Tag<any, any>>(tag: T, service: Tag.Service<T>): <const Router extends RpcRouter.Base>(
     self: Router
-  ) => RpcRouter.Provide<Router, Tag.Identifier<T>, never, never>
-  <Router extends RpcRouter.Base, T extends Tag<any, any>>(
+  ) => RpcRouter.Provide<Router, Tag.Identifier<T>, never, never, []>
+  <const Router extends RpcRouter.Base, T extends Tag<any, any>>(
     self: Router,
     tag: T,
     service: Tag.Service<T>
-  ): RpcRouter.Provide<Router, Tag.Identifier<T>, never, never>
+  ): RpcRouter.Provide<Router, Tag.Identifier<T>, never, never, []>
 }
 ```
 
@@ -102,15 +104,15 @@ Added in v1.0.0
 
 ```ts
 export declare const provideServiceEffect: {
-  <Router extends RpcRouter.Base, T extends Tag<any, any>, R, E extends RpcService.Errors<Router['schema']>>(
+  <const Router extends RpcRouter.Base, T extends Tag<any, any>, R, E extends RpcService.Errors<Router['schema']>>(
     tag: T,
     effect: Effect<R, E, Tag.Service<T>>
-  ): (self: Router) => RpcRouter.Provide<Router, Tag.Identifier<T>, R, E>
-  <Router extends RpcRouter.Base, T extends Tag<any, any>, R, E extends RpcService.Errors<Router['schema']>>(
+  ): (self: Router) => RpcRouter.Provide<Router, Tag.Identifier<T>, R, E, []>
+  <const Router extends RpcRouter.Base, T extends Tag<any, any>, R, E extends RpcService.Errors<Router['schema']>>(
     self: Router,
     tag: T,
     effect: Effect<R, E, Tag.Service<T>>
-  ): RpcRouter.Provide<Router, Tag.Identifier<T>, R, E>
+  ): RpcRouter.Provide<Router, Tag.Identifier<T>, R, E, []>
 }
 ```
 
@@ -122,14 +124,14 @@ Added in v1.0.0
 
 ```ts
 export declare const provideServiceSync: {
-  <T extends Tag<any, any>>(tag: T, service: LazyArg<Tag.Service<T>>): <Router extends RpcRouter.Base>(
+  <T extends Tag<any, any>>(tag: T, service: LazyArg<Tag.Service<T>>): <const Router extends RpcRouter.Base>(
     self: Router
-  ) => RpcRouter.Provide<Router, Tag.Identifier<T>, never, never>
+  ) => RpcRouter.Provide<Router, Tag.Identifier<T>, never, never, []>
   <Router extends RpcRouter.Base, T extends Tag<any, any>>(
     self: Router,
     tag: T,
     service: LazyArg<Tag.Service<T>>
-  ): RpcRouter.Provide<Router, Tag.Identifier<T>, never, never>
+  ): RpcRouter.Provide<Router, Tag.Identifier<T>, never, never, []>
 }
 ```
 
@@ -142,7 +144,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const make: <S extends RpcService.DefinitionWithId, H extends RpcHandlers.FromService<S>>(
+export declare const make: <
+  const S extends RpcService.DefinitionWithId,
+  const H extends RpcHandlers.FromService<S, []>
+>(
   schema: S,
   handlers: H,
   options?: Partial<RpcRouter.Options>
@@ -271,18 +276,22 @@ Added in v1.0.0
 
 Added in v1.0.0
 
-### Error (type alias)
+### Errors (type alias)
 
 **Signature**
 
 ```ts
-export type Error<H extends RpcHandlers> = {
-  [M in keyof H]: H[M] extends { readonly handlers: RpcHandlers }
-    ? Services<H[M]['handlers']>
-    : H[M] extends RpcHandler<infer _R, infer E, infer _I, infer _O>
-    ? E
+export type Errors<H extends RpcHandlers, Depth extends ReadonlyArray<number> = []> = keyof H extends infer M
+  ? M extends keyof H
+    ? H[M] extends { readonly handlers: RpcHandlers }
+      ? Depth['length'] extends 3
+        ? never
+        : Errors<H[M]['handlers'], [0, ...Depth]>
+      : H[M] extends RpcHandler<infer _R, infer E, infer _I, infer _O>
+      ? E
+      : never
     : never
-}[keyof H]
+  : never
 ```
 
 Added in v1.0.0
@@ -292,9 +301,11 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type FromService<S extends RpcService.DefinitionWithId> = {
+export type FromService<S extends RpcService.DefinitionWithId, Depth extends ReadonlyArray<number> = []> = {
   readonly [K in Extract<keyof S, string>]: S[K] extends RpcService.DefinitionWithId
-    ? { handlers: FromService<S[K]> }
+    ? Depth['length'] extends 3
+      ? never
+      : { readonly handlers: FromService<S[K], [0, ...Depth]> }
     : K extends '__setup'
     ? RpcHandler.FromSetupSchema<S[K]>
     : S[K] extends RpcSchema.Any
@@ -310,17 +321,25 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type Map<H extends RpcHandlers, XR, E2, P extends string = ''> = {
-  readonly [K in keyof H]: K extends string
-    ? H[K] extends { handlers: RpcHandlers }
-      ? Map<H[K]['handlers'], XR, E2, `${P}${K}.`>
+export type Map<
+  H extends RpcHandlers,
+  XR,
+  E2,
+  P extends string = '',
+  Depth extends ReadonlyArray<number> = []
+> = Extract<keyof H, string> extends infer K
+  ? K extends Extract<keyof H, string>
+    ? H[K] extends { readonly handlers: RpcHandlers }
+      ? Depth['length'] extends 3
+        ? never
+        : Map<H[K]['handlers'], XR, E2, `${P}${K}.`, [0, ...Depth]>
       : H[K] extends RpcHandler.IO<infer R, infer E, infer _I, infer O>
       ? [`${P}${K}`, Effect<Exclude<R, XR>, E | E2, O>]
       : H[K] extends Effect<infer R, infer E, infer O>
       ? [`${P}${K}`, Effect<Exclude<R, XR>, E | E2, O>]
       : never
     : never
-}[keyof H]
+  : never
 ```
 
 Added in v1.0.0
@@ -330,13 +349,17 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type Services<H extends RpcHandlers> = {
-  [M in keyof H]: H[M] extends { readonly handlers: RpcHandlers }
-    ? Services<H[M]['handlers']>
-    : H[M] extends RpcHandler<infer R, infer _E, infer _I, infer _O>
-    ? R
+export type Services<H extends RpcHandlers, Depth extends ReadonlyArray<number> = []> = keyof H extends infer M
+  ? M extends keyof H
+    ? H[M] extends { readonly handlers: RpcHandlers }
+      ? Depth['length'] extends 3
+        ? never
+        : Services<H[M]['handlers'], [0, ...Depth]>
+      : H[M] extends RpcHandler<infer R, infer _E, infer _I, infer _O>
+      ? R
+      : never
     : never
-}[keyof H]
+  : never
 ```
 
 Added in v1.0.0
@@ -353,7 +376,7 @@ Added in v1.0.0
 export interface Base {
   readonly handlers: RpcHandlers
   readonly schema: RpcService.DefinitionWithId
-  readonly undecoded: RpcUndecodedClient<RpcHandlers>
+  readonly undecoded: any
   readonly options: Options
 }
 ```
@@ -400,16 +423,28 @@ export interface WithoutSetup extends Base {
 
 Added in v1.0.0
 
+### Errors (type alias)
+
+**Signature**
+
+```ts
+export type Errors<R extends Base> = RpcHandlers.Errors<R['handlers']>
+```
+
+Added in v1.0.0
+
 ### Provide (type alias)
 
 **Signature**
 
 ```ts
-export type Provide<Router extends Base, XR, PR, PE> = RpcRouter<
+export type Provide<Router extends Base, XR, PR, PE, Depth extends ReadonlyArray<number> = []> = RpcRouter<
   Router['schema'],
   {
     readonly [M in keyof Router['handlers']]: Router['handlers'][M] extends Base
-      ? Provide<Router['handlers'][M], XR, PR, PE>
+      ? Depth['length'] extends 3
+        ? never
+        : Provide<Router['handlers'][M], XR, PR, PE, [0, ...Depth]>
       : Router['handlers'][M] extends RpcHandler.IO<infer R, infer E, infer I, infer O>
       ? RpcHandler.IO<Exclude<R, XR> | PR, E | PE, I, O>
       : Router['handlers'][M] extends RpcHandler.IOLayer<infer R, infer E, infer I, infer O>
@@ -419,6 +454,16 @@ export type Provide<Router extends Base, XR, PR, PE> = RpcRouter<
       : never
   }
 >
+```
+
+Added in v1.0.0
+
+### Services (type alias)
+
+**Signature**
+
+```ts
+export type Services<R extends Base> = RpcHandlers.Services<R['handlers']>
 ```
 
 Added in v1.0.0

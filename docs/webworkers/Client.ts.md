@@ -1,7 +1,7 @@
 ---
 title: Client.ts
 nav_order: 1
-parent: "@effect/rpc-webworkers"
+parent: "@effect/rpc-workers"
 ---
 
 ## Client overview
@@ -26,7 +26,7 @@ Re-exports all named exports from the "@effect/rpc/Client" module.
 **Signature**
 
 ```ts
-export * from '@effect/rpc/Client'
+export * from "@effect/rpc/Client"
 ```
 
 Added in v1.0.0

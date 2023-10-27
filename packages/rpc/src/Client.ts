@@ -72,34 +72,12 @@ export interface RpcClientOptions {
 }
 
 /**
- * Creates an RPC client
- *
- * @category constructors
- * @since 1.0.0
- */
-export const make: {
-  <const S extends RpcService.DefinitionWithSetup>(
-    schemas: S,
-    init: RpcSchema.Input<S["__setup"]>,
-    options?: RpcClientOptions
-  ): Effect<
-    never,
-    RpcError | RpcSchema.Error<S["__setup"]>,
-    RpcClient<S, RpcResolver<never>>
-  >
-  <const S extends RpcService.DefinitionWithoutSetup>(
-    schemas: S,
-    options?: RpcClientOptions
-  ): RpcClient<S, RpcResolver<never>>
-} = internal.make
-
-/**
  * Creates an RPC client with the specified resolver
  *
  * @category constructors
  * @since 1.0.0
  */
-export const makeWithResolver: {
+export const make: {
   <
     const S extends RpcService.DefinitionWithSetup,
     Resolver extends
@@ -133,4 +111,4 @@ export const makeWithResolver: {
     [Resolver] extends [Effect<any, any, any>] ? Effect.Context<Resolver>
       : never
   >
-} = internal.makeWithResolver
+} = internal.make
