@@ -46,7 +46,6 @@ Added in v1.0.0
     - [Definition (interface)](#definition-interface)
     - [DefinitionWithId (interface)](#definitionwithid-interface)
     - [DefinitionWithSetup (interface)](#definitionwithsetup-interface)
-    - [DefinitionWithoutSetup (interface)](#definitionwithoutsetup-interface)
     - [Errors (type alias)](#errors-type-alias)
     - [ErrorsFrom (type alias)](#errorsfrom-type-alias)
     - [Methods (type alias)](#methods-type-alias)
@@ -422,11 +421,8 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Definition extends Record<string, RpcSchema.Any | WithId<any, any, any>> {
-  readonly __setup?: {
-    readonly input: Schema.Schema<any>
-    readonly error?: Schema.Schema<any>
-  }
+export interface Definition {
+  readonly [method: string]: RpcSchema.Any | DefinitionWithId
 }
 ```
 
@@ -452,18 +448,6 @@ Added in v1.0.0
 ```ts
 export interface DefinitionWithSetup extends DefinitionWithId {
   readonly __setup: Definition['__setup'] & {}
-}
-```
-
-Added in v1.0.0
-
-### DefinitionWithoutSetup (interface)
-
-**Signature**
-
-```ts
-export interface DefinitionWithoutSetup extends DefinitionWithId {
-  readonly __setup?: never
 }
 ```
 
@@ -536,7 +520,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type Simplify<T extends RpcService.Definition, EI, E> = T extends infer S
+export type Simplify<T, EI, E> = T extends infer S
   ? RpcService.WithId<{ readonly [K in Exclude<keyof S, RpcServiceId>]: S[K] }, EI, E>
   : never
 ```
@@ -587,7 +571,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type WithId<S extends RpcService.Definition, EI, E> = S & {
+export type WithId<S, EI, E> = S & {
   readonly [RpcServiceId]: RpcServiceId
   readonly [RpcServiceErrorId]: Schema.Schema<EI, E>
 }

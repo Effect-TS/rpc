@@ -33,7 +33,7 @@ export declare const make: {
     init: RpcSchema.Input<S['__setup']>,
     options?: Client.RpcClientOptions
   ): Effect.Effect<never, RpcError | RpcSchema.Error<S['__setup']>, Client.RpcClient<S, Resolver.RpcWorkerPool>>
-  <const S extends RpcService.DefinitionWithoutSetup>(schemas: S, options?: Client.RpcClientOptions): Client.RpcClient<
+  <const S extends RpcService.DefinitionWithId>(schemas: S, options?: Client.RpcClientOptions): Client.RpcClient<
     S,
     Resolver.RpcWorkerPool
   >
@@ -54,7 +54,7 @@ export declare const makeFromPool: {
     init: RpcSchema.Input<S['__setup']>,
     options?: Client.RpcClientOptions
   ): Effect.Effect<never, RpcError | RpcSchema.Error<S['__setup']>, Client.RpcClient<S, never>>
-  <const S extends RpcService.DefinitionWithoutSetup>(
+  <const S extends RpcService.DefinitionWithId>(
     schemas: S,
     pool: Resolver.RpcWorkerPool,
     options?: Client.RpcClientOptions

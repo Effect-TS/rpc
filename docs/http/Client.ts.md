@@ -33,7 +33,7 @@ export declare const make: {
     client: HttpClient.Client.Default,
     options?: Client.RpcClientOptions
   ): Effect.Effect<never, RpcError | RpcSchema.Error<S['__setup']>, Client.RpcClient<S, never>>
-  <const S extends RpcService.DefinitionWithoutSetup>(
+  <const S extends RpcService.DefinitionWithId>(
     schemas: S,
     client: HttpClient.Client.Default,
     options?: Client.RpcClientOptions
