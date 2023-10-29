@@ -45,7 +45,7 @@ export declare const make: {
     RpcClient<S, [Resolver] extends [Effect<any, any, any>] ? Effect.Context<Resolver> : never>
   >
   <
-    const S extends RpcService.DefinitionWithoutSetup,
+    const S extends RpcService.DefinitionWithId,
     Resolver extends RpcResolver<never> | Effect<any, never, RpcResolver<never>>
   >(
     schemas: S,

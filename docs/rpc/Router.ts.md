@@ -223,6 +223,10 @@ export type FromSchema<C extends RpcSchema.Any> = C extends RpcSchema.IO<
   ? NoInput<any, E, O>
   : C extends RpcSchema.NoInputNoError<infer _IO, infer O>
   ? NoInput<any, never, O>
+  : C extends RpcSchema.NoOutput<infer _IE, infer E, infer _II, infer I>
+  ? IO<any, E, I, void>
+  : C extends RpcSchema.NoErrorNoOutput<infer _II, infer I>
+  ? IO<any, never, I, void>
   : never
 ```
 
