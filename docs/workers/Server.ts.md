@@ -24,7 +24,9 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const make: (router: RpcRouter.Base) => Effect<Scope | Runner.PlatformRunner, Error.WorkerError, void>
+export declare const make: <R extends RpcRouter.Base>(
+  router: R
+) => Effect.Effect<Scope | Runner.PlatformRunner | RpcHandlers.Services<R['handlers'], []>, Error.WorkerError, never>
 ```
 
 Added in v1.0.0
