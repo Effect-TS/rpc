@@ -19,7 +19,7 @@ Added in v1.0.0
   - [make](#make)
 - [models](#models)
   - [Primitive (type alias)](#primitive-type-alias)
-  - [WebWorkerType (type alias)](#webworkertype-type-alias)
+  - [WorkerType (type alias)](#workertype-type-alias)
 - [utils](#utils)
   - [TransferableAnnotationId](#transferableannotationid)
   - [TransferableAnnotationId (type alias)](#transferableannotationid-type-alias)
@@ -100,17 +100,12 @@ export type Primitive =
 
 Added in v1.0.0
 
-## WebWorkerType (type alias)
+## WorkerType (type alias)
 
 **Signature**
 
 ```ts
-export type WebWorkerType =
-  | Primitive
-  | Map<Primitive, Primitive>
-  | Set<Primitive>
-  | ReadonlyArray<Primitive>
-  | Record<string, Primitive>
+export type WorkerType = Primitive | PrimitiveArray | PrimitiveRecord | PrimitiveMap | PrimitiveSet
 ```
 
 Added in v1.0.0
