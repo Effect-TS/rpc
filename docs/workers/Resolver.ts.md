@@ -83,17 +83,9 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type Options = Omit<Worker.Worker.Options<Resolver.RpcRequest>, 'transfers' | 'encode'> &
-  (
-    | {
-        readonly size: number
-      }
-    | {
-        readonly minSize: number
-        readonly maxSize: number
-        readonly timeToLive: Duration.DurationInput
-      }
-  )
+export type Options = Omit<Worker.Worker.Options<Resolver.RpcRequest>, 'transfers' | 'encode'> & {
+  readonly size: number
+}
 ```
 
 Added in v1.0.0
