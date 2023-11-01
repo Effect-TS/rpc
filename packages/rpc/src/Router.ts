@@ -302,6 +302,23 @@ export const make: <
  * @category router combinators
  * @since 1.0.0
  */
+export const provideLayer: {
+  <T extends Layer<any, any, any>>(layer: T): <
+    Router extends RpcRouter.Base
+  >(
+    self: Router
+  ) => RpcRouter.Provide<Router, Layer.Success<T>, never, never>
+  <Router extends RpcRouter.Base, T extends Layer<any, any, any>>(
+    self: Router,
+    layer: T
+  ): RpcRouter.Provide<Router, Layer.Success<T>, never, never>
+} =
+ internal.provideLayer as any
+
+/**
+ * @category router combinators
+ * @since 1.0.0
+ */
 export const provideService: {
   <T extends Tag<any, any>>(
     tag: T,

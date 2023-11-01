@@ -6,6 +6,7 @@ import { Tag } from "effect/Context"
 import * as Effect from "effect/Effect"
 import * as Either from "effect/Either"
 import { describe, it } from "vitest"
+import * as  Layer  from "@effect/io/Layer"
 
 const makeCounter = () => {
   let count = 0
@@ -52,6 +53,18 @@ const router = _.make(schema, {
 })
 
 describe("Router", () => {
+  it("provideLayer/", () => {
+    typeEquals(router.handlers.getCount)<
+      Effect.Effect<Counter, never, readonly [number, number]>
+    >() satisfies true
+
+    const provided = _.provideLayer(router, Layer.sync(Counter, makeCounter))
+    typeEquals(provided.handlers.getCount)<
+      Effect.Effect<never, never, readonly [number, number]>
+    >() satisfies true
+
+    expect(Effect.runSync(provided.handlers.getCount)).toEqual([0, 1])
+  })
   it("provideServiceSync/", () => {
     typeEquals(router.handlers.getCount)<
       Effect.Effect<Counter, never, readonly [number, number]>
