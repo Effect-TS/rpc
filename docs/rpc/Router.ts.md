@@ -467,7 +467,9 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type Services<R extends Base> = RpcHandlers.Services<R['handlers']>
+export type Services<R extends Base> = R extends WithSetup
+  ? Exclude<RpcHandlers.Services<R['handlers']>, SetupServices<R>>
+  : RpcHandlers.Services<R['handlers']>
 ```
 
 Added in v1.0.0
