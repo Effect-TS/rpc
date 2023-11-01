@@ -83,7 +83,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type Options = Omit<Worker.Worker.Options<Resolver.RpcRequest>, 'transfers' | 'encode'> & {
+export type Options = Omit<Worker.Worker.Options<Resolver.RpcRequest>, 'transfers' | 'encode' | 'onCreate'> & {
   readonly size: number
 }
 ```

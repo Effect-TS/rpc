@@ -123,11 +123,11 @@ importers:
         version: link:../rpc
     devDependencies:
       '@effect/platform':
-        specifier: ^0.26.4
-        version: 0.26.4(@effect/schema@0.46.3)(effect@2.0.0-next.52)
+        specifier: ^0.26.5
+        version: 0.26.5(@effect/schema@0.46.3)(effect@2.0.0-next.52)
       '@effect/platform-node':
-        specifier: ^0.27.6
-        version: 0.27.6(@effect/schema@0.46.3)(effect@2.0.0-next.52)
+        specifier: ^0.27.7
+        version: 0.27.7(@effect/schema@0.46.3)(effect@2.0.0-next.52)
       '@effect/schema':
         specifier: ^0.46.3
         version: 0.46.3(effect@2.0.0-next.52)(fast-check@3.13.2)
@@ -148,8 +148,8 @@ importers:
         version: 2.0.0-next.52
     devDependencies:
       '@effect/platform':
-        specifier: ^0.26.4
-        version: 0.26.4(@effect/schema@0.46.3)(effect@2.0.0-next.52)
+        specifier: ^0.26.5
+        version: 0.26.5(@effect/schema@0.46.3)(effect@2.0.0-next.52)
       '@effect/schema':
         specifier: ^0.46.3
         version: 0.46.3(effect@2.0.0-next.52)(fast-check@3.13.2)
@@ -164,8 +164,8 @@ importers:
         version: link:../http
     devDependencies:
       '@effect/platform':
-        specifier: ^0.26.4
-        version: 0.26.4(@effect/schema@0.46.3)(effect@2.0.0-next.52)
+        specifier: ^0.26.5
+        version: 0.26.5(@effect/schema@0.46.3)(effect@2.0.0-next.52)
       '@effect/schema':
         specifier: ^0.46.3
         version: 0.46.3(effect@2.0.0-next.52)(fast-check@3.13.2)
@@ -174,7 +174,7 @@ importers:
         version: 2.0.0-next.52
       next:
         specifier: ^14.0.1
-        version: 14.0.1(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
+        version: 14.0.1(react-dom@18.2.0)(react@18.2.0)
 
   packages/rpc:
     devDependencies:
@@ -192,11 +192,11 @@ importers:
         version: link:../rpc
     devDependencies:
       '@effect/platform':
-        specifier: ^0.26.4
-        version: 0.26.4(@effect/schema@0.46.3)(effect@2.0.0-next.52)
+        specifier: ^0.26.5
+        version: 0.26.5(@effect/schema@0.46.3)(effect@2.0.0-next.52)
       '@effect/platform-browser':
-        specifier: ^0.14.5
-        version: 0.14.5(@effect/schema@0.46.3)(effect@2.0.0-next.52)
+        specifier: ^0.14.6
+        version: 0.14.6(@effect/schema@0.46.3)(effect@2.0.0-next.52)
       '@effect/schema':
         specifier: ^0.46.3
         version: 0.46.3(effect@2.0.0-next.52)(fast-check@3.13.2)
@@ -857,24 +857,24 @@ packages:
     resolution: {integrity: sha512-e8vfKbjnbYiyneBincEFS0tzXluopGK77OkVFbPRtUbNDS5tJfb+jiwOQEiqASDsadcZmd+9J9+Q6v/z7GuN2g==}
     dev: true
 
-  /@effect/platform-browser@0.14.5(@effect/schema@0.46.3)(effect@2.0.0-next.52):
-    resolution: {integrity: sha512-86OwUWkwRBFPtag86C3Rfa3Cyg97DIosaPLA/HiCN3AU7l88+t4JiecRMSn6LTNP9G8U6uvxoKu90hoz8kWFhA==}
+  /@effect/platform-browser@0.14.6(@effect/schema@0.46.3)(effect@2.0.0-next.52):
+    resolution: {integrity: sha512-Wmn1o60f6/PiZ+tVN2p0zI+/fjef3wx3RZbcgUXMYQIYLP9w39sSnjPsinGN8iRafAfnWz5X/39Lc32sKn7Jrg==}
     peerDependencies:
       effect: 2.0.0-next.52
     dependencies:
-      '@effect/platform': 0.26.4(@effect/schema@0.46.3)(effect@2.0.0-next.52)
+      '@effect/platform': 0.26.5(@effect/schema@0.46.3)(effect@2.0.0-next.52)
       effect: 2.0.0-next.52
     transitivePeerDependencies:
       - '@effect/schema'
     dev: true
 
-  /@effect/platform-node@0.27.6(@effect/schema@0.46.3)(effect@2.0.0-next.52):
-    resolution: {integrity: sha512-DYJbtt7/wyBTJeE/c2fHQTVoFGYGu9hyC34nUYOZ2zG807uAC1WljuKsjy/rllYJm6Ttp6B0pqK+A3F2kS+exA==}
+  /@effect/platform-node@0.27.7(@effect/schema@0.46.3)(effect@2.0.0-next.52):
+    resolution: {integrity: sha512-TPilLNyCvTpJN6mx6dt3NW72UUIyXNEv4WnsFUJ68x4Z/A1DrnPlycu6j0CHxompC0NX5HM2Ltz9LKoFP2/73g==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       effect: 2.0.0-next.52
     dependencies:
-      '@effect/platform': 0.26.4(@effect/schema@0.46.3)(effect@2.0.0-next.52)
+      '@effect/platform': 0.26.5(@effect/schema@0.46.3)(effect@2.0.0-next.52)
       busboy: 1.6.0
       effect: 2.0.0-next.52
       mime: 3.0.0
@@ -882,8 +882,8 @@ packages:
       - '@effect/schema'
     dev: true
 
-  /@effect/platform@0.26.4(@effect/schema@0.46.3)(effect@2.0.0-next.52):
-    resolution: {integrity: sha512-+/fEzAfR8RIkM8VZBg2LMQ+uf4HsI6k6Cv8i05G40FVcbX7rlksDDJU+5YNZjf9Z6RNlt01/Am6WY3h8Qiqt5w==}
+  /@effect/platform@0.26.5(@effect/schema@0.46.3)(effect@2.0.0-next.52):
+    resolution: {integrity: sha512-GCpV0sKq/1mRcSk1KZ65BjfiM3njzfaPGpQpi5zvy/BjdCjWwBxovlLBDv6TaQSgzTGr9JB3XSpSQH4D34a2ag==}
     peerDependencies:
       '@effect/schema': ^0.46.1
       effect: 2.0.0-next.52
@@ -4902,7 +4902,7 @@ packages:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
 
-  /next@14.0.1(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0):
+  /next@14.0.1(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-s4YaLpE4b0gmb3ggtmpmV+wt+lPRuGtANzojMQ2+gmBpgX9w5fTbjsy6dXByBuENsdCX5pukZH/GxdFgO62+pA==}
     engines: {node: '>=18.17.0'}
     hasBin: true
@@ -4924,7 +4924,7 @@ packages:
       postcss: 8.4.31
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      styled-jsx: 5.1.1(@babel/core@7.23.2)(react@18.2.0)
+      styled-jsx: 5.1.1(react@18.2.0)
       watchpack: 2.4.0
     optionalDependencies:
       '@next/swc-darwin-arm64': 14.0.1
@@ -6089,7 +6089,7 @@ packages:
       acorn: 8.10.0
     dev: true
 
-  /styled-jsx@5.1.1(@babel/core@7.23.2)(react@18.2.0):
+  /styled-jsx@5.1.1(react@18.2.0):
     resolution: {integrity: sha512-pW7uC1l4mBZ8ugbiZrcIsiIvVx1UmTfw7UkC3Um2tmfUq9Bhk8IiyEIPl6F8agHgjzku6j0xQEZbfA5uSgSaCw==}
     engines: {node: '>= 12.0.0'}
     peerDependencies:
@@ -6102,7 +6102,6 @@ packages:
       babel-plugin-macros:
         optional: true
     dependencies:
-      '@babel/core': 7.23.2
       client-only: 0.0.1
       react: 18.2.0
     dev: true
