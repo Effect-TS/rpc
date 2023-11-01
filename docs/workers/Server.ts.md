@@ -26,7 +26,7 @@ Added in v1.0.0
 ```ts
 export declare const make: <R extends RpcRouter.Base>(
   router: R
-) => Effect.Effect<Scope | Runner.PlatformRunner | RpcHandlers.Services<R['handlers'], []>, Error.WorkerError, never>
+) => Effect.Effect<Scope | Runner.PlatformRunner | RpcRouter.Services<R>, Error.WorkerError, never>
 ```
 
 Added in v1.0.0
