@@ -37,11 +37,11 @@ export declare const make: {
   >(
     schemas: S,
     resolver: Resolver,
-    init: RpcSchema.Input<S['__setup']>,
+    init: RpcSchema.Input<S["__setup"]>,
     options?: RpcClientOptions | undefined
   ): Effect<
     never,
-    RpcError | RpcSchema.Error<S['__setup']>,
+    RpcError | RpcSchema.Error<S["__setup"]>,
     RpcClient<S, [Resolver] extends [Effect<any, any, any>] ? Effect.Context<Resolver> : never>
   >
   <

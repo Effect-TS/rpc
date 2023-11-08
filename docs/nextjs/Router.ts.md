@@ -26,7 +26,7 @@ Re-exports all named exports from the "@effect/rpc/Router" module.
 **Signature**
 
 ```ts
-export * from '@effect/rpc/Router'
+export * from "@effect/rpc/Router"
 ```
 
 Added in v1.0.0

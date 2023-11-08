@@ -29,10 +29,10 @@ Added in v1.0.0
 export declare const make: {
   <const S extends RpcService.DefinitionWithSetup>(
     schemas: S,
-    init: RpcSchema.Input<S['__setup']>,
+    init: RpcSchema.Input<S["__setup"]>,
     client: HttpClient.Client.Default,
     options?: Client.RpcClientOptions
-  ): Effect.Effect<never, RpcError | RpcSchema.Error<S['__setup']>, Client.RpcClient<S, never>>
+  ): Effect.Effect<never, RpcError | RpcSchema.Error<S["__setup"]>, Client.RpcClient<S, never>>
   <const S extends RpcService.DefinitionWithId>(
     schemas: S,
     client: HttpClient.Client.Default,
@@ -52,7 +52,7 @@ Re-exports all named exports from the "@effect/rpc/Client" module.
 **Signature**
 
 ```ts
-export * from '@effect/rpc/Client'
+export * from "@effect/rpc/Client"
 ```
 
 Added in v1.0.0

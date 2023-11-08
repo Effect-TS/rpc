@@ -30,13 +30,13 @@ Added in v1.0.0
 export declare const make: {
   <const S extends RpcService.DefinitionWithSetup>(
     schemas: S,
-    init: RpcSchema.Input<S['__setup']>,
+    init: RpcSchema.Input<S["__setup"]>,
     options?: Client.RpcClientOptions
-  ): Effect.Effect<never, RpcError | RpcSchema.Error<S['__setup']>, Client.RpcClient<S, Resolver.RpcWorkerPool>>
-  <const S extends RpcService.DefinitionWithId>(schemas: S, options?: Client.RpcClientOptions): Client.RpcClient<
-    S,
-    Resolver.RpcWorkerPool
-  >
+  ): Effect.Effect<never, RpcError | RpcSchema.Error<S["__setup"]>, Client.RpcClient<S, Resolver.RpcWorkerPool>>
+  <const S extends RpcService.DefinitionWithId>(
+    schemas: S,
+    options?: Client.RpcClientOptions
+  ): Client.RpcClient<S, Resolver.RpcWorkerPool>
 }
 ```
 
@@ -51,9 +51,9 @@ export declare const makeFromPool: {
   <const S extends RpcService.DefinitionWithSetup>(
     schemas: S,
     pool: Resolver.RpcWorkerPool,
-    init: RpcSchema.Input<S['__setup']>,
+    init: RpcSchema.Input<S["__setup"]>,
     options?: Client.RpcClientOptions
-  ): Effect.Effect<never, RpcError | RpcSchema.Error<S['__setup']>, Client.RpcClient<S, never>>
+  ): Effect.Effect<never, RpcError | RpcSchema.Error<S["__setup"]>, Client.RpcClient<S, never>>
   <const S extends RpcService.DefinitionWithId>(
     schemas: S,
     pool: Resolver.RpcWorkerPool,
@@ -73,7 +73,7 @@ Re-exports all named exports from the "@effect/rpc/Client" module.
 **Signature**
 
 ```ts
-export * from '@effect/rpc/Client'
+export * from "@effect/rpc/Client"
 ```
 
 Added in v1.0.0

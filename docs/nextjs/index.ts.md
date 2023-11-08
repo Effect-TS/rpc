@@ -31,7 +31,7 @@ Re-exports all named exports from the "@effect/rpc-nextjs/Client" module as `Cli
 **Signature**
 
 ```ts
-export * as Client from '@effect/rpc-nextjs/Client'
+export * as Client from "@effect/rpc-nextjs/Client"
 ```
 
 Added in v1.0.0
@@ -43,7 +43,7 @@ Re-exports all named exports from the "@effect/rpc-nextjs/Resolver" module as `R
 **Signature**
 
 ```ts
-export * as Resolver from '@effect/rpc-nextjs/Resolver'
+export * as Resolver from "@effect/rpc-nextjs/Resolver"
 ```
 
 Added in v1.0.0
@@ -55,7 +55,7 @@ Re-exports all named exports from the "@effect/rpc-nextjs/Router" module as `Rou
 **Signature**
 
 ```ts
-export * as Router from '@effect/rpc-nextjs/Router'
+export * as Router from "@effect/rpc-nextjs/Router"
 ```
 
 Added in v1.0.0
@@ -67,7 +67,7 @@ Re-exports all named exports from the "@effect/rpc-nextjs/Schema" module as `Sch
 **Signature**
 
 ```ts
-export * as Schema from '@effect/rpc-nextjs/Schema'
+export * as Schema from "@effect/rpc-nextjs/Schema"
 ```
 
 Added in v1.0.0
@@ -79,7 +79,7 @@ Re-exports all named exports from the "@effect/rpc-nextjs/SchemaC" module as `Sc
 **Signature**
 
 ```ts
-export * as SchemaC from '@effect/rpc-nextjs/SchemaC'
+export * as SchemaC from "@effect/rpc-nextjs/SchemaC"
 ```
 
 Added in v1.0.0
@@ -91,7 +91,7 @@ Re-exports all named exports from the "@effect/rpc-nextjs/Server" module as `Ser
 **Signature**
 
 ```ts
-export * as Server from '@effect/rpc-nextjs/Server'
+export * as Server from "@effect/rpc-nextjs/Server"
 ```
 
 Added in v1.0.0

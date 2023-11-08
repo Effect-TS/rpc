@@ -26,7 +26,7 @@ Re-exports all named exports from the "@effect/rpc/Schema" module.
 **Signature**
 
 ```ts
-export * from '@effect/rpc/Schema'
+export * from "@effect/rpc/Schema"
 ```
 
 Added in v1.0.0

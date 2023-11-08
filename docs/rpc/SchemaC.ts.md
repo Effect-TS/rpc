@@ -44,13 +44,13 @@ Added in v1.0.0
 
 ```ts
 export declare const withConstructorDataTagged: {
-  <A extends { readonly _tag: string }>(tag: A['_tag']): <I>(
-    self: Schema.Schema<I, A>
-  ) => SchemaC<I, Data.Data<A>, Omit<A, '_tag'>>
+  <A extends { readonly _tag: string }>(
+    tag: A["_tag"]
+  ): <I>(self: Schema.Schema<I, A>) => SchemaC<I, Data.Data<A>, Omit<A, "_tag">>
   <I extends Record<string, any>, A extends { readonly _tag: string }>(
     self: Schema.Schema<I, A>,
-    tag: A['_tag']
-  ): SchemaC<I, Data.Data<A>, Omit<A, '_tag'>>
+    tag: A["_tag"]
+  ): SchemaC<I, Data.Data<A>, Omit<A, "_tag">>
 }
 ```
 
@@ -72,10 +72,10 @@ Added in v1.0.0
 
 ```ts
 export declare const withConstructorTagged: {
-  <A extends { readonly _tag: string }>(tag: A['_tag']): <I>(
-    self: Schema.Schema<I, A>
-  ) => SchemaC<I, A, Omit<A, '_tag'>>
-  <I, A extends { readonly _tag: string }>(self: Schema.Schema<I, A>, tag: A['_tag']): SchemaC<I, A, Omit<A, '_tag'>>
+  <A extends { readonly _tag: string }>(
+    tag: A["_tag"]
+  ): <I>(self: Schema.Schema<I, A>) => SchemaC<I, A, Omit<A, "_tag">>
+  <I, A extends { readonly _tag: string }>(self: Schema.Schema<I, A>, tag: A["_tag"]): SchemaC<I, A, Omit<A, "_tag">>
 }
 ```
 

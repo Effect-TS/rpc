@@ -26,7 +26,7 @@ Re-exports all named exports from the "@effect/rpc-http/Resolver" module.
 **Signature**
 
 ```ts
-export * from '@effect/rpc-http/Resolver'
+export * from "@effect/rpc-http/Resolver"
 ```
 
 Added in v1.0.0

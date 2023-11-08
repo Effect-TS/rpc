@@ -26,7 +26,7 @@ Re-exports all named exports from the "@effect/rpc-http/Client" module.
 **Signature**
 
 ```ts
-export * from '@effect/rpc-http/Client'
+export * from "@effect/rpc-http/Client"
 ```
 
 Added in v1.0.0

@@ -109,7 +109,9 @@ Add a service level error, which can then be used with `Router.provideServiceEff
 
 ```ts
 export declare const withServiceError: {
-  <EI extends internal.Json, E>(error: Schema.Schema<EI, E>): <S extends RpcService.DefinitionWithId>(
+  <EI extends internal.Json, E>(
+    error: Schema.Schema<EI, E>
+  ): <S extends RpcService.DefinitionWithId>(
     self: S
   ) => RpcService.WithId<S, EI | RpcService.ErrorsFrom<S>, E | RpcService.Errors<S>>
   <S extends RpcService.DefinitionWithId, EI extends internal.Json, E>(
@@ -132,7 +134,7 @@ Make a RPC service schema that can be encoded and decoded from JSON.
 ```ts
 export declare const make: <S>(
   schema: S
-) => RpcService.Simplify<RpcService.Validate<'Schema.Json', internal.Json, S, []>, never, never>
+) => RpcService.Simplify<RpcService.Validate<"Schema.Json", internal.Json, S, []>, never, never>
 ```
 
 Added in v1.0.0
@@ -144,7 +146,7 @@ Added in v1.0.0
 ```ts
 export declare const makeRequestUnion: <S extends RpcService.Definition>(
   schema: S
-) => Schema.Schema<RpcRequestSchema.From<S, '', []>, RpcRequestSchema.To<S, '', []>>
+) => Schema.Schema<RpcRequestSchema.From<S, "", []>, RpcRequestSchema.To<S, "", []>>
 ```
 
 Added in v1.0.0
@@ -196,12 +198,12 @@ Added in v1.0.0
 ```ts
 export type From<
   S extends RpcService.Definition,
-  P extends string = '',
+  P extends string = "",
   Depth extends ReadonlyArray<number> = []
 > = Extract<keyof S, string> extends infer K
   ? K extends Extract<keyof S, string>
     ? S[K] extends RpcService.DefinitionWithId
-      ? Depth['length'] extends 3
+      ? Depth["length"] extends 3
         ? never
         : From<S[K], `${P}${K}.`, [0, ...Depth]>
       : S[K] extends RpcSchema.IO<infer _IE, infer _E, infer II, infer _I, infer _IO, infer _O>
@@ -236,12 +238,12 @@ Added in v1.0.0
 ```ts
 export type To<
   S extends RpcService.Definition,
-  P extends string = '',
+  P extends string = "",
   Depth extends ReadonlyArray<number> = []
 > = Extract<keyof S, string> extends infer K
   ? K extends Extract<keyof S, string>
     ? S[K] extends RpcService.DefinitionWithId
-      ? Depth['length'] extends 3
+      ? Depth["length"] extends 3
         ? never
         : To<S[K], `${P}${K}.`, [0, ...Depth]>
       : S[K] extends RpcSchema.IO<infer _IE, infer _E, infer _II, infer I, infer _IO, infer _O>
@@ -447,7 +449,7 @@ Added in v1.0.0
 
 ```ts
 export interface DefinitionWithSetup extends DefinitionWithId {
-  readonly __setup: Definition['__setup'] & {}
+  readonly __setup: Definition["__setup"] & {}
 }
 ```
 
@@ -485,7 +487,7 @@ export type Methods<
 > = Extract<keyof S, string> extends infer M
   ? M extends Extract<keyof S, string>
     ? S[M] extends DefinitionWithId
-      ? Depth['length'] extends 3
+      ? Depth["length"] extends 3
         ? never
         : Methods<S[M], `${P}${M}.`, [0, ...Depth]>
       : `${P}${M}`
@@ -500,7 +502,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type SetupError<S extends DefinitionWithSetup> = RpcSchema.Error<S['__setup']>
+export type SetupError<S extends DefinitionWithSetup> = RpcSchema.Error<S["__setup"]>
 ```
 
 Added in v1.0.0
@@ -510,7 +512,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type SetupInput<S extends DefinitionWithSetup> = RpcSchema.Input<S['__setup']>
+export type SetupInput<S extends DefinitionWithSetup> = RpcSchema.Input<S["__setup"]>
 ```
 
 Added in v1.0.0
@@ -538,10 +540,10 @@ export type Validate<
   S extends RpcService.Definition,
   Depth extends ReadonlyArray<number> = []
 > = {
-  readonly [K in keyof S]: K extends '__setup'
+  readonly [K in keyof S]: K extends "__setup"
     ? S[K]
     : S[K] extends DefinitionWithId
-    ? Depth['length'] extends 3
+    ? Depth["length"] extends 3
       ? never
       : Validate<VL, V, S[K], [0, ...Depth]>
     : S[K] extends RpcSchema.IO<infer IE, infer _E, infer II, infer _I, infer IO, infer _O>

@@ -86,7 +86,7 @@ Added in v1.0.0
 
 ```ts
 export interface RpcDecodeFailure {
-  readonly _tag: 'RpcDecodeFailure'
+  readonly _tag: "RpcDecodeFailure"
   readonly errors: ROA.NonEmptyReadonlyArray<ParseResult.ParseErrors>
 }
 ```
@@ -99,7 +99,7 @@ Added in v1.0.0
 
 ```ts
 export interface RpcEncodeFailure {
-  readonly _tag: 'RpcEncodeFailure'
+  readonly _tag: "RpcEncodeFailure"
   readonly errors: ROA.NonEmptyReadonlyArray<ParseResult.ParseErrors>
 }
 ```
@@ -122,7 +122,7 @@ Added in v1.0.0
 
 ```ts
 export interface RpcNotFound {
-  readonly _tag: 'RpcNotFound'
+  readonly _tag: "RpcNotFound"
   readonly method: string
 }
 ```
@@ -135,7 +135,7 @@ Added in v1.0.0
 
 ```ts
 export interface RpcTransportError {
-  readonly _tag: 'RpcTransportError'
+  readonly _tag: "RpcTransportError"
   readonly error: unknown
 }
 ```

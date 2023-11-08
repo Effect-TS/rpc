@@ -32,7 +32,7 @@ Re-exports all named exports from the "@effect/rpc/Client" module as `Client`.
 **Signature**
 
 ```ts
-export * as Client from '@effect/rpc/Client'
+export * as Client from "@effect/rpc/Client"
 ```
 
 Added in v1.0.0
@@ -44,7 +44,7 @@ Re-exports all named exports from the "@effect/rpc/Error" module as `Error`.
 **Signature**
 
 ```ts
-export * as Error from '@effect/rpc/Error'
+export * as Error from "@effect/rpc/Error"
 ```
 
 Added in v1.0.0
@@ -56,7 +56,7 @@ Re-exports all named exports from the "@effect/rpc/Resolver" module as `Resolver
 **Signature**
 
 ```ts
-export * as Resolver from '@effect/rpc/Resolver'
+export * as Resolver from "@effect/rpc/Resolver"
 ```
 
 Added in v1.0.0
@@ -68,7 +68,7 @@ Re-exports all named exports from the "@effect/rpc/Router" module as `Router`.
 **Signature**
 
 ```ts
-export * as Router from '@effect/rpc/Router'
+export * as Router from "@effect/rpc/Router"
 ```
 
 Added in v1.0.0
@@ -80,7 +80,7 @@ Re-exports all named exports from the "@effect/rpc/Schema" module as `Schema`.
 **Signature**
 
 ```ts
-export * as Schema from '@effect/rpc/Schema'
+export * as Schema from "@effect/rpc/Schema"
 ```
 
 Added in v1.0.0
@@ -92,7 +92,7 @@ Re-exports all named exports from the "@effect/rpc/SchemaC" module as `SchemaC`.
 **Signature**
 
 ```ts
-export * as SchemaC from '@effect/rpc/SchemaC'
+export * as SchemaC from "@effect/rpc/SchemaC"
 ```
 
 Added in v1.0.0
@@ -104,7 +104,7 @@ Re-exports all named exports from the "@effect/rpc/Server" module as `Server`.
 **Signature**
 
 ```ts
-export * as Server from '@effect/rpc/Server'
+export * as Server from "@effect/rpc/Server"
 ```
 
 Added in v1.0.0
