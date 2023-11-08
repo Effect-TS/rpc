@@ -1,18 +1,8 @@
-/// <reference types="vitest" />
-import * as path from "path"
-import { defineConfig } from "vite"
+import { defineConfig, mergeConfig } from "vitest/config"
+import sharedConfig from "../../vitest.shared"
 
-export default defineConfig({
+export default mergeConfig(sharedConfig, defineConfig({
   test: {
-    include: ["./test/**/*.test.ts"],
-    globals: true,
+    include: ["./test/**/*.test.ts"]
   },
-  resolve: {
-    alias: {
-      "@effect/rpc": path.join(__dirname, "../rpc/src"),
-
-      "@effect/rpc-workers/test": path.join(__dirname, "test"),
-      "@effect/rpc-workers": path.join(__dirname, "src"),
-    },
-  },
-})
+}))

@@ -1,11 +1,9 @@
 {
   "exclude": ["src/internal/**/*.ts"],
-  "theme": "mikearnaldi/just-the-docs",
   "parseCompilerOptions": {
-    "noEmit": true,
     "strict": true,
-    "target": "es2015",
-    "lib": ["es2015"],
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
     "paths": {
       "@effect/rpc": ["../rpc/src/index.ts"],
       "@effect/rpc/*": ["../rpc/src/*"],
@@ -16,10 +14,9 @@
     }
   },
   "examplesCompilerOptions": {
-    "noEmit": true,
     "strict": true,
-    "target": "es2015",
-    "lib": ["es2015"],
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
     "paths": {
       "@effect/rpc": ["../rpc/src/index.ts"],
       "@effect/rpc/*": ["../rpc/src/*"],

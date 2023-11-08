@@ -11,13 +11,13 @@ import * as Effect from "effect/Effect"
 import { pipe } from "effect/Function"
 import * as Layer from "effect/Layer"
 import { describe, expect, it } from "vitest"
-import { schema, schemaWithSetup } from "./e2e/schema"
+import { schema, schemaWithSetup } from "./e2e/schema.js"
 // @ts-expect-error
-import TestSharedWorker from "./e2e/worker?sharedworker"
+import TestSharedWorker from "./e2e/worker.js?sharedworker"
 // @ts-expect-error
-import TestWorker from "./e2e/worker?worker"
+import TestWorker from "./e2e/worker.js?worker"
 // @ts-expect-error
-import TestWorkerSetup from "./e2e/worker-setup?worker"
+import TestWorkerSetup from "./e2e/worker-setup.js?worker"
 
 // TODO: test more than one worker
 const PoolLive = Resolver.makePoolLayer({
