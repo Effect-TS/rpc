@@ -41,11 +41,10 @@ Added in v1.0.0
 
 ```ts
 export interface RpcNextjsHandler<R extends RpcRouter.Base> {
-  (request: NextApiRequest, response: NextApiResponse): Effect.Effect<
-    Exclude<RpcHandlers.Services<R['handlers']>, NextApiRequest>,
-    never,
-    void
-  >
+  (
+    request: NextApiRequest,
+    response: NextApiResponse
+  ): Effect.Effect<Exclude<RpcHandlers.Services<R["handlers"]>, NextApiRequest>, never, void>
 }
 ```
 

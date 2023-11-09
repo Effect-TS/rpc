@@ -26,7 +26,7 @@ Added in v1.0.0
 ```ts
 export declare const make: <R extends RpcRouter.Base>(
   router: R
-) => App.Default<RpcRouter.Services<R>, RpcHandlers.Errors<R['handlers'], []> | ServerError.RequestError>
+) => App.Default<RpcRouter.Services<R>, RpcHandlers.Errors<R["handlers"], []> | ServerError.RequestError>
 ```
 
 Added in v1.0.0

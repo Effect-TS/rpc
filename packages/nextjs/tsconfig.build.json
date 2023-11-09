@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.src.json",
+  "references": [
+    {
+      "path": "../rpc"
+    },
+    {
+      "path": "../http"
+    }
+  ],
+  "compilerOptions": {
+    "tsBuildInfoFile": ".tsbuildinfo/build.tsbuildinfo",
+    "outDir": "build/esm",
+    "declarationDir": "build/dts",
+    "stripInternal": true
+  }
+}

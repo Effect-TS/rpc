@@ -1,64 +1,94 @@
 {
+  "include": [],
   "compilerOptions": {
+    "strict": true,
     "moduleDetection": "force",
     "composite": true,
     "downlevelIteration": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true,
+    "esModuleInterop": false,
     "declaration": true,
     "skipLibCheck": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "preserveSymlinks": true,
     "moduleResolution": "NodeNext",
-    "lib": ["ES2021", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "isolatedModules": true,
     "sourceMap": true,
     "declarationMap": true,
-    "strict": true,
     "noImplicitReturns": false,
     "noUnusedLocals": true,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "noEmitOnError": false,
-    "noErrorTruncation": true,
+    "noErrorTruncation": false,
     "allowJs": false,
     "checkJs": false,
     "forceConsistentCasingInFileNames": true,
-    "stripInternal": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
     "noUncheckedIndexedAccess": false,
     "strictNullChecks": true,
-    "target": "ES2021",
+    "baseUrl": ".",
+    "target": "ES2022",
     "module": "NodeNext",
     "incremental": true,
     "removeComments": false,
-    "baseUrl": ".",
     "paths": {
-      "@effect/rpc/test/*": ["./packages/rpc/test/*.ts"],
-      "@effect/rpc/examples/*": ["./packages/rpc/examples/*.ts"],
-      "@effect/rpc/*": ["./packages/rpc/src/*.ts"],
-
-      "@effect/rpc-http/test/*": ["./packages/http/test/*.ts"],
-      "@effect/rpc-http/examples/*": ["./packages/http/examples/*.ts"],
-      "@effect/rpc-http/*": ["./packages/http/src/*.ts"],
-      "@effect/rpc-http": ["./packages/http/src/index.ts"],
-
-      "@effect/rpc-http-node/test/*": ["./packages/http-node/test/*.ts"],
-      "@effect/rpc-http-node/examples/*": [
-        "./packages/http-node/examples/*.ts"
+      "@effect/rpc/test/*": [
+        "./packages/rpc/test/*.js"
       ],
-      "@effect/rpc-http-node/*": ["./packages/http-node/src/*.ts"],
-
-      "@effect/rpc-nextjs/test/*": ["./packages/nextjs/test/*.ts"],
-      "@effect/rpc-nextjs/examples/*": ["./packages/nextjs/examples/*.ts"],
-      "@effect/rpc-nextjs/*": ["./packages/nextjs/src/*.ts"],
-
-      "@effect/rpc-workers/test/*": ["./packages/workers/test/*.ts"],
-      "@effect/rpc-workers/examples/*": ["./packages/workers/examples/*.ts"],
-      "@effect/rpc-workers/*": ["./packages/workers/src/*.ts"]
+      "@effect/rpc/*": [
+        "./packages/rpc/src/*.js"
+      ],
+      "@effect/rpc": [
+        "./packages/rpc/src/index.js"
+      ],
+      "@effect/rpc-http/test/*": [
+        "./packages/http/test/*.js"
+      ],
+      "@effect/rpc-http/*": [
+        "./packages/http/src/*.js"
+      ],
+      "@effect/rpc-http": [
+        "./packages/http/src/index.js"
+      ],
+      "@effect/rpc-http-node/test/*": [
+        "./packages/http-node/test/*.js"
+      ],
+      "@effect/rpc-http-node/*": [
+        "./packages/http-node/src/*.js"
+      ],
+      "@effect/rpc-http-node": [
+        "./packages/http-node/src/index.js"
+      ],
+      "@effect/rpc-nextjs/test/*": [
+        "./packages/nextjs/test/*.js"
+      ],
+      "@effect/rpc-nextjs/*": [
+        "./packages/nextjs/src/*.js"
+      ],
+      "@effect/rpc-nextjs": [
+        "./packages/nextjs/src/index.js"
+      ],
+      "@effect/rpc-workers/test/*": [
+        "./packages/workers/test/*.js"
+      ],
+      "@effect/rpc-workers/*": [
+        "./packages/workers/src/*.js"
+      ],
+      "@effect/rpc-workers": [
+        "./packages/workers/index.js"
+      ],
     },
-    "types": ["vitest/globals", "node"],
-    "plugins": [{ "name": "@effect/language-service" }]
+    "plugins": [
+      {
+        "name": "@effect/language-service"
+      }
+    ]
   }
 }

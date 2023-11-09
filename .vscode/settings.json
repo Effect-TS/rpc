@@ -11,7 +11,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[javascript]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[javascriptreact]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
@@ -22,7 +22,11 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
-  "eslint.validate": ["markdown", "javascript", "typescript"],
+  "eslint.validate": [
+    "markdown",
+    "javascript",
+    "typescript"
+  ],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
@@ -44,45 +48,6 @@
     "**/target": true
   },
   "files.insertFinalNewline": true,
-  "nixEnvSelector.suggestion": false,
-  "files.exclude": {
-    "packages/workers/dist": true,
-    "packages/workers/internal": true,
-    "packages/workers/Client": true,
-    "packages/workers/Resolver": true,
-    "packages/workers/Router": true,
-    "packages/workers/Schema": true,
-    "packages/workers/SchemaC": true,
-    "packages/workers/Server": true,
-    "packages/rpc/dist": true,
-    "packages/rpc/internal": true,
-    "packages/rpc/Client": true,
-    "packages/rpc/Error": true,
-    "packages/rpc/Resolver": true,
-    "packages/rpc/Router": true,
-    "packages/rpc/Schema": true,
-    "packages/rpc/SchemaC": true,
-    "packages/rpc/Server": true,
-    "packages/nextjs/dist": true,
-    "packages/nextjs/Client": true,
-    "packages/nextjs/Resolver": true,
-    "packages/nextjs/Router": true,
-    "packages/nextjs/Schema": true,
-    "packages/nextjs/SchemaC": true,
-    "packages/nextjs/Server": true,
-    "packages/http-node/dist": true,
-    "packages/http-node/Client": true,
-    "packages/http-node/Resolver": true,
-    "packages/http-node/Router": true,
-    "packages/http-node/Schema": true,
-    "packages/http-node/SchemaC": true,
-    "packages/http-node/Server": true,
-    "packages/http/dist": true,
-    "packages/http/internal": true,
-    "packages/http/Client": true,
-    "packages/http/Resolver": true,
-    "packages/http/Router": true,
-    "packages/http/Schema": true,
-    "packages/http/Server": true
-  }
+  "nixEnvSelector.nixFile": "${workspaceRoot}/flake.nix",
+  "testing.automaticallyOpenPeekView": "never",
 }

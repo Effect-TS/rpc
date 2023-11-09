@@ -188,7 +188,7 @@ Added in v1.0.0
 
 ```ts
 export interface Error {
-  readonly _tag: 'Error'
+  readonly _tag: "Error"
   error: RpcError
 }
 ```
@@ -201,7 +201,7 @@ Added in v1.0.0
 
 ```ts
 export interface Success {
-  readonly _tag: 'Success'
+  readonly _tag: "Success"
   value: unknown
 }
 ```

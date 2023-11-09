@@ -31,7 +31,7 @@ Re-exports all named exports from the "@effect/rpc-workers/Client" module as `Cl
 **Signature**
 
 ```ts
-export * as Client from '@effect/rpc-workers/Client'
+export * as Client from "@effect/rpc-workers/Client"
 ```
 
 Added in v1.0.0
@@ -43,7 +43,7 @@ Re-exports all named exports from the "@effect/rpc-workers/Resolver" module as `
 **Signature**
 
 ```ts
-export * as Resolver from '@effect/rpc-workers/Resolver'
+export * as Resolver from "@effect/rpc-workers/Resolver"
 ```
 
 Added in v1.0.0
@@ -55,7 +55,7 @@ Re-exports all named exports from the "@effect/rpc-workers/Router" module as `Ro
 **Signature**
 
 ```ts
-export * as Router from '@effect/rpc-workers/Router'
+export * as Router from "@effect/rpc-workers/Router"
 ```
 
 Added in v1.0.0
@@ -67,7 +67,7 @@ Re-exports all named exports from the "@effect/rpc-workers/Schema" module as `Sc
 **Signature**
 
 ```ts
-export * as Schema from '@effect/rpc-workers/Schema'
+export * as Schema from "@effect/rpc-workers/Schema"
 ```
 
 Added in v1.0.0
@@ -79,7 +79,7 @@ Re-exports all named exports from the "@effect/rpc-workers/SchemaC" module as `S
 **Signature**
 
 ```ts
-export * as SchemaC from '@effect/rpc-workers/SchemaC'
+export * as SchemaC from "@effect/rpc-workers/SchemaC"
 ```
 
 Added in v1.0.0
@@ -91,7 +91,7 @@ Re-exports all named exports from the "@effect/rpc-workers/Server" module as `Se
 **Signature**
 
 ```ts
-export * as Server from '@effect/rpc-workers/Server'
+export * as Server from "@effect/rpc-workers/Server"
 ```
 
 Added in v1.0.0

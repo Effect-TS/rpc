@@ -41,11 +41,10 @@ Added in v1.0.0
 
 ```ts
 export interface RpcNodeHttpHandler<R extends RpcRouter.Base> {
-  (request: Http.IncomingMessage, response: Http.ServerResponse): Effect.Effect<
-    Exclude<RpcHandlers.Services<R['handlers']>, Http.IncomingMessage>,
-    never,
-    void
-  >
+  (
+    request: Http.IncomingMessage,
+    response: Http.ServerResponse
+  ): Effect.Effect<Exclude<RpcHandlers.Services<R["handlers"]>, Http.IncomingMessage>, never, void>
 }
 ```
 

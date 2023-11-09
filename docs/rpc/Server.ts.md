@@ -36,16 +36,18 @@ Added in v1.0.0
 
 ```ts
 export declare const handleSingle: {
-  <const R extends RpcRouter.WithSetup>(router: R): Effect<
+  <const R extends RpcRouter.WithSetup>(
+    router: R
+  ): Effect<
     Scope,
     never,
     (
       request: unknown
-    ) => Effect<Exclude<RpcHandlers.Services<R['handlers'], []>, RpcRouter.SetupServices<R>>, never, RpcResponse>
+    ) => Effect<Exclude<RpcHandlers.Services<R["handlers"], []>, RpcRouter.SetupServices<R>>, never, RpcResponse>
   >
-  <R extends RpcRouter.WithoutSetup>(router: R): (
-    request: unknown
-  ) => Effect<RpcHandlers.Services<R['handlers'], []>, never, RpcResponse>
+  <R extends RpcRouter.WithoutSetup>(
+    router: R
+  ): (request: unknown) => Effect<RpcHandlers.Services<R["handlers"], []>, never, RpcResponse>
 }
 ```
 
@@ -57,20 +59,24 @@ Added in v1.0.0
 
 ```ts
 export declare const handleSingleWithSchema: {
-  <const R extends RpcRouter.WithSetup>(router: R): Effect<
+  <const R extends RpcRouter.WithSetup>(
+    router: R
+  ): Effect<
     Scope,
     never,
     (
       request: unknown
     ) => Effect<
-      Exclude<RpcHandlers.Services<R['handlers'], []>, RpcRouter.SetupServices<R>>,
+      Exclude<RpcHandlers.Services<R["handlers"], []>, RpcRouter.SetupServices<R>>,
       never,
       readonly [RpcResponse, Option<RpcSchema.Base>]
     >
   >
-  <R extends RpcRouter.WithoutSetup>(router: R): (
+  <R extends RpcRouter.WithoutSetup>(
+    router: R
+  ): (
     request: unknown
-  ) => Effect<RpcHandlers.Services<R['handlers'], []>, never, readonly [RpcResponse, Option<RpcSchema.Base>]>
+  ) => Effect<RpcHandlers.Services<R["handlers"], []>, never, readonly [RpcResponse, Option<RpcSchema.Base>]>
 }
 ```
 
@@ -82,20 +88,22 @@ Added in v1.0.0
 
 ```ts
 export declare const handler: {
-  <const R extends RpcRouter.WithSetup>(router: R): Effect<
+  <const R extends RpcRouter.WithSetup>(
+    router: R
+  ): Effect<
     Scope,
     never,
     (
       request: unknown
     ) => Effect<
-      Exclude<RpcHandlers.Services<R['handlers'], []>, RpcRouter.SetupServices<R>>,
+      Exclude<RpcHandlers.Services<R["handlers"], []>, RpcRouter.SetupServices<R>>,
       never,
       readonly RpcResponse[]
     >
   >
-  <const R extends RpcRouter.WithoutSetup>(router: R): (
-    request: unknown
-  ) => Effect<RpcHandlers.Services<R['handlers'], []>, never, readonly RpcResponse[]>
+  <const R extends RpcRouter.WithoutSetup>(
+    router: R
+  ): (request: unknown) => Effect<RpcHandlers.Services<R["handlers"], []>, never, readonly RpcResponse[]>
 }
 ```
 
@@ -108,9 +116,9 @@ Added in v1.0.0
 ```ts
 export declare const handlerRaw: <const R extends RpcRouter.Base>(
   router: R
-) => <Req extends RpcRequestSchema.To<R['schema'], '', []>>(
+) => <Req extends RpcRequestSchema.To<R["schema"], "", []>>(
   request: Req
-) => Req extends { _tag: infer M } ? RpcHandler.FromMethod<R['handlers'], M, never, RpcEncodeFailure> : never
+) => Req extends { _tag: infer M } ? RpcHandler.FromMethod<R["handlers"], M, never, RpcEncodeFailure> : never
 ```
 
 Added in v1.0.0
@@ -127,7 +135,7 @@ export declare const makeUndecodedClient: <
   schemas: S,
   handlers: H,
   options: RpcRouter.Options
-) => RpcUndecodedClient<H, '', []>
+) => RpcUndecodedClient<H, "", []>
 ```
 
 Added in v1.0.0
@@ -141,15 +149,15 @@ Added in v1.0.0
 ```ts
 export type RpcUndecodedClient<
   H extends RpcHandlers,
-  P extends string = '',
+  P extends string = "",
   Depth extends ReadonlyArray<number> = []
 > = {
   readonly [K in Extract<keyof H, string>]: H[K] extends {
     readonly handlers: RpcHandlers
   }
-    ? Depth['length'] extends 3
+    ? Depth["length"] extends 3
       ? never
-      : RpcUndecodedClient<H[K]['handlers'], `${P}${K}.`, [0, ...Depth]>
+      : RpcUndecodedClient<H[K]["handlers"], `${P}${K}.`, [0, ...Depth]>
     : H[K] extends RpcHandler.IO<infer R, infer E, infer I, infer O>
     ? (input: I) => Effect<R, E | RpcEncodeFailure | RpcDecodeFailure, UndecodedRpcResponse<`${P}${K}`, O>>
     : H[K] extends Effect<infer R, infer E, infer O>
