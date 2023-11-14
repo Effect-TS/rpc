@@ -5,10 +5,10 @@ export default mergeConfig(
   sharedConfig,
   defineConfig({
     test: {
-      include: ["./test/**/*.test.ts"]
-    },
-    optimizeDeps: {
-      exclude: ["@vite/client", "@vite/env", "vite", "vite-node"]
+      include: ["./test/**/*.test.ts"],
+      deps: {
+        inline: ["@effect/platform-browser"]
+      }
     }
   })
 )
