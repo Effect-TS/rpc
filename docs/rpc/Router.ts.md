@@ -224,16 +224,16 @@ export type FromSchema<C extends RpcSchema.Any> = C extends RpcSchema.IO<
 >
   ? IO<any, E, I, O>
   : C extends RpcSchema.NoError<infer _II, infer I, infer _IO, infer O>
-  ? IO<any, never, I, O>
-  : C extends RpcSchema.NoInput<infer _IE, infer E, infer _IO, infer O>
-  ? NoInput<any, E, O>
-  : C extends RpcSchema.NoInputNoError<infer _IO, infer O>
-  ? NoInput<any, never, O>
-  : C extends RpcSchema.NoOutput<infer _IE, infer E, infer _II, infer I>
-  ? IO<any, E, I, void>
-  : C extends RpcSchema.NoErrorNoOutput<infer _II, infer I>
-  ? IO<any, never, I, void>
-  : never
+    ? IO<any, never, I, O>
+    : C extends RpcSchema.NoInput<infer _IE, infer E, infer _IO, infer O>
+      ? NoInput<any, E, O>
+      : C extends RpcSchema.NoInputNoError<infer _IO, infer O>
+        ? NoInput<any, never, O>
+        : C extends RpcSchema.NoOutput<infer _IE, infer E, infer _II, infer I>
+          ? IO<any, E, I, void>
+          : C extends RpcSchema.NoErrorNoOutput<infer _II, infer I>
+            ? IO<any, never, I, void>
+            : never
 ```
 
 Added in v1.0.0
@@ -246,8 +246,8 @@ Added in v1.0.0
 export type FromSetupSchema<C> = C extends RpcSchema.NoOutput<infer _IE, infer E, infer _II, infer I>
   ? IO<any, E, I, Context<any>> | IOLayer<any, E, I, any>
   : C extends RpcSchema.NoErrorNoOutput<infer _II, infer I>
-  ? IO<any, never, I, Context<any>> | IOLayer<any, never, I, any>
-  : never
+    ? IO<any, never, I, Context<any>> | IOLayer<any, never, I, any>
+    : never
 ```
 
 Added in v1.0.0
@@ -298,8 +298,8 @@ export type Errors<H extends RpcHandlers, Depth extends ReadonlyArray<number> = 
         ? never
         : Errors<H[M]["handlers"], [0, ...Depth]>
       : H[M] extends RpcHandler<infer _R, infer E, infer _I, infer _O>
-      ? E
-      : never
+        ? E
+        : never
     : never
   : never
 ```
@@ -317,10 +317,10 @@ export type FromService<S extends RpcService.DefinitionWithId, Depth extends Rea
       ? never
       : { readonly handlers: FromService<S[K], [0, ...Depth]> }
     : K extends "__setup"
-    ? RpcHandler.FromSetupSchema<S[K]>
-    : S[K] extends RpcSchema.Any
-    ? RpcHandler.FromSchema<S[K]>
-    : never
+      ? RpcHandler.FromSetupSchema<S[K]>
+      : S[K] extends RpcSchema.Any
+        ? RpcHandler.FromSchema<S[K]>
+        : never
 }
 ```
 
@@ -344,10 +344,10 @@ export type Map<
         ? never
         : Map<H[K]["handlers"], XR, E2, `${P}${K}.`, [0, ...Depth]>
       : H[K] extends RpcHandler.IO<infer R, infer E, infer _I, infer O>
-      ? [`${P}${K}`, Effect<Exclude<R, XR>, E | E2, O>]
-      : H[K] extends Effect<infer R, infer E, infer O>
-      ? [`${P}${K}`, Effect<Exclude<R, XR>, E | E2, O>]
-      : never
+        ? [`${P}${K}`, Effect<Exclude<R, XR>, E | E2, O>]
+        : H[K] extends Effect<infer R, infer E, infer O>
+          ? [`${P}${K}`, Effect<Exclude<R, XR>, E | E2, O>]
+          : never
     : never
   : never
 ```
@@ -366,8 +366,8 @@ export type Services<H extends RpcHandlers, Depth extends ReadonlyArray<number> 
         ? never
         : Services<H[M]["handlers"], [0, ...Depth]>
       : H[M] extends RpcHandler<infer R, infer _E, infer _I, infer _O>
-      ? R
-      : never
+        ? R
+        : never
     : never
   : never
 ```
@@ -456,12 +456,12 @@ export type Provide<Router extends Base, XR, PR, PE, Depth extends ReadonlyArray
         ? never
         : Provide<Router["handlers"][M], XR, PR, PE, [0, ...Depth]>
       : Router["handlers"][M] extends RpcHandler.IO<infer R, infer E, infer I, infer O>
-      ? RpcHandler.IO<Exclude<R, XR> | PR, E | PE, I, O>
-      : Router["handlers"][M] extends RpcHandler.IOLayer<infer R, infer E, infer I, infer O>
-      ? RpcHandler.IOLayer<Exclude<R, XR> | PR, E | PE, I, O>
-      : Router["handlers"][M] extends RpcHandler.NoInput<infer R, infer E, infer O>
-      ? RpcHandler.NoInput<Exclude<R, XR> | PR, E | PE, O>
-      : never
+        ? RpcHandler.IO<Exclude<R, XR> | PR, E | PE, I, O>
+        : Router["handlers"][M] extends RpcHandler.IOLayer<infer R, infer E, infer I, infer O>
+          ? RpcHandler.IOLayer<Exclude<R, XR> | PR, E | PE, I, O>
+          : Router["handlers"][M] extends RpcHandler.NoInput<infer R, infer E, infer O>
+            ? RpcHandler.NoInput<Exclude<R, XR> | PR, E | PE, O>
+            : never
   }
 >
 ```
@@ -493,10 +493,10 @@ export type SetupServices<R extends WithSetup> = R["handlers"]["__setup"] extend
 >
   ? O
   : R["handlers"]["__setup"] extends RpcHandler.IO<infer _R, infer _E, infer _I, infer O>
-  ? O extends Context<infer Env>
-    ? Env
+    ? O extends Context<infer Env>
+      ? Env
+      : never
     : never
-  : never
 ```
 
 Added in v1.0.0

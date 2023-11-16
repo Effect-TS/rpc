@@ -13,85 +13,85 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [exports](#exports)
-  - [From "@effect/rpc-http-node/Client"](#from-effectrpc-http-nodeclient)
-  - [From "@effect/rpc-http-node/Resolver"](#from-effectrpc-http-noderesolver)
-  - [From "@effect/rpc-http-node/Router"](#from-effectrpc-http-noderouter)
-  - [From "@effect/rpc-http-node/Schema"](#from-effectrpc-http-nodeschema)
-  - [From "@effect/rpc-http-node/SchemaC"](#from-effectrpc-http-nodeschemac)
-  - [From "@effect/rpc-http-node/Server"](#from-effectrpc-http-nodeserver)
+  - [From "./Client.js"](#from-clientjs)
+  - [From "./Resolver.js"](#from-resolverjs)
+  - [From "./Router.js"](#from-routerjs)
+  - [From "./Schema.js"](#from-schemajs)
+  - [From "./SchemaC.js"](#from-schemacjs)
+  - [From "./Server.js"](#from-serverjs)
 
 ---
 
 # exports
 
-## From "@effect/rpc-http-node/Client"
+## From "./Client.js"
 
-Re-exports all named exports from the "@effect/rpc-http-node/Client" module as `Client`.
+Re-exports all named exports from the "./Client.js" module as `Client`.
 
 **Signature**
 
 ```ts
-export * as Client from "@effect/rpc-http-node/Client"
+export * as Client from "./Client.js"
 ```
 
 Added in v1.0.0
 
-## From "@effect/rpc-http-node/Resolver"
+## From "./Resolver.js"
 
-Re-exports all named exports from the "@effect/rpc-http-node/Resolver" module as `Resolver`.
+Re-exports all named exports from the "./Resolver.js" module as `Resolver`.
 
 **Signature**
 
 ```ts
-export * as Resolver from "@effect/rpc-http-node/Resolver"
+export * as Resolver from "./Resolver.js"
 ```
 
 Added in v1.0.0
 
-## From "@effect/rpc-http-node/Router"
+## From "./Router.js"
 
-Re-exports all named exports from the "@effect/rpc-http-node/Router" module as `Router`.
+Re-exports all named exports from the "./Router.js" module as `Router`.
 
 **Signature**
 
 ```ts
-export * as Router from "@effect/rpc-http-node/Router"
+export * as Router from "./Router.js"
 ```
 
 Added in v1.0.0
 
-## From "@effect/rpc-http-node/Schema"
+## From "./Schema.js"
 
-Re-exports all named exports from the "@effect/rpc-http-node/Schema" module as `Schema`.
+Re-exports all named exports from the "./Schema.js" module as `Schema`.
 
 **Signature**
 
 ```ts
-export * as Schema from "@effect/rpc-http-node/Schema"
+export * as Schema from "./Schema.js"
 ```
 
 Added in v1.0.0
 
-## From "@effect/rpc-http-node/SchemaC"
+## From "./SchemaC.js"
 
-Re-exports all named exports from the "@effect/rpc-http-node/SchemaC" module as `SchemaC`.
+Re-exports all named exports from the "./SchemaC.js" module as `SchemaC`.
 
 **Signature**
 
 ```ts
-export * as SchemaC from "@effect/rpc-http-node/SchemaC"
+export * as SchemaC from "./SchemaC.js"
 ```
 
 Added in v1.0.0
 
-## From "@effect/rpc-http-node/Server"
+## From "./Server.js"
 
-Re-exports all named exports from the "@effect/rpc-http-node/Server" module as `Server`.
+Re-exports all named exports from the "./Server.js" module as `Server`.
 
 **Signature**
 
 ```ts
-export * as Server from "@effect/rpc-http-node/Server"
+export * as Server from "./Server.js"
 ```
 
 Added in v1.0.0

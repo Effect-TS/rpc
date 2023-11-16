@@ -30,29 +30,22 @@ Creates an RPC client with the specified resolver
 **Signature**
 
 ```ts
-export declare const make: {
-  <
-    const S extends RpcService.DefinitionWithSetup,
-    Resolver extends RpcResolver<never> | Effect<any, never, RpcResolver<never>>
-  >(
-    schemas: S,
-    resolver: Resolver,
-    init: RpcSchema.Input<S["__setup"]>,
-    options?: RpcClientOptions | undefined
-  ): Effect<
-    never,
-    RpcError | RpcSchema.Error<S["__setup"]>,
-    RpcClient<S, [Resolver] extends [Effect<any, any, any>] ? Effect.Context<Resolver> : never>
-  >
-  <
-    const S extends RpcService.DefinitionWithId,
-    Resolver extends RpcResolver<never> | Effect<any, never, RpcResolver<never>>
-  >(
-    schemas: S,
-    resolver: Resolver,
-    options?: RpcClientOptions | undefined
-  ): RpcClient<S, [Resolver] extends [Effect<any, any, any>] ? Effect.Context<Resolver> : never>
-}
+export declare const make: <
+  const S extends RpcService.DefinitionWithId,
+  Resolver extends RpcResolver<never> | Effect<any, never, RpcResolver<never>>
+>(
+  schemas: S,
+  resolver: Resolver,
+  ...initAndOptions: [S] extends [RpcService.DefinitionWithSetup]
+    ? [init: RpcSchema.Input<S["__setup"]>, options?: RpcClientOptions | undefined]
+    : [options?: RpcClientOptions | undefined]
+) => [S] extends [RpcService.DefinitionWithSetup]
+  ? Effect<
+      never,
+      RpcError | RpcSchema.Error<S["__setup"]>,
+      RpcClient<S, [Resolver] extends [Effect<any, any, any>] ? Effect.Context<Resolver> : never>
+    >
+  : RpcClient<S, [Resolver] extends [Effect<any, any, any>] ? Effect.Context<Resolver> : never>
 ```
 
 Added in v1.0.0
@@ -76,16 +69,16 @@ export type Rpc<C extends RpcSchema.Any, R, SE> = C extends RpcSchema.IO<
 >
   ? (input: I) => Effect<R, RpcError | SE | E, O>
   : C extends RpcSchema.NoError<infer _II, infer I, infer _IO, infer O>
-  ? (input: I) => Effect<R, RpcError | SE, O>
-  : C extends RpcSchema.NoOutput<infer _IE, infer E, infer _II, infer I>
-  ? (input: I) => Effect<R, RpcError | SE | E, void>
-  : C extends RpcSchema.NoErrorNoOutput<infer _II, infer I>
-  ? (input: I) => Effect<R, RpcError | SE, void>
-  : C extends RpcSchema.NoInput<infer _IE, infer E, infer _IO, infer O>
-  ? Effect<R, RpcError | SE | E, O>
-  : C extends RpcSchema.NoInputNoError<infer _IO, infer O>
-  ? Effect<R, RpcError | SE, O>
-  : never
+    ? (input: I) => Effect<R, RpcError | SE, O>
+    : C extends RpcSchema.NoOutput<infer _IE, infer E, infer _II, infer I>
+      ? (input: I) => Effect<R, RpcError | SE | E, void>
+      : C extends RpcSchema.NoErrorNoOutput<infer _II, infer I>
+        ? (input: I) => Effect<R, RpcError | SE, void>
+        : C extends RpcSchema.NoInput<infer _IE, infer E, infer _IO, infer O>
+          ? Effect<R, RpcError | SE | E, O>
+          : C extends RpcSchema.NoInputNoError<infer _IO, infer O>
+            ? Effect<R, RpcError | SE, O>
+            : never
 ```
 
 Added in v1.0.0
