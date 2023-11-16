@@ -27,17 +27,14 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const make: {
-  <const S extends RpcService.DefinitionWithSetup>(
-    schemas: S,
-    init: RpcSchema.Input<S["__setup"]>,
-    options?: Client.RpcClientOptions
-  ): Effect.Effect<never, RpcError | RpcSchema.Error<S["__setup"]>, Client.RpcClient<S, Resolver.RpcWorkerPool>>
-  <const S extends RpcService.DefinitionWithId>(
-    schemas: S,
-    options?: Client.RpcClientOptions
-  ): Client.RpcClient<S, Resolver.RpcWorkerPool>
-}
+export declare const make: <S extends RpcService.DefinitionWithId>(
+  schemas: S,
+  ...args: [S] extends [RpcService.DefinitionWithSetup]
+    ? [init: RpcSchema.Input<S["__setup"]>, options?: Client.RpcClientOptions | undefined]
+    : [options?: Client.RpcClientOptions | undefined]
+) => [S] extends [RpcService.DefinitionWithSetup]
+  ? Effect.Effect<never, RpcError | RpcSchema.Error<S["__setup"]>, Client.RpcClient<S, Resolver.RpcWorkerPool>>
+  : Client.RpcClient<S, Resolver.RpcWorkerPool>
 ```
 
 Added in v1.0.0
@@ -47,19 +44,15 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const makeFromPool: {
-  <const S extends RpcService.DefinitionWithSetup>(
-    schemas: S,
-    pool: Resolver.RpcWorkerPool,
-    init: RpcSchema.Input<S["__setup"]>,
-    options?: Client.RpcClientOptions
-  ): Effect.Effect<never, RpcError | RpcSchema.Error<S["__setup"]>, Client.RpcClient<S, never>>
-  <const S extends RpcService.DefinitionWithId>(
-    schemas: S,
-    pool: Resolver.RpcWorkerPool,
-    options?: Client.RpcClientOptions
-  ): Client.RpcClient<S, never>
-}
+export declare const makeFromPool: <S extends RpcService.DefinitionWithId>(
+  schemas: S,
+  pool: Resolver.RpcWorkerPool,
+  ...args: [S] extends [RpcService.DefinitionWithSetup]
+    ? [init: RpcSchema.Input<S["__setup"]>, options?: Client.RpcClientOptions | undefined]
+    : [options?: Client.RpcClientOptions | undefined]
+) => [S] extends [RpcService.DefinitionWithSetup]
+  ? Effect.Effect<never, RpcError | RpcSchema.Error<S["__setup"]>, Client.RpcClient<S, never>>
+  : Client.RpcClient<S, Resolver.RpcWorkerPool>
 ```
 
 Added in v1.0.0

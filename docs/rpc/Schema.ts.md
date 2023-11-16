@@ -207,14 +207,14 @@ export type From<
         ? never
         : From<S[K], `${P}${K}.`, [0, ...Depth]>
       : S[K] extends RpcSchema.IO<infer _IE, infer _E, infer II, infer _I, infer _IO, infer _O>
-      ? { readonly _tag: `${P}${K}`; readonly input: II }
-      : S[K] extends RpcSchema.NoError<infer II, infer _I, infer _IO, infer _O>
-      ? { readonly _tag: `${P}${K}`; readonly input: II }
-      : S[K] extends RpcSchema.NoInput<infer _IE, infer _E, infer _IO, infer _O>
-      ? { readonly _tag: `${P}${K}` }
-      : S[K] extends RpcSchema.NoInputNoError<infer _IO, infer _O>
-      ? { readonly _tag: `${P}${K}` }
-      : never
+        ? { readonly _tag: `${P}${K}`; readonly input: II }
+        : S[K] extends RpcSchema.NoError<infer II, infer _I, infer _IO, infer _O>
+          ? { readonly _tag: `${P}${K}`; readonly input: II }
+          : S[K] extends RpcSchema.NoInput<infer _IE, infer _E, infer _IO, infer _O>
+            ? { readonly _tag: `${P}${K}` }
+            : S[K] extends RpcSchema.NoInputNoError<infer _IO, infer _O>
+              ? { readonly _tag: `${P}${K}` }
+              : never
     : never
   : never
 ```
@@ -247,14 +247,14 @@ export type To<
         ? never
         : To<S[K], `${P}${K}.`, [0, ...Depth]>
       : S[K] extends RpcSchema.IO<infer _IE, infer _E, infer _II, infer I, infer _IO, infer _O>
-      ? RpcRequest.WithInput<`${P}${K}`, I>
-      : S[K] extends RpcSchema.NoError<infer _II, infer I, infer _IO, infer _O>
-      ? RpcRequest.WithInput<`${P}${K}`, I>
-      : S[K] extends RpcSchema.NoInput<infer _IE, infer _E, infer _IO, infer _O>
-      ? RpcRequest.NoInput<`${P}${K}`>
-      : S[K] extends RpcSchema.NoInputNoError<infer _IO, infer _O>
-      ? RpcRequest.NoInput<`${P}${K}`>
-      : never
+        ? RpcRequest.WithInput<`${P}${K}`, I>
+        : S[K] extends RpcSchema.NoError<infer _II, infer I, infer _IO, infer _O>
+          ? RpcRequest.WithInput<`${P}${K}`, I>
+          : S[K] extends RpcSchema.NoInput<infer _IE, infer _E, infer _IO, infer _O>
+            ? RpcRequest.NoInput<`${P}${K}`>
+            : S[K] extends RpcSchema.NoInputNoError<infer _IO, infer _O>
+              ? RpcRequest.NoInput<`${P}${K}`>
+              : never
     : never
   : never
 ```
@@ -543,26 +543,26 @@ export type Validate<
   readonly [K in keyof S]: K extends "__setup"
     ? S[K]
     : S[K] extends DefinitionWithId
-    ? Depth["length"] extends 3
-      ? never
-      : Validate<VL, V, S[K], [0, ...Depth]>
-    : S[K] extends RpcSchema.IO<infer IE, infer _E, infer II, infer _I, infer IO, infer _O>
-    ? [IE | II | IO] extends [V]
-      ? S[K]
-      : `schema input does not extend ${VL}`
-    : S[K] extends RpcSchema.NoError<infer II, infer _I, infer IO, infer _O>
-    ? [II | IO] extends [V]
-      ? S[K]
-      : `schema input does not extend ${VL}`
-    : S[K] extends RpcSchema.NoInput<infer IE, infer _E, infer IO, infer _O>
-    ? [IE | IO] extends [V]
-      ? S[K]
-      : `schema input does not extend ${VL}`
-    : S[K] extends RpcSchema.NoInputNoError<infer IO, infer _O>
-    ? [IO] extends [V]
-      ? S[K]
-      : `schema input does not extend ${VL}`
-    : S[K]
+      ? Depth["length"] extends 3
+        ? never
+        : Validate<VL, V, S[K], [0, ...Depth]>
+      : S[K] extends RpcSchema.IO<infer IE, infer _E, infer II, infer _I, infer IO, infer _O>
+        ? [IE | II | IO] extends [V]
+          ? S[K]
+          : `schema input does not extend ${VL}`
+        : S[K] extends RpcSchema.NoError<infer II, infer _I, infer IO, infer _O>
+          ? [II | IO] extends [V]
+            ? S[K]
+            : `schema input does not extend ${VL}`
+          : S[K] extends RpcSchema.NoInput<infer IE, infer _E, infer IO, infer _O>
+            ? [IE | IO] extends [V]
+              ? S[K]
+              : `schema input does not extend ${VL}`
+            : S[K] extends RpcSchema.NoInputNoError<infer IO, infer _O>
+              ? [IO] extends [V]
+                ? S[K]
+                : `schema input does not extend ${VL}`
+              : S[K]
 }
 ```
 

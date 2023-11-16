@@ -13,98 +13,98 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [exports](#exports)
-  - [From "@effect/rpc/Client"](#from-effectrpcclient)
-  - [From "@effect/rpc/Error"](#from-effectrpcerror)
-  - [From "@effect/rpc/Resolver"](#from-effectrpcresolver)
-  - [From "@effect/rpc/Router"](#from-effectrpcrouter)
-  - [From "@effect/rpc/Schema"](#from-effectrpcschema)
-  - [From "@effect/rpc/SchemaC"](#from-effectrpcschemac)
-  - [From "@effect/rpc/Server"](#from-effectrpcserver)
+  - [From "./Client.js"](#from-clientjs)
+  - [From "./Error.js"](#from-errorjs)
+  - [From "./Resolver.js"](#from-resolverjs)
+  - [From "./Router.js"](#from-routerjs)
+  - [From "./Schema.js"](#from-schemajs)
+  - [From "./SchemaC.js"](#from-schemacjs)
+  - [From "./Server.js"](#from-serverjs)
 
 ---
 
 # exports
 
-## From "@effect/rpc/Client"
+## From "./Client.js"
 
-Re-exports all named exports from the "@effect/rpc/Client" module as `Client`.
+Re-exports all named exports from the "./Client.js" module as `Client`.
 
 **Signature**
 
 ```ts
-export * as Client from "@effect/rpc/Client"
+export * as Client from "./Client.js"
 ```
 
 Added in v1.0.0
 
-## From "@effect/rpc/Error"
+## From "./Error.js"
 
-Re-exports all named exports from the "@effect/rpc/Error" module as `Error`.
+Re-exports all named exports from the "./Error.js" module as `Error`.
 
 **Signature**
 
 ```ts
-export * as Error from "@effect/rpc/Error"
+export * as Error from "./Error.js"
 ```
 
 Added in v1.0.0
 
-## From "@effect/rpc/Resolver"
+## From "./Resolver.js"
 
-Re-exports all named exports from the "@effect/rpc/Resolver" module as `Resolver`.
+Re-exports all named exports from the "./Resolver.js" module as `Resolver`.
 
 **Signature**
 
 ```ts
-export * as Resolver from "@effect/rpc/Resolver"
+export * as Resolver from "./Resolver.js"
 ```
 
 Added in v1.0.0
 
-## From "@effect/rpc/Router"
+## From "./Router.js"
 
-Re-exports all named exports from the "@effect/rpc/Router" module as `Router`.
+Re-exports all named exports from the "./Router.js" module as `Router`.
 
 **Signature**
 
 ```ts
-export * as Router from "@effect/rpc/Router"
+export * as Router from "./Router.js"
 ```
 
 Added in v1.0.0
 
-## From "@effect/rpc/Schema"
+## From "./Schema.js"
 
-Re-exports all named exports from the "@effect/rpc/Schema" module as `Schema`.
+Re-exports all named exports from the "./Schema.js" module as `Schema`.
 
 **Signature**
 
 ```ts
-export * as Schema from "@effect/rpc/Schema"
+export * as Schema from "./Schema.js"
 ```
 
 Added in v1.0.0
 
-## From "@effect/rpc/SchemaC"
+## From "./SchemaC.js"
 
-Re-exports all named exports from the "@effect/rpc/SchemaC" module as `SchemaC`.
+Re-exports all named exports from the "./SchemaC.js" module as `SchemaC`.
 
 **Signature**
 
 ```ts
-export * as SchemaC from "@effect/rpc/SchemaC"
+export * as SchemaC from "./SchemaC.js"
 ```
 
 Added in v1.0.0
 
-## From "@effect/rpc/Server"
+## From "./Server.js"
 
-Re-exports all named exports from the "@effect/rpc/Server" module as `Server`.
+Re-exports all named exports from the "./Server.js" module as `Server`.
 
 **Signature**
 
 ```ts
-export * as Server from "@effect/rpc/Server"
+export * as Server from "./Server.js"
 ```
 
 Added in v1.0.0

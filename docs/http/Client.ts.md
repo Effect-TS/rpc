@@ -26,19 +26,11 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const make: {
-  <const S extends RpcService.DefinitionWithSetup>(
-    schemas: S,
-    init: RpcSchema.Input<S["__setup"]>,
-    client: HttpClient.Client.Default,
-    options?: Client.RpcClientOptions
-  ): Effect.Effect<never, RpcError | RpcSchema.Error<S["__setup"]>, Client.RpcClient<S, never>>
-  <const S extends RpcService.DefinitionWithId>(
-    schemas: S,
-    client: HttpClient.Client.Default,
-    options?: Client.RpcClientOptions
-  ): Client.RpcClient<S, never>
-}
+export declare const make: <S extends RpcService.DefinitionWithId>(
+  schemas: S,
+  client: HttpClient.Client.Default,
+  options?: Client.RpcClientOptions
+) => Client.RpcClient<S, never>
 ```
 
 Added in v1.0.0

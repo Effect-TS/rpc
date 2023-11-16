@@ -159,10 +159,10 @@ export type RpcUndecodedClient<
       ? never
       : RpcUndecodedClient<H[K]["handlers"], `${P}${K}.`, [0, ...Depth]>
     : H[K] extends RpcHandler.IO<infer R, infer E, infer I, infer O>
-    ? (input: I) => Effect<R, E | RpcEncodeFailure | RpcDecodeFailure, UndecodedRpcResponse<`${P}${K}`, O>>
-    : H[K] extends Effect<infer R, infer E, infer O>
-    ? Effect<R, E | RpcEncodeFailure | RpcDecodeFailure, UndecodedRpcResponse<`${P}${K}`, O>>
-    : never
+      ? (input: I) => Effect<R, E | RpcEncodeFailure | RpcDecodeFailure, UndecodedRpcResponse<`${P}${K}`, O>>
+      : H[K] extends Effect<infer R, infer E, infer O>
+        ? Effect<R, E | RpcEncodeFailure | RpcDecodeFailure, UndecodedRpcResponse<`${P}${K}`, O>>
+        : never
 }
 ```
 
