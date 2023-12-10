@@ -38,8 +38,13 @@ Added in v1.0.0
 export declare const RpcDecodeFailure: SchemaC<
   RpcDecodeFailure,
   RpcDecodeFailure,
-  { readonly errors: readonly [ParseResult.ParseErrors, ...ParseResult.ParseErrors[]] }
->
+  {
+    readonly errors: readonly [
+      ParseResult.ParseIssue,
+      ...ParseResult.ParseIssue[],
+    ];
+  }
+>;
 ```
 
 Added in v1.0.0
@@ -52,8 +57,13 @@ Added in v1.0.0
 export declare const RpcEncodeFailure: SchemaC<
   RpcEncodeFailure,
   RpcEncodeFailure,
-  { readonly errors: readonly [ParseResult.ParseErrors, ...ParseResult.ParseErrors[]] }
->
+  {
+    readonly errors: readonly [
+      ParseResult.ParseIssue,
+      ...ParseResult.ParseIssue[],
+    ];
+  }
+>;
 ```
 
 Added in v1.0.0
@@ -63,7 +73,11 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const RpcNotFound: SchemaC<RpcNotFound, RpcNotFound, { readonly method: string }>
+export declare const RpcNotFound: SchemaC<
+  RpcNotFound,
+  RpcNotFound,
+  { readonly method: string }
+>;
 ```
 
 Added in v1.0.0
@@ -73,7 +87,11 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const RpcTransportError: SchemaC<RpcTransportError, RpcTransportError, { readonly error: unknown }>
+export declare const RpcTransportError: SchemaC<
+  RpcTransportError,
+  RpcTransportError,
+  { readonly error: unknown }
+>;
 ```
 
 Added in v1.0.0
@@ -86,8 +104,8 @@ Added in v1.0.0
 
 ```ts
 export interface RpcDecodeFailure {
-  readonly _tag: "RpcDecodeFailure"
-  readonly errors: ROA.NonEmptyReadonlyArray<ParseResult.ParseErrors>
+  readonly _tag: "RpcDecodeFailure";
+  readonly errors: ROA.NonEmptyReadonlyArray<ParseResult.ParseIssue>;
 }
 ```
 
@@ -99,8 +117,8 @@ Added in v1.0.0
 
 ```ts
 export interface RpcEncodeFailure {
-  readonly _tag: "RpcEncodeFailure"
-  readonly errors: ROA.NonEmptyReadonlyArray<ParseResult.ParseErrors>
+  readonly _tag: "RpcEncodeFailure";
+  readonly errors: ROA.NonEmptyReadonlyArray<ParseResult.ParseIssue>;
 }
 ```
 
@@ -111,7 +129,11 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type RpcError = RpcDecodeFailure | RpcEncodeFailure | RpcNotFound | RpcTransportError
+export type RpcError =
+  | RpcDecodeFailure
+  | RpcEncodeFailure
+  | RpcNotFound
+  | RpcTransportError;
 ```
 
 Added in v1.0.0
@@ -122,8 +144,8 @@ Added in v1.0.0
 
 ```ts
 export interface RpcNotFound {
-  readonly _tag: "RpcNotFound"
-  readonly method: string
+  readonly _tag: "RpcNotFound";
+  readonly method: string;
 }
 ```
 
@@ -135,8 +157,8 @@ Added in v1.0.0
 
 ```ts
 export interface RpcTransportError {
-  readonly _tag: "RpcTransportError"
-  readonly error: unknown
+  readonly _tag: "RpcTransportError";
+  readonly error: unknown;
 }
 ```
 
@@ -152,7 +174,7 @@ Added in v1.0.0
 export declare const RpcError: Schema.Schema<
   RpcEncodeFailure | RpcTransportError | RpcNotFound | RpcDecodeFailure,
   RpcEncodeFailure | RpcTransportError | RpcNotFound | RpcDecodeFailure
->
+>;
 ```
 
 Added in v1.0.0
