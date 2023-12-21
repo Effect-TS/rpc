@@ -89,17 +89,16 @@ const router = Router.make(
     fail: (message) => Effect.fail({ _tag: "SomeError", message }),
     failNoInput: Effect.fail({ _tag: "SomeError", message: "fail" } as const),
     encodeInput: (date) => Effect.succeed(date),
-    currentSpanName: Effect.flatMap(Effect.currentSpan, (maybeSpan) =>
-      Effect.match(maybeSpan, {
-        onFailure: () => "",
-        onSuccess: (_) =>
-          `${
-            Option.getOrElse(
-              Option.map(_.parent, (_) => _._tag === "Span" ? _.name : "ExternalSpan"),
-              () => ""
-            )
-          } > ${_.name}`
-      })),
+    currentSpanName: Effect.match(Effect.currentSpan, {
+      onFailure: () => "",
+      onSuccess: (_) =>
+        `${
+          Option.getOrElse(
+            Option.map(_.parent, (_) => _._tag === "Span" ? _.name : "ExternalSpan"),
+            () => ""
+          )
+        } > ${_.name}`
+    }),
     getCount: (_) => Effect.flatMap(Counter, (_) => _.get),
     posts: Router.make(posts, {
       create: (post) =>
